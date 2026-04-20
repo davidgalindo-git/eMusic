@@ -9,6 +9,9 @@ git clone [https://github.com/davidgalindo-git/TPI_David_Galindo_2026](https://g
 ```
 3. Installer les dépendances
 ```bash
+cd tpi-app
+```
+```bash
 npm install
 ```
 4. Créer un fichier ".env" au même niveau que "package.json" basé sur le fichier ".env.example" et remplacer les données secrètes.  
