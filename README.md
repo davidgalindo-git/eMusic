@@ -9,7 +9,7 @@ git clone [https://github.com/davidgalindo-git/TPI_David_Galindo_2026](https://g
 ```
 3. Installer les dépendances
 ```bash
-cd tpi-app
+cd emusic-app
 ```
 ```bash
 npm install
