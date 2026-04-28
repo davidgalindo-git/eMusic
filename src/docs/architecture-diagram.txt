@@ -1,0 +1,16 @@
+graph TD
+    subgraph Logic
+        U[useITunes.js]
+    end
+
+    subgraph UI_Components
+        A[App.vue] -->|search| S[SearchBar.vue]
+        S -.->|emit: search, term| A
+        A <--> |reactive bind| U
+        A --> |v-for| SI[SongItem.vue]
+    end
+
+    U ---|Fetch| API[(iTunes API)]
+
+    style A fill:#42b883,stroke:#35495e,color:#fff
+    style U fill:#35495e,stroke:#42b883,color:#fff
