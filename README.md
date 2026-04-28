@@ -1,4 +1,4 @@
-# TPI
+# eMusic
 
 Développé par David Galindo (SI-CA2a) avec [Vue 3](https://vuejs.org/) et [Vite](https://vitejs.dev/).
 ## Démarrage de l'app
