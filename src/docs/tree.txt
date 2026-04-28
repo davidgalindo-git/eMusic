@@ -20,7 +20,7 @@ src
       PlaylistSideMenu.vue
       RearrangeSongButton.vue
       RemoveFromPlaylistButton.vue
-    song
+    songs
       SongCard.vue
       SongContainer
   tests
