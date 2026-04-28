@@ -38,3 +38,4 @@ npx vitest --ui
 
 ### Architecture & Data Flow
 ![Component Diagram](./src/docs/architecture-diagram.png)
+![Diagram Legend](./src/docs/diagram_legend.png)
