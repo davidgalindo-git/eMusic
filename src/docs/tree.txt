@@ -1,0 +1,37 @@
+public
+src
+  api
+    useITunes.js
+  assets -- (icons)
+  components
+    header
+      Logo.vue
+      SearchBar.vue
+    player
+      PlayButton.vue
+      Player.vue
+      ReproduceBar.vue
+    playlist
+      AddToPlaylist.vue
+      NewPlaylistButton.vue
+      PlaylistCard.vue
+      PlaylistContainer.vue
+      PlaylistDropMenu.vue
+      PlaylistSideMenu.vue
+      RearrangeSongButton.vue
+      RemoveFromPlaylistButton.vue
+    song
+      SongCard.vue
+      SongContainer
+  tests
+    useITunes.test.js
+  App.vue
+  main.js
+  style.css
+.env.example
+.gitignore
+index.html
+package.json
+package-lock.json
+README.md
+vite.config.js
