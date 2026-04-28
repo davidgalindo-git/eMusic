@@ -1,4 +1,16 @@
 <script setup>
+import { ref } from "vue";
+
+const emit = defineEmits(["search"])
+
+const term = ref("")
+
+const onSearch = () => {
+  if (!term.value?.trim()) return
+
+  emit("search", term.value)
+}
+
 </script>
 
 <template>
