@@ -35,3 +35,6 @@ Exécuter les tests du dossier src/tests avec Vitest UI
 ```bash
 npx vitest --ui
 ```
+
+### Architecture & Data Flow
+![Component Diagram](./docs/architecture-diagram.png
