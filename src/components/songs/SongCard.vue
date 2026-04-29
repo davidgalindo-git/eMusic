@@ -18,6 +18,11 @@ const variants = ['elevated', 'flat', 'tonal', 'outlined'];
       :title="song.trackName"
       :subtitle="song.artistName"
   >
+    <v-img
+      :src="song.artworkUrl"
+      height="200px"
+      cover
+    ></v-img>
   </v-card>
 </template>
 
