@@ -15,6 +15,6 @@ export default defineConfig({
                 inline: ['vuetify'],
             },
         },
-        css: true,
+        css: false,
     },
 })
