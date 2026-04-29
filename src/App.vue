@@ -17,3 +17,8 @@ const handleSearch = (term) => {
     {{ songStore.songs }}
   </div>
 </template>
+<style>
+.songs{
+  color: white;
+}
+</style>
