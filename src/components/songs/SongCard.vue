@@ -1,4 +1,11 @@
 <script setup>
+const props = defineProps({
+  song: {
+    type: Object,
+    required: true
+  }
+});
+
 const variants = ['elevated', 'flat', 'tonal', 'outlined'];
 </script>
 
@@ -16,7 +23,8 @@ const variants = ['elevated', 'flat', 'tonal', 'outlined'];
           color="surface-variant"
           max-width="344"
           subtitle="Greyhound divisely hello coldly fonwderfully"
-          title="Headline"
+          :title="song.trackName"
+          :subtitle="song.artistName"
       >
         <template v-slot:actions>
           <v-btn text="Button"></v-btn>
