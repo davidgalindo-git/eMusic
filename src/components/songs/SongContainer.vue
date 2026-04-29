@@ -7,7 +7,15 @@ const songStore = useSongStore()
 
 <template>
   <v-container>
-    <v-row>
+    <div
+    v-if="!songStore.songs.length"
+    class="d-flex flex-column align-center justify-center py-16 text-medium-emphasis"
+    >
+    <v-icon icon="mdi-music-off" size="64" class="mb-4" />
+    <div class="text-h6">No songs found</div>
+    <div class="text-body-2">Try searching for something else.</div>
+    </div>
+    <v-row v-else>
       <v-col
         v-for="song in songStore.songs"
         :key="song.trackId"
