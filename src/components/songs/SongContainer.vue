@@ -3,7 +3,9 @@ import SongCard from "./SongCard.vue";
 </script>
 
 <template>
-  <SongCard />
+  <v-container>
+    <SongCard />
+  </v-container>
 </template>
 
 <style scoped>
