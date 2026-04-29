@@ -5,58 +5,49 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import SongCard from '../../src/components/songs/SongCard.vue'
 
-// Initialisation de Vuetify
+/**
+ * Suite de tests unitaires pour le composant SongCard.vue.
+ * Vérifie le rendu atomique basé sur les propriétés (props) transmises.
+ */
 const vuetify = createVuetify({ components, directives })
 
-describe('SongCard.vue', () => {
-    // Objet de données factices (Mock Data) conforme à ce que fournit votre mapper
+describe('SongCard.vue - Rendu unitaire', () => {
+    // Jeu de données simulées (Mock) conforme à l'interface métier
     const mockSong = {
         trackName: 'Test Song',
         artistName: 'Test Artist',
         artworkUrl: 'https://example.com/image.jpg'
     }
 
-    it('devrait afficher le titre et le nom de l\'artiste reçus en props', () => {
+    it('devrait restituer textuellement les métadonnées de la piste', () => {
         const wrapper = mount(SongCard, {
-            props: {
-                song: mockSong
-            },
-            global: {
-                plugins: [vuetify]
-            }
+            props: { song: mockSong },
+            global: { plugins: [vuetify] }
         })
 
-        // On vérifie que le texte du titre et de l'artiste est présent dans le rendu
+        // Validation de la présence des nœuds textuels attendus
         expect(wrapper.text()).toContain('Test Song')
         expect(wrapper.text()).toContain('Test Artist')
     })
 
-    it('devrait afficher l\'image de l\'album avec la bonne source', () => {
+    it('devrait assigner l\'URL source correcte à l\'élément d\'image', () => {
         const wrapper = mount(SongCard, {
-            props: {
-                song: mockSong
-            },
-            global: {
-                plugins: [vuetify]
-            }
+            props: { song: mockSong },
+            global: { plugins: [vuetify] }
         })
 
-        // On cherche le composant v-img (ou la balise img générée par Vuetify)
+        // Localisation de l'élément img généré par le composant v-img
         const img = wrapper.find('img')
         expect(img.attributes('src')).toBe('https://example.com/image.jpg')
     })
 
-    it('devrait appliquer la classe CSS song-card', () => {
+    it('devrait appliquer la classe stylistique spécifiée à la racine du composant', () => {
         const wrapper = mount(SongCard, {
-            props: {
-                song: mockSong
-            },
-            global: {
-                plugins: [vuetify]
-            }
+            props: { song: mockSong },
+            global: { plugins: [vuetify] }
         })
 
-        // Vérifie que la classe CSS personnalisée est bien appliquée au v-card
+        // Vérification de la conformité des attributs de classe CSS
         expect(wrapper.classes()).toContain('song-card')
     })
 })
