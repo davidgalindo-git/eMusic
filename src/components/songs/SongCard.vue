@@ -22,8 +22,6 @@ const variants = ['elevated', 'flat', 'tonal', 'outlined'];
           <v-btn text="Button"></v-btn>
         </template>
       </v-card>
-
-      <div class="text-center text-body-small">{{ variant }}</div>
 </template>
 
 <style scoped>
