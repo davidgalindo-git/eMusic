@@ -14,7 +14,7 @@ const variants = ['elevated', 'flat', 'tonal', 'outlined'];
       :variant="variants[0]"
       class="mx-auto"
       color="surface-variant"
-      max-width="344"
+      max-width="204"
       :title="song.trackName"
       :subtitle="song.artistName"
   >
