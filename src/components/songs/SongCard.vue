@@ -9,19 +9,18 @@ const props = defineProps({
 const variants = ['elevated', 'flat', 'tonal', 'outlined'];
 </script>
 
-<template>
-      <v-card
-          :variant="variants[0]"
-          class="mx-auto"
-          color="surface-variant"
-          max-width="344"
-          :title="song.trackName"
-          :subtitle="song.artistName"
-      >
-        <template v-slot:actions>
-          <v-btn text="Button"></v-btn>
-        </template>
-      </v-card>
+<template v-slot:actions>
+  <v-btn>
+    <v-card
+        :variant="variants[0]"
+        class="mx-auto"
+        color="surface-variant"
+        max-width="344"
+        :title="song.trackName"
+        :subtitle="song.artistName"
+    >
+    </v-card>
+  </v-btn>
 </template>
 
 <style scoped>
