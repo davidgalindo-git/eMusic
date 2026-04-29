@@ -1,4 +1,5 @@
 import { ref } from "vue";
+import { defineStore } from "pinia";
 import { useITunes } from "../api/useITunes";
 
 /**
@@ -10,7 +11,7 @@ import { useITunes } from "../api/useITunes";
  * - error: Ref<string|null> - Reactive error message if the fetch fails.
  * - search: Function - Method to trigger a new search and update state.
  */
-export function useSongStore() {
+export const useSongStore = defineStore("songStore", () => {
     const { fetchSongs } = useITunes();
 
     // State
@@ -38,4 +39,4 @@ export function useSongStore() {
     }
 
     return { songs, loading, error, search };
-}
+})
