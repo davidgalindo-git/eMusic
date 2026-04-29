@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { useITunes } from '../api/useITunes'
+import { useITunes } from '../../../src/api/useITunes.js'
 
 describe('useITunes', () => {
     let fetchMock
