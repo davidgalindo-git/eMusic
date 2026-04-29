@@ -22,7 +22,6 @@ const variants = ['elevated', 'flat', 'tonal', 'outlined'];
           class="mx-auto"
           color="surface-variant"
           max-width="344"
-          subtitle="Greyhound divisely hello coldly fonwderfully"
           :title="song.trackName"
           :subtitle="song.artistName"
       >
