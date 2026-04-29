@@ -21,6 +21,7 @@ export const useSongStore = defineStore("songStore", () => {
 
     // State
     const songs = ref([]);
+    const isPlaying = ref(false)
     const loading = ref(false);
     const error = ref(null);
     const sortKey   = ref("trackName");
@@ -61,5 +62,5 @@ export const useSongStore = defineStore("songStore", () => {
         songs.value = mapAndSortSongs(songs.value, key, order);
     }
 
-    return { songs, loading, error, sortKey, sortOrder, search, setSort };
+    return { songs, isPlaying, loading, error, sortKey, sortOrder, search, setSort };
 })
