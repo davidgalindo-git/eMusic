@@ -1,0 +1,23 @@
+public -- (icônes par défaut)
+src
+  api
+    useITunes.js    -> Store de musique et connexion API
+  assets -- (icônes par défaut)
+  components
+    header
+      SearchBar.vue  -> Barre de recherche avec emit de "term"
+    player -- X
+    playlist -- X
+    song -- X
+  tests
+    useITunes.test.js -> Test de la fonction searchSongs
+  App.vue -> Contient SearchBar et appelle searchSongs
+  main.js
+  style.css
+.env.example
+.gitignore
+index.html
+package.json
+package-lock.json
+README.md
+vite.config.js
