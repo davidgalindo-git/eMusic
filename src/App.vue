@@ -1,16 +1,20 @@
 <script setup>
-import { useITunes } from "./api/useITunes.js";
-import SearchBar from "./components/header/SearchBar.vue";
+import {useSongStore} from "./store/useSongStore.js";
 
-const { songs, searchSongs, loading} = useITunes();
+import SearchBar from "./components/header/SearchBar.vue";
+import SongContainer from "./components/songs/SongContainer.vue";
+
+const songStore = useSongStore();
 
 const handleSearch = (term) => {
-  searchSongs(term)
+  songStore.search(term)
 }
 </script>
+
 <template>
   <SearchBar @search="handleSearch" />
-  <div class="songs">
-    {{ songs }}
-  </div>
+  <SongContainer />
 </template>
+
+<style>
+</style>
