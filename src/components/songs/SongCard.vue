@@ -1,5 +1,5 @@
 <script setup>
-
+const variants = ['elevated', 'flat', 'tonal', 'outlined'];
 </script>
 
 <template>
