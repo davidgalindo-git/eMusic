@@ -19,7 +19,7 @@ const songStore = useSongStore()
       <v-col
         v-for="song in songStore.songs"
         :key="song.trackId"
-        cols="12" sm="6" md="4" lg="3"
+        cols="12" sm="8" md="6" lg="6"
       >
         <SongCard :song="song"/>
       </v-col>
