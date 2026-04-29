@@ -10,15 +10,11 @@ const handleSearch = (term) => {
   songStore.search(term)
 }
 </script>
+
 <template>
   <SearchBar @search="handleSearch" />
   <SongContainer />
-  <div class="songs">
-    {{ songStore.songs }}
-  </div>
 </template>
+
 <style>
-.songs{
-  color: white;
-}
 </style>
