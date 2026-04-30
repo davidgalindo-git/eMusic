@@ -1,7 +1,7 @@
 <script setup>
 import {useSongStore} from "./store/useSongStore.js";
 
-import SearchBar from "./components/header/SearchBar.vue";
+import SearchBar from "./components/search/SearchBar.vue";
 import SongContainer from "./components/songs/SongContainer.vue";
 
 const songStore = useSongStore();
