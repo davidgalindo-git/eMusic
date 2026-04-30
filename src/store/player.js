@@ -16,13 +16,17 @@ export const player = {
         // Stop current playback before switching to a new source
         this.stop();
 
-        if (!url) return;
+        if (!url){
+            console.error("[Player] No URL provided.");
+            return;
+        }
 
         audio.src = url;
 
         // Browsers require a user interaction before allowing play()
-        audio.play().catch(err => {
-            console.warn("Audio playback failed:", err);
+        audio.play()
+            .catch(err => {
+            console.warn("[Player] Audio playback failed:", err);
         });
 
         /**
@@ -31,6 +35,10 @@ export const player = {
          */
         audio.onended = () => {
             if (onEnd) onEnd();
+        };
+
+        audio.onerror = (e) => {
+            console.error("[Player] Audio Element Error:", audio.error);
         };
     },
 
