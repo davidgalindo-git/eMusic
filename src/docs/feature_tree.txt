@@ -6,17 +6,18 @@ src
   components
     player/ -- X
     playlist/ -- X
-    search/
+    search
       SearchBar.vue
-    song/
+    song
       SongCard.vue -> Cartes avec les données des chansons
       SongContainer.vue -> Génère les cartes et appelle songStore
+    Logo.vue
   docs/
-  store/
+  store
     useSongStore.js -> Store des chansons
-  utils/
+  utils
     songMapper.js -> Formattage des données
-  tests/
+  tests
     api/
     components/
     stores/
