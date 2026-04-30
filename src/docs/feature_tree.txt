@@ -1,17 +1,27 @@
-public -- (icônes par défaut)
+public -> icônes
 src
   api
-    useITunes.js    -> Store de musique et connexion API
-  assets -- (icônes par défaut)
+    useITunes.js -> Connexion API
+  assets -> icônes
   components
-    header
-      SearchBar.vue  -> Barre de recherche avec emit de "term"
-    player -- X
-    playlist -- X
-    song -- X
-  tests
-    useITunes.test.js -> Test de la fonction searchSongs
-  App.vue -> Contient SearchBar et appelle searchSongs
+    player/ -- X
+    playlist/ -- X
+    search/
+      SearchBar.vue
+    song/
+      SongCard.vue -> Cartes avec les données des chansons
+      SongContainer.vue -> Génère les cartes et appelle songStore
+  docs/
+  store/
+    useSongStore.js -> Store des chansons
+  utils/
+    songMapper.js -> Formattage des données
+  tests/
+    api/
+    components/
+    stores/
+    utils/
+  App.vue -> Contient SearchBar et SongContainer et appelle searchSongs et songStore
   main.js
   style.css
 .env.example
