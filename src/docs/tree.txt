@@ -1,12 +1,10 @@
-public
+public/
 src
   api
     useITunes.js
-  assets
+  assets/
   components
-    header
-      Logo.vue
-      SearchBar.vue
+    Logo.vue
     player
       PlayButton.vue
       Player.vue
@@ -20,11 +18,21 @@ src
       PlaylistSideMenu.vue
       RearrangeSongButton.vue
       RemoveFromPlaylistButton.vue
+    search
+      SearchBar.vue
     song
       SongCard.vue
-      SongContainer
+      SongContainer.vue
+  docs/
+  store
+    useSongStore.js
+  utils
+    songMapper.js
   tests
-    useITunes.test.js
+    api/
+    components/
+    stores/
+    utils/
   App.vue
   main.js
   style.css
