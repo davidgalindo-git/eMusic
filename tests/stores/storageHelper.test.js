@@ -1,16 +1,23 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { saveCollection, loadCollection } from '../../src/store/storageHelper.js'
 
+/**
+ * Suite de tests unitaires pour l'utilitaire 'storageHelper'.
+ * Focalisé sur l'intégrité de la sérialisation, l'isolation des collections
+ * et la résilience face à la corruption de données.
+ */
 describe('storageHelper.js - Gestion du LocalStorage', () => {
 
-    // Nettoyage avant chaque test
     beforeEach(() => {
+        /**
+         * Hook de cycle de vie : Isolation des tests.
+         * Garantit l'idempotence en réinitialisant le Web Storage simulé avant chaque cas.
+         */
         localStorage.clear()
-        // On réinitialise tous les mocks pour repartir sur une base propre
         vi.clearAllMocks()
     })
 
-    it('devrait sauvegarder une collection de chansons correctement', () => {
+    it('devrait sérialiser et sauvegarder une collection de chansons correctement', () => {
         const mockSongs = [
             { trackId: 1, trackName: 'Test Song' },
             { trackId: 2, trackName: 'Another Song' }
@@ -18,7 +25,7 @@ describe('storageHelper.js - Gestion du LocalStorage', () => {
 
         saveCollection('search_results', mockSongs)
 
-        // On vérifie que la clé racine existe dans le localStorage
+        // Vérification de la structure de l'objet racine 'emusic_data'
         const storedData = JSON.parse(localStorage.getItem('emusic_data'))
 
         expect(storedData).toHaveProperty('search_results')
@@ -26,48 +33,51 @@ describe('storageHelper.js - Gestion du LocalStorage', () => {
         expect(storedData.search_results[0].trackName).toBe('Test Song')
     })
 
-    it('devrait retourner un tableau vide si la collection n’existe pas', () => {
+    it('devrait retourner un tableau vide (fail-safe) si la collection n’existe pas', () => {
+        // Validation de la valeur par défaut pour éviter les erreurs de type undefined dans l'UI
         const result = loadCollection('non_existent_key')
 
         expect(result).toEqual([])
         expect(Array.isArray(result)).toBe(true)
     })
 
-    it('devrait récupérer les chansons précédemment sauvegardées', () => {
+    it('devrait désérialiser et récupérer les données précédemment persistées', () => {
         const mockFavorites = [{ trackId: 99, trackName: 'Favorite' }]
 
-        // On simule une sauvegarde
+        // Simulation du cycle complet : Écriture -> Lecture
         saveCollection('favorites', mockFavorites)
-
-        // On tente de charger
         const loaded = loadCollection('favorites')
 
         expect(loaded).toEqual(mockFavorites)
         expect(loaded[0].trackId).toBe(99)
     })
 
-    it('devrait permettre de stocker plusieurs collections sans écraser les autres', () => {
+    it('devrait garantir l\'intégrité des collections multiples (Atomicité)', () => {
         const results = [{ trackId: 1 }]
         const favorites = [{ trackId: 2 }]
 
+        // Vérifie que la mise à jour d'une clé n'écrase pas les autres champs de l'objet racine
         saveCollection('search_results', results)
         saveCollection('favorites', favorites)
 
         const finalStore = JSON.parse(localStorage.getItem('emusic_data'))
 
-        // Vérification de la cohabitation des clés
         expect(finalStore).toHaveProperty('search_results')
         expect(finalStore).toHaveProperty('favorites')
         expect(finalStore.search_results).toHaveLength(1)
         expect(finalStore.favorites).toHaveLength(1)
     })
 
-    it('devrait gérer les erreurs de parsing JSON gracieusement', () => {
-        // On corrompt manuellement le localStorage avec une chaîne invalide
+    it('devrait gérer les erreurs de parsing JSON de manière gracieuse (Robustesse)', () => {
+        /**
+         * Simulation d'une corruption de données.
+         * L'utilitaire doit capturer l'exception via try/catch et retourner une valeur cohérente.
+         */
         localStorage.setItem('emusic_data', 'invalid-json-{')
 
-        // Le helper doit retourner [] au lieu de faire planter l'app
         const result = loadCollection('search_results')
+
+        // Validation du comportement de secours pour éviter un crash au démarrage de l'app
         expect(result).toEqual([])
     })
 })
