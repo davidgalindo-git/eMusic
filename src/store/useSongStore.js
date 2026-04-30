@@ -2,6 +2,7 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import { useITunes } from "../api/useITunes";
 import { mapAndSortSongs } from "../utils/songMapper.js";
+import { loadCollection, saveCollection } from "./storageHelper.js";
 
 /**
  * Global store for managing song search results and application state.
@@ -20,11 +21,11 @@ export const useSongStore = defineStore("songStore", () => {
     const { fetchSongs } = useITunes();
 
     // State
-    const songs = ref([]);
+    const songs = ref(loadCollection('search_results'));
     const isPlaying = ref(false)
     const loading = ref(false);
     const error = ref(null);
-    const sortKey   = ref("trackName");
+    const sortKey = ref("trackName");
     const sortOrder = ref("asc");
 
     /**
@@ -40,9 +41,14 @@ export const useSongStore = defineStore("songStore", () => {
 
         try {
             const raw = await fetchSongs(term);
-            songs.value  = mapAndSortSongs(raw, sortKey.value, sortOrder.value);
+
+            const mapped  = mapAndSortSongs(raw, sortKey.value, sortOrder.value);
+            songs.value = mapped;
+
+            saveCollection('search_results', mapped);
         } catch (err) {
             error.value = "Unable to load songs. Please check your connection.";
+            songs.value = [];
             console.error("Store Search Error:", err);
         } finally {
             loading.value = false;
@@ -59,7 +65,10 @@ export const useSongStore = defineStore("songStore", () => {
     function setSort(key, order = "asc") {
         sortKey.value = key;
         sortOrder.value = order;
-        songs.value = mapAndSortSongs(songs.value, key, order);
+        const sorted = mapAndSortSongs(songs.value, key, order);
+        songs.value = sorted;
+
+        saveCollection('search_results', sorted);
     }
 
     return { songs, isPlaying, loading, error, sortKey, sortOrder, search, setSort };
