@@ -2,6 +2,7 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import { useITunes } from "../api/useITunes";
 import { mapAndSortSongs } from "../utils/songMapper.js";
+import {player} from "./player.js";
 
 /**
  * Global store for managing song search results and application state.
@@ -22,6 +23,7 @@ export const useSongStore = defineStore("songStore", () => {
     // State
     const songs = ref([]);
     const isPlaying = ref(false)
+    const currentSongId = ref(null);
     const loading = ref(false);
     const error = ref(null);
     const sortKey   = ref("trackName");
@@ -62,5 +64,19 @@ export const useSongStore = defineStore("songStore", () => {
         songs.value = mapAndSortSongs(songs.value, key, order);
     }
 
-    return { songs, isPlaying, loading, error, sortKey, sortOrder, search, setSort };
+    function togglePlay(song) {
+        if (isPlaying && currentSongId === song.trackId) {
+            player.pause();
+            isPlaying.value = false;
+        } else {
+            player.play(song.previewUrl, () => {
+                isPlaying.value = false;
+                currentSongId.value = null;
+            });
+            isPlaying.value = true;
+            currentSongId.value = song.trackId;
+        }
+    }
+
+    return { songs, isPlaying, currentSongId, loading, error, sortKey, sortOrder, search, setSort, togglePlay };
 })
