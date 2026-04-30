@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { mapSong, sortSongs, mapAndSortSongs, SORT_OPTIONS } from '../../../src/utils/songMapper.js'
+import { mapSong, sortSongs, mapAndSortSongs, SORT_OPTIONS } from '../../src/utils/songMapper.js'
 
 /**
  * Suite de tests pour l'utilitaire songMapper.

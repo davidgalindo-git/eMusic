@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
-import { useSongStore } from '../../../src/store/useSongStore.js'
-import { useITunes } from "../../../src/api/useITunes.js"
-import * as itunesModule from '../../../src/api/useITunes.js'
+import { useSongStore } from '../../src/store/useSongStore.js'
+import { useITunes } from "../../src/api/useITunes.js"
+import * as itunesModule from '../../src/api/useITunes.js'
 
 /**
  * Suite de tests unitaires pour le store Pinia 'useSongStore'.

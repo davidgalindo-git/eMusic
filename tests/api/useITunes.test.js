@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { useITunes } from '../../../src/api/useITunes.js'
+import { useITunes } from '../../src/api/useITunes.js'
 
 /**
  * Suite de tests unitaires pour le composable useITunes.
