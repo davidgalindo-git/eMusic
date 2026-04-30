@@ -17,7 +17,7 @@ export function mapSong(raw) {
         albumName:      raw.collectionName  ?? "Unknown Album",
         genre:          raw.primaryGenreName ?? "Unknown Genre",
         releaseYear:    raw.releaseDate
-            ? new Date(raw.releaseDate).getFullYear()
+            ? new Date(raw.releaseDate).getUTCFullYear()
             : null,
         releaseDate:    raw.releaseDate     ?? null,
         durationMs:     raw.trackTimeMillis ?? 0,
@@ -54,7 +54,9 @@ export const SORT_OPTIONS = [
  * @returns {Object[]} New sorted array (original is not mutated)
  */
 export function sortSongs(songs, sortKey = "trackName", order = "asc") {
-    const sorted = [...songs].sort((a, b) => {
+    const isDesc = order === "desc";
+
+    return [...songs].sort((a, b) => {
         const aVal = a[sortKey];
         const bVal = b[sortKey];
 
@@ -63,14 +65,15 @@ export function sortSongs(songs, sortKey = "trackName", order = "asc") {
         if (aVal == null) return 1;
         if (bVal == null) return -1;
 
+        let result = 0;
         if (typeof aVal === "string" && typeof bVal === "string") {
-            return aVal.localeCompare(bVal, undefined, { sensitivity: "base" });
+            result = aVal.localeCompare(bVal, undefined, { sensitivity: "base" });
+        } else {
+            result = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
         }
 
-        return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+        return isDesc ? -result : result;
     });
-
-    return order === "desc" ? sorted.reverse() : sorted;
 }
 
 /**

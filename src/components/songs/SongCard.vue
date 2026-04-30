@@ -9,7 +9,7 @@ const props = defineProps({
 const variants = ['elevated', 'flat', 'tonal', 'outlined'];
 </script>
 
-<template v-slot:actions>
+<template>
   <v-card
       :variant="variants[0]"
       class="song-card mx-auto"

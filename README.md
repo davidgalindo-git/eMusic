@@ -31,9 +31,18 @@ npm run build
 ```
 
 ## Tests
-Exécuter les tests du dossier src/tests avec Vitest UI
+Exécuter les tests du dossier src/tests  
+Mode Standard (Console)
 ```bash
-npx vitest --ui
+npm run dev
+```
+Mode Interface Graphique (UI)  
+```bash
+npm run test:ui
+```
+Rapport de Couverture (Coverage)  
+```bash
+npm run test:coverage
 ```
 
 ### Architecture & Data Flow
