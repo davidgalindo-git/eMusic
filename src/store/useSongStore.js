@@ -48,6 +48,7 @@ export const useSongStore = defineStore("songStore", () => {
             saveCollection('search_results', mapped);
         } catch (err) {
             error.value = "Unable to load songs. Please check your connection.";
+            songs.value = [];
             console.error("Store Search Error:", err);
         } finally {
             loading.value = false;
