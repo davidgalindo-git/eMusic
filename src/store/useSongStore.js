@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import {computed, ref} from "vue";
 import { defineStore } from "pinia";
 import { useITunes } from "../api/useITunes";
 import { mapAndSortSongs } from "../utils/songMapper.js";
@@ -28,6 +28,10 @@ export const useSongStore = defineStore("songStore", () => {
     const error = ref(null);
     const sortKey   = ref("trackName");
     const sortOrder = ref("asc");
+
+    const currentIndex = computed(() =>
+        songs.value.findIndex(s => s.trackId === currentSongId.value)
+    );
 
     /**
      * Executes a search, maps raw iTunes results through songMapper,
@@ -65,18 +69,37 @@ export const useSongStore = defineStore("songStore", () => {
     }
 
     function togglePlay(song) {
-        if (isPlaying && currentSongId === song.trackId) {
+        if (isPlaying.value && currentSongId.value === song.trackId) {
             player.pause();
             isPlaying.value = false;
         } else {
             player.play(song.previewUrl, () => {
-                isPlaying.value = false;
-                currentSongId.value = null;
+                if (currentIndex.value < songs.value.length - 1) {
+                    next();
+                } else {
+                    isPlaying.value = false;
+                    currentSongId.value = null;
+                }
             });
             isPlaying.value = true;
             currentSongId.value = song.trackId;
         }
     }
 
-    return { songs, isPlaying, currentSongId, loading, error, sortKey, sortOrder, search, setSort, togglePlay };
+    function next() {
+        if (currentIndex.value < songs.value.length - 1 ) {
+            const nextSong = songs.value[currentIndex.value + 1];
+            togglePlay(nextSong);
+        }
+    }
+
+    function prev() {
+        if (currentIndex.value > 0) {
+            const prevSong = songs.value[currentIndex.value - 1];
+            togglePlay(prevSong);
+        }
+    }
+
+    return { songs, isPlaying, currentSongId, loading, error,
+        sortKey, sortOrder, search, setSort, togglePlay, next, prev };
 })
