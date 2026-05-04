@@ -63,6 +63,16 @@ export const player = {
         return audio.currentTime;
     },
 
+    onProgress(callback) {
+        audio.ontimeupdate = () => {
+            callback(audio.currentTime, audio.duration);
+        };
+    },
+
+    seek(time) {
+        audio.currentTime = time;
+    },
+
     /**
      * Adjusts the playback volume.
      * @param {number} value - Volume level ranging from 0 to 1.
