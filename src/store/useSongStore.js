@@ -33,14 +33,22 @@ export const useSongStore = defineStore("songStore", () => {
 
     // State
     const savedResults = loadCollection('search_results');
-    const songs = ref(savedResults ? savedResults : [...DEFAULT_COLLECTION]);
+    const savedName = sessionStorage.getItem('current_collection_name');
+    const collectionName = ref(savedResults?.length > 0 ? (savedName || "Search Results") : "Featured Songs");
+
+    const songs = ref(savedResults && savedResults.length > 0
+        ? savedResults
+        : [...DEFAULT_COLLECTION]
+    );
 
     const isPlaying = ref(false)
     const currentSongId = ref(null);
     const loading = ref(false);
     const error = ref(null);
+
     const sortKey = ref("trackName");
     const sortOrder = ref("asc");
+
     const currentTime = ref(0);
     const duration = ref(0);
 
@@ -63,8 +71,7 @@ export const useSongStore = defineStore("songStore", () => {
      */
     async function search(term) {
         if (!term?.trim()) {
-            songs.value = [...DEFAULT_COLLECTION];
-            saveCollection('search_results', null);
+            resetToFeatured();
             return;
         }
 
@@ -77,14 +84,18 @@ export const useSongStore = defineStore("songStore", () => {
             const mapped  = mapAndSortSongs(raw, sortKey.value, sortOrder.value);
             if (mapped.length === 0) {
                 error.value = "No results found. Showing featured songs.";
-                songs.value = [...DEFAULT_COLLECTION];
+                resetToFeatured();
             } else {
                 songs.value = mapped;
+                const newName = `Results for "${term}"`;
+                collectionName.value = newName;
+
                 saveCollection('search_results', mapped);
+                sessionStorage.setItem('current_collection_name', newName);
             }
         } catch (err) {
             error.value = "Unable to load songs. Showing featured collection.";
-            songs.value = [...DEFAULT_COLLECTION];
+            resetToFeatured();
             console.error("Store Search Error:", err);
         } finally {
             loading.value = false;
@@ -190,9 +201,19 @@ export const useSongStore = defineStore("songStore", () => {
         currentTime.value = time;
     }
 
+    /**
+     * Helper to ensure state and storage are cleared together
+     */
+    function resetToFeatured() {
+        songs.value = [...DEFAULT_COLLECTION];
+        collectionName.value = "Featured Songs";
+        saveCollection('search_results', null);
+        sessionStorage.removeItem('current_collection_name');
+    }
+
     return {
         // Data & UI State
-        songs, loading, error, sortKey, sortOrder,
+        songs, loading, error, sortKey, sortOrder, collectionName,
         // Playback State
         isPlaying, currentSongId, currentTime, duration, currentIndex,
         // Actions
