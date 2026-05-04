@@ -15,6 +15,7 @@ export default defineConfig({
                 inline: ['vuetify'],
             },
         },
+        setupFiles: ['./tests/setup.js'],
         css: false,
     },
 })
