@@ -4,6 +4,7 @@ import { useITunes } from "../api/useITunes";
 import { mapAndSortSongs } from "../utils/songMapper.js";
 import {player} from "./player.js";
 import {saveCollection, loadCollection} from "./storageHelper.js";
+import { DEFAULT_COLLECTION } from './constants';
 
 /**
  * Global store for managing song search results and application state.
@@ -31,7 +32,9 @@ export const useSongStore = defineStore("songStore", () => {
     const { fetchSongs } = useITunes();
 
     // State
-    const songs = ref(loadCollection('search_results'));
+    const savedResults = loadCollection('search_results');
+    const songs = ref(savedResults ? savedResults : [...DEFAULT_COLLECTION]);
+
     const isPlaying = ref(false)
     const currentSongId = ref(null);
     const loading = ref(false);
@@ -59,6 +62,12 @@ export const useSongStore = defineStore("songStore", () => {
      * @param {string} term - The search query provided by the user.
      */
     async function search(term) {
+        if (!term?.trim()) {
+            songs.value = [...DEFAULT_COLLECTION];
+            saveCollection('search_results', null);
+            return;
+        }
+
         loading.value = true;
         error.value = null
 
@@ -66,12 +75,16 @@ export const useSongStore = defineStore("songStore", () => {
             const raw = await fetchSongs(term);
 
             const mapped  = mapAndSortSongs(raw, sortKey.value, sortOrder.value);
-            songs.value = mapped;
-
-            saveCollection('search_results', mapped);
+            if (mapped.length === 0) {
+                error.value = "No results found. Showing featured songs.";
+                songs.value = [...DEFAULT_COLLECTION];
+            } else {
+                songs.value = mapped;
+                saveCollection('search_results', mapped);
+            }
         } catch (err) {
-            error.value = "Unable to load songs. Please check your connection.";
-            songs.value = [];
+            error.value = "Unable to load songs. Showing featured collection.";
+            songs.value = [...DEFAULT_COLLECTION];
             console.error("Store Search Error:", err);
         } finally {
             loading.value = false;
@@ -91,7 +104,9 @@ export const useSongStore = defineStore("songStore", () => {
         const sorted = mapAndSortSongs(songs.value, key, order);
         songs.value = sorted;
 
-        saveCollection('search_results', sorted);
+        if (error.value === null) {
+            saveCollection('search_results', sorted);
+        }
     }
 
     /**
