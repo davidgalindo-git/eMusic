@@ -6,6 +6,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(["toggle-play"]);
+
 const variants = ['elevated', 'flat', 'tonal', 'outlined'];
 </script>
 
@@ -16,6 +18,7 @@ const variants = ['elevated', 'flat', 'tonal', 'outlined'];
       color="surface-variant"
       max-width="604"
       height="170"
+      @click="emit('toggle-play', song)"
   >
     <v-img
       :src="song.artworkUrl"

@@ -3,6 +3,10 @@ import { useSongStore } from "../../store/useSongStore.js";
 import SongCard from "./SongCard.vue";
 
 const songStore = useSongStore()
+
+const handleSongClick = (song) => {
+  songStore.togglePlay(song)
+}
 </script>
 
 <template>
@@ -21,7 +25,7 @@ const songStore = useSongStore()
         :key="song.trackId"
         cols="12" sm="8" md="6" lg="6"
       >
-        <SongCard :song="song"/>
+        <SongCard :song="song" @toggle-play="handleSongClick" />
       </v-col>
     </v-row>
   </v-container>

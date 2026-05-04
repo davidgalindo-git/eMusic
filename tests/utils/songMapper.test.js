@@ -2,12 +2,12 @@ import { describe, it, expect } from 'vitest'
 import { mapSong, sortSongs, mapAndSortSongs, SORT_OPTIONS } from '../../src/utils/songMapper.js'
 
 /**
- * Suite de tests pour l'utilitaire songMapper.
- * Valide la normalisation des données iTunes, la logique de tri et le filtrage des résultats.
+ * Unit test suite for the songMapper utility.
+ * Validates iTunes data normalization, sorting heuristics, and result filtering.
  */
 describe('songMapper', () => {
     describe('mapSong', () => {
-        it('devrait mapper une piste brute complète vers le format normalisé', () => {
+        it('should map a complete raw track to the normalized schema', () => {
             const rawTrack = {
                 trackId: 123,
                 trackName: 'Test Song',
@@ -28,7 +28,10 @@ describe('songMapper', () => {
 
             const result = mapSong(rawTrack)
 
-            // Vérification de la structure de sortie et des types de données
+            /**
+             * Output structure and data type validation.
+             * Ensures proper transformation of camelCase keys and numeric conversions.
+             */
             expect(result).toEqual({
                 trackId: 123,
                 trackName: 'Test Song',
@@ -49,7 +52,7 @@ describe('songMapper', () => {
             })
         })
 
-        it('devrait gérer les champs optionnels manquants avec des valeurs par défaut', () => {
+        it('should fallback to default values for missing optional fields', () => {
             const rawTrack = { trackId: 456 }
             const result = mapSong(rawTrack)
 
@@ -59,7 +62,7 @@ describe('songMapper', () => {
             expect(result.artworkUrl).toBeNull()
         })
 
-        it('devrait identifier correctement l\'explicité des pistes', () => {
+        it('should correctly evaluate track explicitness as boolean', () => {
             const explicitTrack = { trackId: 1, trackExplicitness: 'explicit' }
             const cleanTrack = { trackId: 2, trackExplicitness: 'notExplicit' }
 
@@ -67,7 +70,7 @@ describe('songMapper', () => {
             expect(mapSong(cleanTrack).explicit).toBe(false)
         })
 
-        it('devrait augmenter la résolution de l\'URL de l\'image (100x100 vers 300x300)', () => {
+        it('should upscale artwork URL resolution (100x100 to 300x300)', () => {
             const rawTrack = {
                 trackId: 789,
                 artworkUrl100: 'https://is1-ssl.mzstatic.com/image/thumb/Music/v4/100x100bb.jpg'
@@ -75,12 +78,12 @@ describe('songMapper', () => {
 
             const result = mapSong(rawTrack)
 
-            // Validation de la transformation d'URL pour une meilleure qualité visuelle
+            // Validate string manipulation for enhanced visual fidelity.
             expect(result.artworkUrl).toContain('300x300')
             expect(result.artworkUrl).not.toContain('100x100')
         })
 
-        it('devrait extraire correctement l\'année de la propriété releaseDate', () => {
+        it('should extract the ISO year from the releaseDate property', () => {
             const testCases = [
                 { date: '2024-06-15T00:00:00Z', expectedYear: 2024 },
                 { date: '1999-12-31T23:59:59Z', expectedYear: 1999 }
@@ -94,7 +97,7 @@ describe('songMapper', () => {
     })
 
     describe('SORT_OPTIONS', () => {
-        it('devrait exporter des options de tri valides et typées', () => {
+        it('should export a validated and typed array of sorting configurations', () => {
             expect(SORT_OPTIONS).toBeInstanceOf(Array)
             SORT_OPTIONS.forEach(option => {
                 expect(option).toHaveProperty('key')
@@ -110,19 +113,19 @@ describe('songMapper', () => {
             { trackId: 3, trackName: null, durationMs: null }
         ]
 
-        it('devrait trier par trackName par défaut (croissant)', () => {
+        it('should sort by trackName alphabetically by default (ASC)', () => {
             const sorted = sortSongs(mockSongs, 'trackName', 'asc')
             expect(sorted[0].trackName).toBe('Apple')
             expect(sorted[1].trackName).toBe('Zebra')
         })
 
-        it('devrait trier par valeurs numériques (durationMs)', () => {
+        it('should sort by numeric durationMs values', () => {
             const sorted = sortSongs(mockSongs, 'durationMs', 'asc')
             expect(sorted[0].durationMs).toBe(180000)
             expect(sorted[1].durationMs).toBe(240000)
         })
 
-        it('devrait être insensible à la casse lors du tri alphabétique', () => {
+        it('should ensure case-insensitivity during string comparisons', () => {
             const songs = [
                 { trackId: 1, trackName: 'zebra' },
                 { trackId: 2, trackName: 'Apple' }
@@ -131,13 +134,13 @@ describe('songMapper', () => {
             expect(sorted[0].trackName).toBe('Apple')
         })
 
-        it('devrait maintenir l\'immutabilité du tableau original', () => {
+        it('should maintain immutability of the source array', () => {
             const original = [...mockSongs]
             sortSongs(mockSongs, 'trackName', 'asc')
             expect(mockSongs).toEqual(original)
         })
 
-        it('devrait placer systématiquement les valeurs nulles en fin de liste', () => {
+        it('should consistently append null values to the end of the collection', () => {
             const sortedAsc = sortSongs(mockSongs, 'trackName', 'asc')
             const sortedDesc = sortSongs(mockSongs, 'trackName', 'desc')
 
@@ -150,19 +153,19 @@ describe('songMapper', () => {
         const mockRawResults = [
             { wrapperType: 'track', kind: 'song', trackId: 1, trackName: 'Zebra' },
             { wrapperType: 'track', kind: 'song', trackId: 2, trackName: 'Apple' },
-            { wrapperType: 'collection', kind: 'album', collectionId: 999 } // Doit être filtré
+            { wrapperType: 'collection', kind: 'album', collectionId: 999 } // Expected to be filtered out
         ]
 
-        it('devrait filtrer les entrées non musicales et appliquer le tri', () => {
+        it('should filter non-song entities and execute final sorting', () => {
             const result = mapAndSortSongs(mockRawResults, 'trackName', 'asc')
 
-            // Le résultat ne doit contenir que des objets de type "piste musicale"
+            // Result set should only include "track" wrapper types.
             expect(result).toHaveLength(2)
             expect(result[0].trackName).toBe('Apple')
             expect(result[1].trackName).toBe('Zebra')
         })
 
-        it('devrait retourner un tableau vide pour une entrée vide', () => {
+        it('should return an empty array when input is empty or null', () => {
             expect(mapAndSortSongs([])).toEqual([])
         })
     })
