@@ -68,6 +68,19 @@ export const useSongStore = defineStore("songStore", () => {
         songs.value = mapAndSortSongs(songs.value, key, order);
     }
 
+    function play(song){
+        player.play(song.previewUrl, () => {
+            if (currentIndex.value < songs.value.length - 1) {
+                next();
+            } else {
+                isPlaying.value = false;
+                currentSongId.value = null;
+            }
+        });
+        isPlaying.value = true;
+        currentSongId.value = song.trackId;
+    }
+
     function togglePlay(song) {
         const isSameSong = currentSongId.value === song.trackId;
 
@@ -75,16 +88,7 @@ export const useSongStore = defineStore("songStore", () => {
             player.pause();
             isPlaying.value = false;
         } else {
-            player.play(song.previewUrl, () => {
-                if (currentIndex.value < songs.value.length - 1) {
-                    next();
-                } else {
-                    isPlaying.value = false;
-                    currentSongId.value = null;
-                }
-            });
-            isPlaying.value = true;
-            currentSongId.value = song.trackId;
+            play(song)
         }
     }
 
@@ -96,9 +100,17 @@ export const useSongStore = defineStore("songStore", () => {
     }
 
     function prev() {
-        if (currentIndex.value > 0) {
+        const currentTime = player.getCurrentTime();
+        const margin = 3
+        if (currentTime > margin) {
+            const currentSong = songs.value[currentIndex.value];
+
+            player.stop();
+            play(currentSong);
+        }
+        else if (currentIndex.value > 0) {
             const prevSong = songs.value[currentIndex.value - 1];
-            togglePlay(prevSong);
+            play(prevSong);
         }
     }
 
