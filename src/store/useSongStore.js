@@ -16,6 +16,15 @@ import {player} from "./player.js";
  * - sortKey: Ref<string> - Currently active sort field.
  * - sortOrder: Ref<"asc"|"desc"> - Currently active sort direction.
  * - setSort: Function - Updates sort settings and re-sorts the current song list.
+ * - isPlaying: Ref<boolean> - Reactive state of the audio player.
+ * - currentSongId: Ref<number|null> - ID of the currently active track.
+ * - currentTime: Ref<number> - Current playback position in seconds.
+ * - duration: Ref<number> - Total duration of the active track in seconds.
+ * - currentIndex: ComputedRef<number> - Index of the current song within the songs array.
+ * - togglePlay: Function - Toggles playback for a specific song.
+ * - next: Function - Skips to the next track.
+ * - prev: Function - Skips to the previous track or restarts current.
+ * - seek: Function - Updates the audio position.
  */
 export const useSongStore = defineStore("songStore", () => {
     const { fetchSongs } = useITunes();
@@ -31,6 +40,12 @@ export const useSongStore = defineStore("songStore", () => {
     const currentTime = ref(0);
     const duration = ref(0);
 
+    /**
+     * Computed index of the currently playing song within the results list.
+     * Used for navigation logic (next/prev) and determining list boundaries.
+     *
+     * @type {ComputedRef<number>}
+     */
     const currentIndex = computed(() =>
         songs.value.findIndex(s => s.trackId === currentSongId.value)
     );
@@ -70,6 +85,12 @@ export const useSongStore = defineStore("songStore", () => {
         songs.value = mapAndSortSongs(songs.value, key, order);
     }
 
+    /**
+     * Handles the core play logic: initializes audio source,
+     * sets up progress listeners, and manages auto-advance callback.
+     *
+     * @param {Object} song - The normalized song object to play.
+     */
     function play(song){
         player.play(song.previewUrl, () => {
             if (currentIndex.value < songs.value.length - 1) {
@@ -89,6 +110,12 @@ export const useSongStore = defineStore("songStore", () => {
         currentSongId.value = song.trackId;
     }
 
+    /**
+     * Toggles between play and pause states. If a new song is provided,
+     * it stops the current track and starts the new one.
+     *
+     * @param {Object} song - The song object to toggle.
+     */
     function togglePlay(song) {
         const isSameSong = currentSongId.value === song.trackId;
 
@@ -100,6 +127,9 @@ export const useSongStore = defineStore("songStore", () => {
         }
     }
 
+    /**
+     * Advances playback to the next song in the filtered list if available.
+     */
     function next() {
         if (currentIndex.value < songs.value.length - 1 ) {
             const nextSong = songs.value[currentIndex.value + 1];
@@ -107,6 +137,10 @@ export const useSongStore = defineStore("songStore", () => {
         }
     }
 
+    /**
+     * Navigates to the previous song. If current playback exceeds 3 seconds,
+     * the track restarts from the beginning instead of skipping back.
+     */
     function prev() {
         const currentTime = player.getCurrentTime();
         const margin = 3
@@ -122,14 +156,22 @@ export const useSongStore = defineStore("songStore", () => {
         }
     }
 
+    /**
+     * Updates the audio playback position to a specific timestamp.
+     *
+     * @param {number} time - The target time in seconds.
+     */
     function seek(time) {
         player.seek(time);
         currentTime.value = time;
     }
 
-    return { songs, isPlaying, currentSongId, loading, error,
-        sortKey, sortOrder, search, setSort,
-        togglePlay, next, prev,
-        currentTime, duration, seek
+    return {
+        // Data & UI State
+        songs, loading, error, sortKey, sortOrder,
+        // Playback State
+        isPlaying, currentSongId, currentTime, duration, currentIndex,
+        // Actions
+        search, setSort, togglePlay, next, prev, seek
     };
 })
