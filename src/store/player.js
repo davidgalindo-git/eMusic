@@ -59,6 +59,10 @@ export const player = {
         audio.currentTime = 0;
     },
 
+    getCurrentTime() {
+        return audio.currentTime;
+    },
+
     /**
      * Adjusts the playback volume.
      * @param {number} value - Volume level ranging from 0 to 1.
