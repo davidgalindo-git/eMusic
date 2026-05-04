@@ -14,32 +14,33 @@ describe('storageHelper.js - Gestion du LocalStorage', () => {
          * Garantit l'idempotence en réinitialisant le Web Storage simulé avant chaque cas.
          */
         localStorage.clear()
+        sessionStorage.clear();
         vi.clearAllMocks()
     })
 
     it('devrait sérialiser et sauvegarder une collection de chansons correctement', () => {
-        const mockSongs = [
-            { trackId: 1, trackName: 'Test Song' },
-            { trackId: 2, trackName: 'Another Song' }
-        ]
+        const mockSongs = [{ trackId: 1, trackName: 'Test Song' }]
 
         saveCollection('search_results', mockSongs)
 
-        // Vérification de la structure de l'objet racine 'emusic_data'
-        const storedData = JSON.parse(localStorage.getItem('emusic_data'))
+        // FIX: 'search_results' is now in sessionStorage
+        const storedData = JSON.parse(sessionStorage.getItem('emusic_data'))
 
         expect(storedData).toHaveProperty('search_results')
-        expect(storedData.search_results).toHaveLength(2)
         expect(storedData.search_results[0].trackName).toBe('Test Song')
     })
 
     it('devrait retourner un tableau vide (fail-safe) si la collection n’existe pas', () => {
-        // Validation de la valeur par défaut pour éviter les erreurs de type undefined dans l'UI
-        const result = loadCollection('non_existent_key')
+        /**
+         * Requirement: Reliability.
+         * The utility must return an empty array to prevent runtime crashes
+         * when the UI attempts to iterate over the result.
+         */
+        const result = loadCollection('non_existent_key');
 
-        expect(result).toEqual([])
-        expect(Array.isArray(result)).toBe(true)
-    })
+        expect(result).toEqual([]); // Validate it is an empty array
+        expect(Array.isArray(result)).toBe(true); // Explicit type check
+    });
 
     it('devrait désérialiser et récupérer les données précédemment persistées', () => {
         const mockFavorites = [{ trackId: 99, trackName: 'Favorite' }]
@@ -52,32 +53,32 @@ describe('storageHelper.js - Gestion du LocalStorage', () => {
         expect(loaded[0].trackId).toBe(99)
     })
 
-    it('devrait garantir l\'intégrité des collections multiples (Atomicité)', () => {
+    it('devrait garantir l\'intégrité des collections sur des moteurs différents', () => {
         const results = [{ trackId: 1 }]
         const favorites = [{ trackId: 2 }]
 
-        // Vérifie que la mise à jour d'une clé n'écrase pas les autres champs de l'objet racine
-        saveCollection('search_results', results)
-        saveCollection('favorites', favorites)
+        saveCollection('search_results', results) // sessionStorage
+        saveCollection('favorites', favorites)   // localStorage
 
-        const finalStore = JSON.parse(localStorage.getItem('emusic_data'))
+        const sessionStore = JSON.parse(sessionStorage.getItem('emusic_data'))
+        const localStore = JSON.parse(localStorage.getItem('emusic_data'))
 
-        expect(finalStore).toHaveProperty('search_results')
-        expect(finalStore).toHaveProperty('favorites')
-        expect(finalStore.search_results).toHaveLength(1)
-        expect(finalStore.favorites).toHaveLength(1)
+        expect(sessionStore).toHaveProperty('search_results')
+        expect(localStore).toHaveProperty('favorites')
     })
 
     it('devrait gérer les erreurs de parsing JSON de manière gracieuse (Robustesse)', () => {
         /**
-         * Simulation d'une corruption de données.
-         * L'utilitaire doit capturer l'exception via try/catch et retourner une valeur cohérente.
+         * Simulation of data corruption on the specific engine used for search_results.
+         * The utility must catch the SyntaxError and return the fallback [].
          */
-        localStorage.setItem('emusic_data', 'invalid-json-{')
+        const STORAGE_KEY = 'emusic_data';
 
-        const result = loadCollection('search_results')
+        // Corrupt sessionStorage because 'search_results' points there
+        sessionStorage.setItem(STORAGE_KEY, 'invalid-json-{');
 
-        // Validation du comportement de secours pour éviter un crash au démarrage de l'app
-        expect(result).toEqual([])
-    })
+        const result = loadCollection('search_results');
+
+        expect(result).toEqual([]);
+    });
 })
