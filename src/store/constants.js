@@ -14,17 +14,17 @@ export const DEFAULT_COLLECTION = [
         artworkUrl: 'https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/95/fd/b9/95fdb9b2-6d2b-92a6-97f2-51c1a6d77f1a/00602527874609.rgb.jpg/300x300bb.jpg'
     },
     {
-        trackId: 1440873339,
+        trackId: 1053934846,
         trackName: 'Adventure of a Lifetime',
         artistName: 'Coldplay',
         previewUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/b9/78/7b/b9787b6d-2bcc-6fd7-231f-9e79b91d988e/mzaf_13866407877410073156.plus.aac.p.m4a',
         artworkUrl: 'https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/c8/0a/6d/c80a6df9-e55a-fb83-0311-f4776984ac67/mzm.lasidxkv.jpg/300x300bb.jpg'
     },
     {
-        trackId: 1440783636,
+        trackId: 155855532,
         trackName: 'Never Gonna Give You Up',
         artistName: 'Rick Astley',
-        previewUrl: '',
+        previewUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/3a/d6/9a/3ad69a5b-1fdc-c0ca-069b-541cef78e9d6/mzaf_12029354858253493617.plus.aac.p.m4a',
         artworkUrl: 'https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/ce/6d/5b/ce6d5b48-8c36-b990-3b9c-81862fadb459/0859381157694.jpg/300x300bb.jpg'
     },
     {
