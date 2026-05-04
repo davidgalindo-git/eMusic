@@ -13,17 +13,19 @@ export const player = {
      * @param {Function} onEnd - Optional callback triggered when playback finishes.
      */
     play(url, onEnd) {
-        // Stop current playback before switching to a new source
-        this.stop();
-
         if (!url){
             console.error("[Player] No URL provided.");
             return;
         }
 
+        if (audio.src === url && audio.paused) {
+            audio.play().catch(err => console.warn("[Player] Resume failed:", err));
+            return;
+        }
+
+        this.stop();
         audio.src = url;
 
-        // Browsers require a user interaction before allowing play()
         audio.play()
             .catch(err => {
             console.warn("[Player] Audio playback failed:", err);

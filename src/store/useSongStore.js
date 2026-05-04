@@ -69,7 +69,9 @@ export const useSongStore = defineStore("songStore", () => {
     }
 
     function togglePlay(song) {
-        if (isPlaying.value && currentSongId.value === song.trackId) {
+        const isSameSong = currentSongId.value === song.trackId;
+
+        if (isPlaying.value && isSameSong) {
             player.pause();
             isPlaying.value = false;
         } else {
