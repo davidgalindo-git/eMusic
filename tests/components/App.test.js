@@ -8,63 +8,77 @@ import App from '../../src/App.vue'
 import { useSongStore } from '../../src/store/useSongStore'
 
 /**
- * Suite de tests d'intégration pour le composant racine App.vue.
- * Vérifie la communication inter-composants et la liaison avec le store Pinia.
+ * Integration test suite for the root App.vue component.
+ * Evaluates inter-component communication and Pinia store state synchronization.
  */
 const vuetify = createVuetify({ components, directives })
 
-describe('App.vue - Intégration', () => {
+describe('App.vue - Integration', () => {
     let pinia
+
     beforeEach(() => {
+        /**
+         * Global state isolation.
+         * Ensures a fresh Pinia instance is active prior to each execution cycle.
+         */
         pinia = createPinia()
-        // Isolation de l'état global avant chaque scénario
         setActivePinia(pinia)
     })
 
-    it('devrait monter le composant avec pinia', () => {
-        const vuetify = createVuetify()
-
+    it('should successfully mount the component with global plugins', () => {
         const wrapper = mount(App, {
             global: {
-                // 3. Passer l'instance créée aux plugins
                 plugins: [pinia, vuetify]
             }
         })
 
+        // Assert component instantiation and presence in the virtual DOM.
         expect(wrapper.exists()).toBe(true)
     })
 
-    it('devrait déclencher l\'action de recherche du store suite à l\'émission de l\'événement SearchBar', async () => {
-        // Montage du composant racine avec injection des dépendances globales (Vuetify)
+    it('should trigger the store search action upon SearchBar event emission', async () => {
+        /**
+         * Component tree mounting with dependency injection.
+         */
         const wrapper = mount(App, {
             global: {
                 plugins: [vuetify, pinia]
             }
         })
 
-        // Initialisation de l'instance du store et interception de la méthode de recherche
+        /**
+         * Store action interception.
+         * Spies on the 'search' method to validate upward data flow.
+         */
         const store = useSongStore()
         const searchSpy = vi.spyOn(store, 'search').mockImplementation(() => Promise.resolve())
 
-        // Simulation de l'interaction utilisateur via l'émission d'un événement personnalisé par le composant enfant
+        /**
+         * Event-driven interaction simulation.
+         * Manually triggers the custom 'search' event from the child component.
+         */
         const searchBar = wrapper.findComponent({ name: 'SearchBar' })
         await searchBar.vm.$emit('search', 'Daft Punk')
 
-        // Validation du flux de données montant : Composant -> App -> Store
+        // Assert that the upward data flow (Child -> Root -> Store) is intact.
         expect(searchSpy).toHaveBeenCalledWith('Daft Punk')
     })
 
-    it('devrait assurer la présence des composants structurels au montage', () => {
+    it('should verify the existence of core structural components upon initialization', () => {
         const wrapper = mount(App, {
             global: {
                 plugins: [vuetify, pinia],
+                /**
+                 * Component stubbing.
+                 * Isolates structural layout by bypassing heavy downstream rendering (e.g., Player).
+                 */
                 stubs: {
                     Player: true
                 }
             }
         })
 
-        // Vérification de l'intégrité de l'arborescence DOM (composants critiques)
+        // Verify the structural integrity of the application layout.
         expect(wrapper.findComponent({ name: 'SearchBar' }).exists()).toBe(true)
         expect(wrapper.findComponent({ name: 'SongContainer' }).exists()).toBe(true)
     })

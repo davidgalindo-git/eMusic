@@ -12,10 +12,12 @@ describe('SearchBar.vue', () => {
     it('updates the term ref when text is typed', async () => {
         const input = wrapper.find('input[type="text"]')
 
-        // Simulate user typing
+        /**
+         * Synchronize input value with component state.
+         * Verifies two-way data binding (v-model) integrity.
+         */
         await input.setValue('Discovery')
 
-        // In Vue 3, v-model updates the underlying ref
         expect(wrapper.vm.term).toBe('Discovery')
     })
 
@@ -23,13 +25,13 @@ describe('SearchBar.vue', () => {
         const input = wrapper.find('input[type="text"]')
         const form = wrapper.find('form')
 
-        // 1. Set the value
+        // State mutation via input injection.
         await input.setValue('Daft Punk')
 
-        // 2. Trigger form submission
+        // Dispatch submit event; intercept default browser behavior.
         await form.trigger('submit.prevent')
 
-        // 3. Check if event was emitted
+        // Assert event bus emission and payload accuracy.
         const emitted = wrapper.emitted('search')
         expect(emitted).toBeTruthy()
         expect(emitted[0]).toEqual(['Daft Punk'])
@@ -39,12 +41,12 @@ describe('SearchBar.vue', () => {
         const input = wrapper.find('input[type="text"]')
         const form = wrapper.find('form')
 
-        // Case 1: Empty string
+        // Condition A: Null/Empty string validation.
         await input.setValue('')
         await form.trigger('submit.prevent')
         expect(wrapper.emitted('search')).toBeFalsy()
 
-        // Case 2: Just spaces
+        // Condition B: Whitespace-only string validation via trim() logic.
         await input.setValue('   ')
         await form.trigger('submit.prevent')
         expect(wrapper.emitted('search')).toBeFalsy()

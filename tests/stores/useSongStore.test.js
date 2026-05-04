@@ -6,17 +6,18 @@ import * as itunesModule from '../../src/api/useITunes.js'
 import { player } from '../../src/store/player.js'
 
 /**
- * Suite de tests unitaires pour le store Pinia 'useSongStore'.
- * Focalisé sur la gestion d'état, l'intégration du mapper et la gestion des flux asynchrones.
+ * Unit test suite for the 'useSongStore' Pinia store.
+ * Validates state machine transitions, aggregate root logic, and asynchronous side-effect orchestration.
  */
-// Mocking the API module
+
+// Global module interception for external dependencies.
 vi.mock('../api/useITunes', () => ({
     useITunes: vi.fn(() => ({
         fetchSongs: vi.fn()
     }))
 }))
 
-// Mocking the Player utility
+// Abstraction of the audio hardware interface.
 vi.mock('../../src/store/player.js', () => ({
     player: {
         play: vi.fn(),
@@ -32,19 +33,25 @@ describe('useSongStore', () => {
     let fetchSongsMock;
 
     beforeEach(() => {
-        // Isolation de l'instance Pinia pour garantir l'indépendance des tests
+        /**
+         * Context isolation.
+         * Resets the Pinia global state tree to prevent cross-test contamination.
+         */
         setActivePinia(createPinia())
 
         fetchSongsMock = vi.fn();
 
-        // Injection de l'espion dans le module api via spyOn pour intercepter les appels du store
+        /**
+         * API Spy injection.
+         * Overrides the itunesModule exports to capture and control network-layer behavior.
+         */
         vi.spyOn(itunesModule, 'useITunes').mockReturnValue({
             fetchSongs: fetchSongsMock
         });
         vi.clearAllMocks();
     })
 
-    it('devrait initialiser l\'état avec les valeurs par défaut', () => {
+    it('should initialize state with designated default schema', () => {
         const store = useSongStore()
         expect(store.songs).toEqual([])
         expect(store.loading).toBe(false)
@@ -53,11 +60,14 @@ describe('useSongStore', () => {
         expect(store.sortOrder).toBe('asc')
     })
 
-    it('devrait hydrater le store après une résolution API fructueuse', async () => {
+    it('should hydrate store state upon successful API resolution', async () => {
         const store = useSongStore()
         const { fetchSongs } = useITunes()
 
-        // Mock de données iTunes conformes aux critères de filtrage du mapper
+        /**
+         * Mock data injection.
+         * Defines a raw payload compliant with the internal mapping and filtering predicates.
+         */
         const mockRawSongs = [
             {
                 wrapperType: 'track',
@@ -71,12 +81,16 @@ describe('useSongStore', () => {
         fetchSongs.mockResolvedValue(mockRawSongs)
         await store.search('test')
 
+        // Assert state mutation and data integrity.
         expect(store.songs.length).toBe(1)
         expect(store.songs[0].trackName).toBe('Song A')
     })
 
-    it('devrait capturer les exceptions et mettre à jour l\'état d\'erreur', async () => {
-        // Interception de console.error pour maintenir la propreté du flux de sortie (stdout)
+    it('should catch exceptions and transit to error state', async () => {
+        /**
+         * Stdout sanitation.
+         * Mocks console.error to maintain clean test output during expected failure paths.
+         */
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
         const store = useSongStore()
@@ -86,6 +100,7 @@ describe('useSongStore', () => {
 
         await store.search('test')
 
+        // Validate error handling logic and state recovery.
         expect(store.loading).toBe(false)
         expect(store.error).toBe('Unable to load songs. Please check your connection.')
         expect(store.songs).toEqual([])
@@ -94,7 +109,7 @@ describe('useSongStore', () => {
         consoleSpy.mockRestore()
     })
 
-    it('devrait réordonner la collection existante via setSort sans appel API', () => {
+    it('should reorder localized collection via setSort without redundant API calls', () => {
         const store = useSongStore()
 
         const mockData = [
@@ -104,7 +119,10 @@ describe('useSongStore', () => {
 
         store.songs = mockData
 
-        // Exécution de la logique de tri interne (mapAndSortSongs)
+        /**
+         * Sort logic execution.
+         * Triggers internal mapAndSortSongs logic via the public action.
+         */
         store.setSort('trackName', 'asc')
 
         expect(store.songs.length).toBe(2)
@@ -112,41 +130,46 @@ describe('useSongStore', () => {
         expect(store.songs[1].trackName).toBe('Zebra')
     })
 
-    it('devrait synchroniser l\'état réactif loading durant le cycle de vie asynchrone', async () => {
+    it('should synchronize reactive "loading" flag during the async lifecycle', async () => {
         const store = useSongStore()
         const { fetchSongs } = useITunes()
 
+        /**
+         * Latency simulation.
+         * Manually controls promise resolution to inspect intermediary pending states.
+         */
         let resolvePromise
         fetchSongs.mockReturnValue(new Promise((res) => { resolvePromise = res }))
 
         const searchPromise = store.search('test')
 
-        // Vérification de l'état pendant la latence réseau simulée
+        // Verify "pending" state.
         expect(store.loading).toBe(true)
 
         resolvePromise([])
         await searchPromise
 
-        // Vérification de l'état post-traitement
+        // Verify "settled" state.
         expect(store.loading).toBe(false)
     })
 
-    it('devrait lancer la lecture d\'une chanson et mettre à jour l\'état', () => {
+    it('should initiate playback and synchronize store playback flags', () => {
         const store = useSongStore()
         const mockSong = { trackId: 123, previewUrl: 'http://test.mp3' }
 
         store.togglePlay(mockSong)
 
+        // Assert interaction with the underlying audio utility.
         expect(player.play).toHaveBeenCalledWith(mockSong.previewUrl, expect.any(Function))
         expect(store.isPlaying).toBe(true)
         expect(store.currentSongId).toBe(123)
     })
 
-    it('devrait mettre en pause si la même chanson est déjà en lecture', () => {
+    it('should toggle to pause state if active song is re-invoked', () => {
         const store = useSongStore()
         const mockSong = { trackId: 123, previewUrl: 'http://test.mp3' }
 
-        // Simuler une chanson déjà en cours
+        // Setup active playback state.
         store.isPlaying = true
         store.$patch({ currentSongId: 123 });
 
@@ -156,10 +179,10 @@ describe('useSongStore', () => {
         expect(store.isPlaying).toBe(false)
     })
 
-    it('devrait passer à la chanson suivante', () => {
+    it('should iterate currentSongId to the next index in the collection', () => {
         const store = useSongStore()
         store.songs = [{ trackId: 1 }, { trackId: 2 }]
-        store.$patch({ currentSongId: 1 }); // Chanson actuelle est la première
+        store.$patch({ currentSongId: 1 });
 
         store.next()
 
@@ -167,35 +190,38 @@ describe('useSongStore', () => {
         expect(player.play).toHaveBeenCalled()
     })
 
-    it('devrait recommencer la chanson actuelle via "prev" si le temps > 3s', () => {
+    it('should restart the active track via "prev" if temporal progress exceeds 3s', () => {
         const store = useSongStore()
         store.songs = [{ trackId: 1 }, { trackId: 2 }]
         store.$patch({ currentSongId: 2 });
 
-        // Simuler que 5 secondes se sont écoulées
+        /**
+         * Temporal mock.
+         * Simulates a condition where the seek position is past the restart threshold.
+         */
         player.getCurrentTime.mockReturnValue(5)
 
         store.prev()
 
         expect(player.stop).toHaveBeenCalled()
-        expect(store.currentSongId).toBe(2) // Reste sur la même chanson
+        expect(store.currentSongId).toBe(2) // State preserved on current track.
         expect(player.play).toHaveBeenCalled()
     })
 
-    it('devrait passer à la chanson précédente via "prev" si le temps < 3s', () => {
+    it('should decrement collection index via "prev" if temporal progress is below 3s', () => {
         const store = useSongStore()
         store.songs = [{ trackId: 1 }, { trackId: 2 }]
         store.$patch({ currentSongId: 2 });
 
-        // Simuler que seulement 1 seconde s'est écoulée
+        // Simulate seek position within the skip threshold.
         player.getCurrentTime.mockReturnValue(1)
 
         store.prev()
 
-        expect(store.currentSongId).toBe(1) // Passe à la précédente
+        expect(store.currentSongId).toBe(1) // Transitioned to predecessor.
     })
 
-    it('devrait mettre à jour la position de lecture via seek', () => {
+    it('should dispatch seek request to player utility and update reactive state', () => {
         const store = useSongStore()
 
         store.seek(15)
@@ -204,14 +230,16 @@ describe('useSongStore', () => {
         expect(store.currentTime).toBe(15)
     })
 
-    it('devrait calculer correctement currentIndex', () => {
+    it('should compute the current song index relative to the active collection', () => {
         const store = useSongStore()
         store.songs = [{ trackId: 10 }, { trackId: 20 }, { trackId: 30 }]
 
+        // Scenario: Valid track identification.
         store.$patch({ currentSongId: 20 });
         expect(store.currentIndex).toBe(1)
 
-        store.$patch({ currentSongId: 99 }); // ID inexistant
+        // Scenario: OOR (Out of Range) or missing identification.
+        store.$patch({ currentSongId: 99 });
         expect(store.currentIndex).toBe(-1)
     })
 })

@@ -8,33 +8,39 @@ import SongContainer from '../../src/components/songs/SongContainer.vue'
 import { useSongStore } from '../../src/store/useSongStore'
 
 /**
- * Suite de tests d'intégration pour SongContainer.vue.
- * Vérifie le rendu conditionnel basé sur l'état réactif du store Pinia.
+ * Integration test suite for SongContainer.vue.
+ * Evaluates conditional rendering logic driven by the reactive Pinia store state.
  */
 const vuetify = createVuetify({ components, directives })
 
-describe('SongContainer.vue - Rendu dynamique', () => {
+describe('SongContainer.vue - Dynamic Rendering', () => {
     beforeEach(() => {
-        // Initialisation d'une instance Pinia isolée
+        /**
+         * Pinia context initialization.
+         * Establishes an isolated store instance to prevent cross-test state leakage.
+         */
         setActivePinia(createPinia())
     })
 
-    it('devrait afficher le message "No songs found" lorsque la collection est vide', () => {
+    it('should display "No songs found" when the collection state is empty', () => {
         const wrapper = mount(SongContainer, {
             global: {
                 plugins: [vuetify]
             }
         })
 
-        // Vérification de la présence des éléments textuels de l'état vide
+        // Assert presence of empty-state text nodes and associated icons.
         expect(wrapper.text()).toContain('No songs found')
         expect(wrapper.find('.v-icon').exists()).toBe(true)
     })
 
-    it('devrait instancier le bon nombre de composants SongCard selon les données du store', async () => {
+    it('should instantiate SongCard components proportional to store data length', async () => {
         const store = useSongStore()
 
-        // Simulation de l'injection de données dans le store
+        /**
+         * Mock state injection.
+         * Populates the store with a controlled dataset.
+         */
         store.songs = [
             { trackId: 1, trackName: 'Song 1', artistName: 'Artist 1' },
             { trackId: 2, trackName: 'Song 2', artistName: 'Artist 2' }
@@ -46,15 +52,15 @@ describe('SongContainer.vue - Rendu dynamique', () => {
             }
         })
 
-        // Localisation des composants enfants SongCard
+        // Identify child component instances within the DOM tree.
         const cards = wrapper.findAllComponents({ name: 'SongCard' })
 
-        // Validation du rendu de la liste
+        // Assert list rendering integrity and suppression of empty-state UI.
         expect(cards).toHaveLength(2)
         expect(wrapper.text()).not.toContain('No songs found')
     })
 
-    it('devrait assurer la réactivité de la grille (v-row et v-col)', () => {
+    it('should verify the presence of responsive grid components (VRow and VCol)', () => {
         const store = useSongStore()
         store.songs = [{ trackId: 1, trackName: 'Song 1' }]
 
@@ -64,7 +70,10 @@ describe('SongContainer.vue - Rendu dynamique', () => {
             }
         })
 
-        // Vérification de l'utilisation des composants de mise en page Vuetify
+        /**
+         * Layout engine validation.
+         * Confirms utilization of Vuetify grid system components.
+         */
         expect(wrapper.findComponent({ name: 'VRow' }).exists()).toBe(true)
         expect(wrapper.findComponent({ name: 'VCol' }).exists()).toBe(true)
     })
