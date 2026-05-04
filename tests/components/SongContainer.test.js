@@ -22,15 +22,23 @@ describe('SongContainer.vue - Dynamic Rendering', () => {
         setActivePinia(createPinia())
     })
 
-    it('should display "No songs found" when the collection state is empty', () => {
+    it('should display "No songs found" when the collection state is empty', async () => {
+        const store = useSongStore()
+
+        store.songs = []
+        store.loading = false
+        store.collectionName = 'Empty Results'
+
         const wrapper = mount(SongContainer, {
             global: {
                 plugins: [vuetify]
             }
         })
 
-        // Assert presence of empty-state text nodes and associated icons.
+        // Assert text exists in the DOM
         expect(wrapper.text()).toContain('No songs found')
+
+        // Assert the "Empty" icon is rendered
         expect(wrapper.find('.v-icon').exists()).toBe(true)
     })
 

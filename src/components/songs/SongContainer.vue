@@ -11,15 +11,17 @@ const handleSongClick = (song) => {
 
 <template>
   <v-container>
-    <div
-    v-if="!songStore.songs.length"
-    class="d-flex flex-column align-center justify-center py-16 text-medium-emphasis"
-    >
-    <v-icon icon="mdi-music-off" size="64" class="mb-4" />
-    <div class="text-h6">No songs found</div>
-    <div class="text-body-2">Try searching for something else.</div>
+    <!-- Dynamic Title Section -->
+    <div class="d-flex align-center mb-4">
+      <v-icon icon="mdi-playlist-music" class="mr-2" color="primary" />
+      <h2 class="text-h5 font-weight-bold">{{ songStore.collectionName }}</h2>
+      <v-chip class="ml-4" size="small" variant="outlined" color="primary">
+        {{ songStore.songs.length }} Tracks
+      </v-chip>
     </div>
-    <v-row v-else>
+
+    <!-- Grid -->
+    <v-row v-if="songStore.songs.length">
       <v-col
         v-for="song in songStore.songs"
         :key="song.trackId"
@@ -28,6 +30,16 @@ const handleSongClick = (song) => {
         <SongCard :song="song" @toggle-play="handleSongClick" />
       </v-col>
     </v-row>
+
+    <!-- Empty State -->
+    <div v-else class="text-center py-16">
+      <v-progress-circular v-if="songStore.loading" indeterminate color="primary" />
+      <div v-else class="text-medium-emphasis">
+        <v-icon icon="mdi-alert-circle-outline" size="48" class="mb-2" />
+        <p>No songs found</p>
+        <p class="text-body-2">Try searching for something else.</p>
+      </div>
+    </div>
   </v-container>
 </template>
 

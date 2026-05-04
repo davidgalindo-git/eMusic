@@ -4,6 +4,7 @@ import { useITunes } from "../api/useITunes";
 import { mapAndSortSongs } from "../utils/songMapper.js";
 import {player} from "./player.js";
 import {saveCollection, loadCollection} from "./storageHelper.js";
+import { DEFAULT_COLLECTION } from './constants';
 
 /**
  * Global store for managing song search results and application state.
@@ -31,13 +32,23 @@ export const useSongStore = defineStore("songStore", () => {
     const { fetchSongs } = useITunes();
 
     // State
-    const songs = ref(loadCollection('search_results'));
+    const savedResults = loadCollection('search_results');
+    const savedName = sessionStorage.getItem('current_collection_name');
+    const collectionName = ref(savedResults?.length > 0 ? (savedName || "Search Results") : "Featured Songs");
+
+    const songs = ref(savedResults && savedResults.length > 0
+        ? savedResults
+        : [...DEFAULT_COLLECTION]
+    );
+
     const isPlaying = ref(false)
     const currentSongId = ref(null);
     const loading = ref(false);
     const error = ref(null);
+
     const sortKey = ref("trackName");
     const sortOrder = ref("asc");
+
     const currentTime = ref(0);
     const duration = ref(0);
 
@@ -59,6 +70,11 @@ export const useSongStore = defineStore("songStore", () => {
      * @param {string} term - The search query provided by the user.
      */
     async function search(term) {
+        if (!term?.trim()) {
+            resetToFeatured();
+            return;
+        }
+
         loading.value = true;
         error.value = null
 
@@ -66,12 +82,20 @@ export const useSongStore = defineStore("songStore", () => {
             const raw = await fetchSongs(term);
 
             const mapped  = mapAndSortSongs(raw, sortKey.value, sortOrder.value);
-            songs.value = mapped;
+            if (mapped.length === 0) {
+                error.value = "No results found. Showing featured songs.";
+                resetToFeatured();
+            } else {
+                songs.value = mapped;
+                const newName = `Results for "${term}"`;
+                collectionName.value = newName;
 
-            saveCollection('search_results', mapped);
+                saveCollection('search_results', mapped);
+                sessionStorage.setItem('current_collection_name', newName);
+            }
         } catch (err) {
-            error.value = "Unable to load songs. Please check your connection.";
-            songs.value = [];
+            error.value = "Unable to load songs. Showing featured collection.";
+            resetToFeatured();
             console.error("Store Search Error:", err);
         } finally {
             loading.value = false;
@@ -91,7 +115,9 @@ export const useSongStore = defineStore("songStore", () => {
         const sorted = mapAndSortSongs(songs.value, key, order);
         songs.value = sorted;
 
-        saveCollection('search_results', sorted);
+        if (error.value === null) {
+            saveCollection('search_results', sorted);
+        }
     }
 
     /**
@@ -175,9 +201,19 @@ export const useSongStore = defineStore("songStore", () => {
         currentTime.value = time;
     }
 
+    /**
+     * Helper to ensure state and storage are cleared together
+     */
+    function resetToFeatured() {
+        songs.value = [...DEFAULT_COLLECTION];
+        collectionName.value = "Featured Songs";
+        saveCollection('search_results', null);
+        sessionStorage.removeItem('current_collection_name');
+    }
+
     return {
         // Data & UI State
-        songs, loading, error, sortKey, sortOrder,
+        songs, loading, error, sortKey, sortOrder, collectionName,
         // Playback State
         isPlaying, currentSongId, currentTime, duration, currentIndex,
         // Actions

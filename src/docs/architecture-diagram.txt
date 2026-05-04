@@ -1,16 +1,45 @@
-graph TD
-    subgraph Logic
-        U[useITunes.js]
-    end
+---
+config:
+  layout: dagre
+---
+flowchart TB
+ subgraph Data_Layer["Data_Layer"]
+        API[("iTunes API")]
+        LS[("LocalStorage")]
+  end
+ subgraph Logic["Logic"]
+        ST["songStore.js"]
+        U["useITunes.js"]
+        SH["storageHelper.js"]
+        M["songMapper.js"]
+        PS["player.js"]
+        TF["timeFormatter.js"]
+  end
+ subgraph UI_Components["UI_Components"]
+        S["SearchBar.vue"]
+        A["App.vue"]
+        SL["SongContainer.vue"]
+        SI["SongItem.vue"]
+        P["Player.vue"]
+  end
+    A --> S & SL & P
+    S -. emit: search .-> A
+    A <-- reactive bind --> ST
+    SL -- "v-for, props: song" --> SI
+    SL <-- reactive bind --> ST
+    P <-- reactive bind --> ST
+    U --> API
+    SH --> LS
+    ST <--> U & M & SH
+    ST --> PS
+    PS --> TF
 
-    subgraph UI_Components
-        A[App.vue] -->|search| S[SearchBar.vue]
-        S -.->|emit: search, term| A
-        A <--> |reactive bind| U
-        A --> |v-for| SI[SongItem.vue]
-    end
-
-    U ---|Fetch| API[(iTunes API)]
-
-    style A fill:#42b883,stroke:#35495e,color:#fff
+    style API fill:#fff,stroke:#35495e,color:#000
+    style LS fill:#fff,stroke:#35495e,color:#000
+    style ST fill:#35495e,stroke:#35495e,color:#fff
     style U fill:#35495e,stroke:#42b883,color:#fff
+    style SH fill:#35495e,stroke:#35495e,color:#fff
+    style M fill:#35495e,stroke:#42b883,color:#fff
+    style PS fill:#35495e,stroke:#35495e,color:#fff
+    style TF fill:#35495e,stroke:#35495e,color:#fff
+    style A fill:#fff,stroke:#35495e,color:#000
