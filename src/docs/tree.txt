@@ -6,9 +6,7 @@ src
   components
     Logo.vue
     player
-      PlayButton.vue
       Player.vue
-      ReproduceBar.vue
     playlist
       AddToPlaylist.vue
       NewPlaylistButton.vue
@@ -25,17 +23,22 @@ src
       SongContainer.vue
   docs/
   store
+    constants.js
+    player
+    storegeHelper.js
     useSongStore.js
   utils
     songMapper.js
-  tests
+    timeFormatter.js
+  App.vue
+  main.js
+  style.css
+tests
     api/
     components/
     stores/
     utils/
-  App.vue
-  main.js
-  style.css
+    setup.js
 .env.example
 .gitignore
 index.html

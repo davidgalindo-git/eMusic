@@ -4,7 +4,8 @@ src
     useITunes.js -> Connexion API
   assets -> icônes
   components
-    player/ -- X
+    player
+      Player.vue -> Interface lecteur audio
     playlist/ -- X
     search
       SearchBar.vue
@@ -14,17 +15,23 @@ src
     Logo.vue
   docs/
   store
+    constants.js -> DEFAULT_COLLECTION
+    player.js -> Logique audio
+    storageHelper.js -> Utilise localStorage
     useSongStore.js -> Store des chansons
   utils
-    songMapper.js -> Formattage des données
-  tests
+    songMapper.js -> Formattage des chansons
+    timeFormatter.js -> Formattage du temps
+
+  App.vue -> Contient SearchBar et SongContainer et appelle searchSongs et songStore
+  main.js
+  style.css
+ tests
     api/
     components/
     stores/
     utils/
-  App.vue -> Contient SearchBar et SongContainer et appelle searchSongs et songStore
-  main.js
-  style.css
+    setup.js
 .env.example
 .gitignore
 index.html
