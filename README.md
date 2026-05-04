@@ -34,7 +34,7 @@ npm run build
 Exécuter les tests du dossier src/tests  
 Mode Standard (Console)
 ```bash
-npm run dev
+npm run test
 ```
 Mode Interface Graphique (UI)  
 ```bash
