@@ -90,15 +90,31 @@ describe('useSongStore', () => {
 
     it('should reorder localized collection via setSort without redundant API calls', () => {
         const store = useSongStore()
-        store.songs = [
-            { trackId: 1, trackName: 'Zebra' },
-            { trackId: 2, trackName: 'Apple' }
+        const mockData = [
+            {
+                trackId: 1,
+                trackName: 'Zebra',
+                artistName: 'Artist Z',
+                wrapperType: 'track',
+                kind: 'song'
+            },
+            {
+                trackId: 2,
+                trackName: 'Apple',
+                artistName: 'Artist A',
+                wrapperType: 'track',
+                kind: 'song'
+            }
         ]
+
+        store.songs = mockData
 
         // Local sorting logic validation.
         store.setSort('trackName', 'asc')
 
+        expect(store.songs).toHaveLength(2)
         expect(store.songs[0].trackName).toBe('Apple')
+        expect(store.songs[1].trackName).toBe('Zebra')
     })
 
     it('should initiate playback and synchronize store playback flags', () => {
