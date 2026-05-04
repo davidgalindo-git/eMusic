@@ -14,8 +14,18 @@ describe('Player.vue', () => {
     let pinia
     let store
 
+    const createWrapper = () => {
+        return mount(Player, {
+            global: {
+                plugins: [pinia, vuetify],
+                stubs: {
+                    VAppBar: { template: '<div class="v-app-bar-stub"><slot /></div>' }
+                }
+            }
+        })
+    }
+
     beforeEach(() => {
-        // 2. Setup Pinia for each test
         pinia = createPinia()
         setActivePinia(pinia)
         store = useSongStore()
@@ -28,36 +38,21 @@ describe('Player.vue', () => {
 
     it('renders nothing when no song is selected', () => {
         store.currentSongId = null
-        const wrapper = mount(Player, {
-            global: { plugins: [pinia, vuetify] }
-        })
-        // v-app-bar is not rendered if "song" is undefined
-        expect(wrapper.find('.v-app-bar').exists()).toBe(false)
+        const wrapper = createWrapper()
+        expect(wrapper.find('.v-app-bar-stub').exists()).toBe(false)
     })
 
     it('renders song details when a song is active', () => {
         store.currentSongId = 1
-
-        const wrapper = mount(Player,{
-            global: {
-                plugins: [pinia, vuetify],
-                stubs: {
-                    VAppBar: { template: '<div class="stubbed-bar"><slot /></div>' }
-                }
-            }
-        })
-
+        const wrapper = createWrapper()
         expect(wrapper.text()).toContain('Test Song')
     })
 
     it('calls store.togglePlay when the play/pause button is clicked', async () => {
         store.currentSongId = 1
         const spy = vi.spyOn(store, 'togglePlay')
-        const wrapper = mount(Player, {
-            global: { plugins: [pinia, vuetify] }
-        })
+        const wrapper = createWrapper()
 
-        // Find the Play/Pause button (the one with variant="tonal")
         const playBtn = wrapper.find('.v-btn--variant-tonal')
         await playBtn.trigger('click')
 
@@ -68,12 +63,9 @@ describe('Player.vue', () => {
         store.currentSongId = 1
         const nextSpy = vi.spyOn(store, 'next')
         const prevSpy = vi.spyOn(store, 'prev')
+        const wrapper = createWrapper()
 
-        const wrapper = mount(Player, {
-            global: { plugins: [pinia, vuetify] }
-        })
-
-        const buttons = wrapper.findAll('.v-btn--variant-text') // Skip prev/next buttons
+        const buttons = wrapper.findAll('.v-btn--variant-text')
 
         await buttons[0].trigger('click') // Prev
         expect(prevSpy).toHaveBeenCalled()
@@ -85,12 +77,9 @@ describe('Player.vue', () => {
     it('calls store.seek when the slider is moved', async () => {
         store.currentSongId = 1
         const seekSpy = vi.spyOn(store, 'seek')
-        const wrapper = mount(Player, {
-            global: { plugins: [pinia, vuetify] }
-        })
+        const wrapper = createWrapper()
 
         const slider = wrapper.findComponent({ name: 'VSlider' })
-        // Simulate Vuetify's slider update event
         await slider.vm.$emit('update:model-value', 15)
 
         expect(seekSpy).toHaveBeenCalledWith(15)
