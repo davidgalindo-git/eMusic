@@ -3,15 +3,29 @@ import { setActivePinia, createPinia } from 'pinia'
 import { useSongStore } from '../../src/store/useSongStore.js'
 import { useITunes } from "../../src/api/useITunes.js"
 import * as itunesModule from '../../src/api/useITunes.js'
+import { player } from '../../src/store/player.js'
 
 /**
  * Suite de tests unitaires pour le store Pinia 'useSongStore'.
  * Focalisé sur la gestion d'état, l'intégration du mapper et la gestion des flux asynchrones.
  */
+// Mocking the API module
 vi.mock('../api/useITunes', () => ({
     useITunes: vi.fn(() => ({
         fetchSongs: vi.fn()
     }))
+}))
+
+// Mocking the Player utility
+vi.mock('../../src/store/player.js', () => ({
+    player: {
+        play: vi.fn(),
+        pause: vi.fn(),
+        stop: vi.fn(),
+        seek: vi.fn(),
+        getCurrentTime: vi.fn(),
+        onProgress: vi.fn()
+    }
 }))
 
 describe('useSongStore', () => {
@@ -27,6 +41,7 @@ describe('useSongStore', () => {
         vi.spyOn(itunesModule, 'useITunes').mockReturnValue({
             fetchSongs: fetchSongsMock
         });
+        vi.clearAllMocks();
     })
 
     it('devrait initialiser l\'état avec les valeurs par défaut', () => {
@@ -114,5 +129,89 @@ describe('useSongStore', () => {
 
         // Vérification de l'état post-traitement
         expect(store.loading).toBe(false)
+    })
+
+    it('devrait lancer la lecture d\'une chanson et mettre à jour l\'état', () => {
+        const store = useSongStore()
+        const mockSong = { trackId: 123, previewUrl: 'http://test.mp3' }
+
+        store.togglePlay(mockSong)
+
+        expect(player.play).toHaveBeenCalledWith(mockSong.previewUrl, expect.any(Function))
+        expect(store.isPlaying).toBe(true)
+        expect(store.currentSongId).toBe(123)
+    })
+
+    it('devrait mettre en pause si la même chanson est déjà en lecture', () => {
+        const store = useSongStore()
+        const mockSong = { trackId: 123, previewUrl: 'http://test.mp3' }
+
+        // Simuler une chanson déjà en cours
+        store.isPlaying = true
+        store.$patch({ currentSongId: 123 });
+
+        store.togglePlay(mockSong)
+
+        expect(player.pause).toHaveBeenCalled()
+        expect(store.isPlaying).toBe(false)
+    })
+
+    it('devrait passer à la chanson suivante', () => {
+        const store = useSongStore()
+        store.songs = [{ trackId: 1 }, { trackId: 2 }]
+        store.$patch({ currentSongId: 1 }); // Chanson actuelle est la première
+
+        store.next()
+
+        expect(store.currentSongId).toBe(2)
+        expect(player.play).toHaveBeenCalled()
+    })
+
+    it('devrait recommencer la chanson actuelle via "prev" si le temps > 3s', () => {
+        const store = useSongStore()
+        store.songs = [{ trackId: 1 }, { trackId: 2 }]
+        store.$patch({ currentSongId: 2 });
+
+        // Simuler que 5 secondes se sont écoulées
+        player.getCurrentTime.mockReturnValue(5)
+
+        store.prev()
+
+        expect(player.stop).toHaveBeenCalled()
+        expect(store.currentSongId).toBe(2) // Reste sur la même chanson
+        expect(player.play).toHaveBeenCalled()
+    })
+
+    it('devrait passer à la chanson précédente via "prev" si le temps < 3s', () => {
+        const store = useSongStore()
+        store.songs = [{ trackId: 1 }, { trackId: 2 }]
+        store.$patch({ currentSongId: 2 });
+
+        // Simuler que seulement 1 seconde s'est écoulée
+        player.getCurrentTime.mockReturnValue(1)
+
+        store.prev()
+
+        expect(store.currentSongId).toBe(1) // Passe à la précédente
+    })
+
+    it('devrait mettre à jour la position de lecture via seek', () => {
+        const store = useSongStore()
+
+        store.seek(15)
+
+        expect(player.seek).toHaveBeenCalledWith(15)
+        expect(store.currentTime).toBe(15)
+    })
+
+    it('devrait calculer correctement currentIndex', () => {
+        const store = useSongStore()
+        store.songs = [{ trackId: 10 }, { trackId: 20 }, { trackId: 30 }]
+
+        store.$patch({ currentSongId: 20 });
+        expect(store.currentIndex).toBe(1)
+
+        store.$patch({ currentSongId: 99 }); // ID inexistant
+        expect(store.currentIndex).toBe(-1)
     })
 })
