@@ -28,6 +28,8 @@ export const useSongStore = defineStore("songStore", () => {
     const error = ref(null);
     const sortKey   = ref("trackName");
     const sortOrder = ref("asc");
+    const currentTime = ref(0);
+    const duration = ref(0);
 
     const currentIndex = computed(() =>
         songs.value.findIndex(s => s.trackId === currentSongId.value)
@@ -77,6 +79,12 @@ export const useSongStore = defineStore("songStore", () => {
                 currentSongId.value = null;
             }
         });
+
+        player.onProgress((cur, dur) => {
+            currentTime.value = cur;
+            duration.value = dur || 30; // iTunes previews are often 30s long
+        });
+
         isPlaying.value = true;
         currentSongId.value = song.trackId;
     }
@@ -114,6 +122,14 @@ export const useSongStore = defineStore("songStore", () => {
         }
     }
 
+    function seek(time) {
+        player.seek(time);
+        currentTime.value = time;
+    }
+
     return { songs, isPlaying, currentSongId, loading, error,
-        sortKey, sortOrder, search, setSort, togglePlay, next, prev };
+        sortKey, sortOrder, search, setSort,
+        togglePlay, next, prev,
+        currentTime, duration, seek
+    };
 })
