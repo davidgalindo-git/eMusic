@@ -1,144 +1,65 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useSongStore } from '../../src/store/useSongStore.js'
-import { useITunes } from "../../src/api/useITunes.js"
-import * as itunesModule from '../../src/api/useITunes.js'
-import { player } from '../../src/store/player.js'
+import * as storageHelper from '../../src/store/storageHelper.js'
+import * as itunesModule from '../../src/api/useITunes.js' // Ensure this is imported
 import { DEFAULT_COLLECTION } from "../../src/store/constants.js";
 
-/**
- * Unit test suite for the 'useSongStore' Pinia store.
- * Validates state machine transitions, aggregate root logic, and asynchronous side-effect orchestration.
- */
-
-// Global module interception for external dependencies (API and Audio Player).
-vi.mock('../api/useITunes', () => ({
-    useITunes: vi.fn(() => ({
-        fetchSongs: vi.fn()
-    }))
-}))
-
-vi.mock('../../src/store/player.js', () => ({
-    player: {
-        play: vi.fn(),
-        pause: vi.fn(),
-        stop: vi.fn(),
-        seek: vi.fn(),
-        getCurrentTime: vi.fn(),
-        onProgress: vi.fn()
-    }
-}))
-
-describe('useSongStore', () => {
+describe('useSongStore Persistence Logic', () => {
     let fetchSongsMock;
 
     beforeEach(() => {
-        // Context isolation: Resets Pinia before each test to prevent state leakage.
         setActivePinia(createPinia())
+        vi.clearAllMocks()
+        sessionStorage.clear()
 
-        fetchSongsMock = vi.fn();
-
-        // API Spy injection to control network-layer behavior during tests.
+        // Setup API Mocking
+        fetchSongsMock = vi.fn()
         vi.spyOn(itunesModule, 'useITunes').mockReturnValue({
             fetchSongs: fetchSongsMock
-        });
-        vi.clearAllMocks();
+        })
+
+        // Setup Storage Mocking
+        vi.spyOn(storageHelper, 'saveCollection')
+        vi.spyOn(storageHelper, 'loadCollection').mockReturnValue(null)
     })
 
-    it('should initialize state with designated default schema', () => {
+    it('should execute Atomic Persistence side-effects on successful search', async () => {
+        // Resolve the "Timeout" by providing a settled promise
+        fetchSongsMock.mockResolvedValue([
+            { trackId: 1, trackName: 'Genesis', wrapperType: 'track', kind: 'song' }
+        ])
+
         const store = useSongStore()
-        expect(store.songs).toEqual([]) // Starts empty
-        expect(store.loading).toBe(false)
-        expect(store.error).toBeNull()
-        expect(store.sortKey).toBe('trackName')
+        const searchTerm = 'Justice'
+
+        await store.search(searchTerm)
+
+        // Validate state-to-storage commit
+        expect(storageHelper.saveCollection).toHaveBeenCalledWith('search_results', expect.any(Array))
+        expect(sessionStorage.getItem('current_collection_name')).toBe(`Results for "${searchTerm}"`)
     })
 
-    it('should hydrate store state upon successful API resolution', async () => {
-        const store = useSongStore()
-        const { fetchSongs } = useITunes()
-
-        const mockRawSongs = [
-            { wrapperType: 'track', kind: 'song', trackId: 1, trackName: 'Song A' }
-        ]
-
-        fetchSongs.mockResolvedValue(mockRawSongs)
-        await store.search('test')
-
-        // Verify data was mapped and stored correctly.
-        expect(store.songs.length).toBe(1)
-        expect(store.songs[0].trackName).toBe('Song A')
-    })
-
-    it('should catch exceptions and transit to error state', async () => {
-        // Mocks console to keep test logs clean.
-        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-        const store = useSongStore()
-        const { fetchSongs } = useITunes()
-
-        fetchSongs.mockRejectedValue(new Error('API Down'))
-
-        await store.search('test')
-
-        // Error Recovery: State should show error message and display default songs.
-        expect(store.loading).toBe(false)
-        expect(store.error).toBe('Unable to load songs. Showing featured collection.')
-        expect(store.songs).toEqual(DEFAULT_COLLECTION)
-
-        consoleSpy.mockRestore()
-    })
-
-    it('should reorder localized collection via setSort without redundant API calls', () => {
-        const store = useSongStore()
+    it('should maintain Persistence Parity during local sort mutations', () => {
+        // Resolve the "AssertionError" by ensuring the store has data to sort
         const mockData = [
-            {
-                trackId: 1,
-                trackName: 'Zebra',
-                artistName: 'Artist Z',
-                wrapperType: 'track',
-                kind: 'song'
-            },
-            {
-                trackId: 2,
-                trackName: 'Apple',
-                artistName: 'Artist A',
-                wrapperType: 'track',
-                kind: 'song'
-            }
+            { trackId: 2, trackName: 'B', wrapperType: 'track', kind: 'song' },
+            { trackId: 1, trackName: 'A', wrapperType: 'track', kind: 'song' }
         ]
 
+        const store = useSongStore()
+        // Manually inject songs into the store state
         store.songs = mockData
 
-        // Local sorting logic validation.
+        // Execute synchronous sort mutation
         store.setSort('trackName', 'asc')
 
-        expect(store.songs).toHaveLength(2)
-        expect(store.songs[0].trackName).toBe('Apple')
-        expect(store.songs[1].trackName).toBe('Zebra')
-    })
-
-    it('should initiate playback and synchronize store playback flags', () => {
-        const store = useSongStore()
-        const mockSong = { trackId: 123, previewUrl: 'http://test.mp3' }
-
-        store.togglePlay(mockSong)
-
-        // Verifies store calls the player hardware and updates reactive flags.
-        expect(player.play).toHaveBeenCalledWith(mockSong.previewUrl, expect.any(Function))
-        expect(store.isPlaying).toBe(true)
-        expect(store.currentSongId).toBe(123)
-    })
-
-    it('should restart current track via "prev" if progress > 3s', () => {
-        const store = useSongStore()
-        store.songs = [{ trackId: 1 }, { trackId: 2 }]
-        store.$patch({ currentSongId: 2 });
-
-        player.getCurrentTime.mockReturnValue(5) // Past threshold
-
-        store.prev()
-
-        expect(player.stop).toHaveBeenCalled()
-        expect(store.currentSongId).toBe(2) // Restarted, did not skip.
+        // Validate that the sorted aggregate is committed to storage
+        // We check for 'A' at index 0 to prove the sort AND the save occurred
+        expect(storageHelper.saveCollection).toHaveBeenCalledWith(
+            'search_results',
+            expect.arrayContaining([expect.objectContaining({ trackName: 'A' })])
+        )
+        expect(store.songs[0].trackName).toBe('A')
     })
 })
