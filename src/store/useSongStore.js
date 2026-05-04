@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import { useITunes } from "../api/useITunes";
 import { mapAndSortSongs } from "../utils/songMapper.js";
 import {player} from "./player.js";
+import {saveCollection, loadCollection} from "./storageHelper.js";
 
 /**
  * Global store for managing song search results and application state.
