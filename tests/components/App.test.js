@@ -14,22 +14,37 @@ import { useSongStore } from '../../src/store/useSongStore'
 const vuetify = createVuetify({ components, directives })
 
 describe('App.vue - Intégration', () => {
+    let pinia
     beforeEach(() => {
+        pinia = createPinia()
         // Isolation de l'état global avant chaque scénario
-        setActivePinia(createPinia())
+        setActivePinia(pinia)
+    })
+
+    it('devrait monter le composant avec pinia', () => {
+        const vuetify = createVuetify()
+
+        const wrapper = mount(App, {
+            global: {
+                // 3. Passer l'instance créée aux plugins
+                plugins: [pinia, vuetify]
+            }
+        })
+
+        expect(wrapper.exists()).toBe(true)
     })
 
     it('devrait déclencher l\'action de recherche du store suite à l\'émission de l\'événement SearchBar', async () => {
         // Montage du composant racine avec injection des dépendances globales (Vuetify)
         const wrapper = mount(App, {
             global: {
-                plugins: [vuetify]
+                plugins: [vuetify, pinia]
             }
         })
 
         // Initialisation de l'instance du store et interception de la méthode de recherche
         const store = useSongStore()
-        const searchSpy = vi.spyOn(store, 'search')
+        const searchSpy = vi.spyOn(store, 'search').mockImplementation(() => Promise.resolve())
 
         // Simulation de l'interaction utilisateur via l'émission d'un événement personnalisé par le composant enfant
         const searchBar = wrapper.findComponent({ name: 'SearchBar' })
@@ -42,7 +57,10 @@ describe('App.vue - Intégration', () => {
     it('devrait assurer la présence des composants structurels au montage', () => {
         const wrapper = mount(App, {
             global: {
-                plugins: [vuetify]
+                plugins: [vuetify, pinia],
+                stubs: {
+                    Player: true
+                }
             }
         })
 
