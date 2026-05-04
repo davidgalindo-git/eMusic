@@ -36,7 +36,8 @@ const handleSongClick = (song) => {
       <v-progress-circular v-if="songStore.loading" indeterminate color="primary" />
       <div v-else class="text-medium-emphasis">
         <v-icon icon="mdi-alert-circle-outline" size="48" class="mb-2" />
-        <p>Could not load any songs. Please refresh the page.</p>
+        <p>No songs found</p>
+        <p class="text-body-2">Try searching for something else.</p>
       </div>
     </div>
   </v-container>
