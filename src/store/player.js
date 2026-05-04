@@ -59,16 +59,28 @@ export const player = {
         audio.currentTime = 0;
     },
 
+    /**
+     * Retrieves the current playback position.
+     * @returns {number} The current time in seconds.
+     */
     getCurrentTime() {
         return audio.currentTime;
     },
 
+    /**
+     * Sets up a listener for audio progress updates.
+     * @param {Function} callback - Function called with (currentTime, duration) on each update.
+     */
     onProgress(callback) {
         audio.ontimeupdate = () => {
             callback(audio.currentTime, audio.duration);
         };
     },
 
+    /**
+     * Jumps to a specific timestamp in the current track.
+     * @param {number} time - The target position in seconds.
+     */
     seek(time) {
         audio.currentTime = time;
     },
