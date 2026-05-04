@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useSongStore } from "../../store/useSongStore.js"
-import {formatTime} from "../../utils/formatTime.js";
+import {timeFormatter} from "../../utils/timeFormatter.js";
 
 const store = useSongStore()
 const song = computed(() => store.songs.find(s => s.trackId === store.currentSongId))
@@ -44,7 +44,7 @@ const song = computed(() => store.songs.find(s => s.trackId === store.currentSon
       <!-- Progression Bar -->
       <div class="d-flex align-center w-100" style="max-width: 400px;">
         <span class="text-caption mr-2" style="min-width: 40px">
-          {{ formatTime(store.currentTime) }}
+          {{ timeFormatter(store.currentTime) }}
         </span>
 
         <v-slider
@@ -59,7 +59,7 @@ const song = computed(() => store.songs.find(s => s.trackId === store.currentSon
         ></v-slider>
 
         <span class="text-caption ml-2" style="min-width: 40px">
-          {{formatTime(store.duration)}}
+          {{ timeFormatter(store.duration) }}
         </span>
       </div>
     </div>
