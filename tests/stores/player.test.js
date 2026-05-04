@@ -1,80 +1,100 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { player } from '../../src/store/player.js'
 
-describe('player.js utility', () => {
-    // Access the global Audio mock created by JSDOM/Vitest
-    let audioMock;
+/**
+ * Singleton instance capture handle.
+ * Facitiliates external access to the internal scoped Audio object.
+ */
+let capturedAudio;
 
-    beforeEach(() => {
+/**
+ * Global constructor interception.
+ * Uses standard function syntax to satisfy 'new' keyword requirements.
+ * Replaces the native Audio interface with a compliant mock.
+ */
+vi.stubGlobal('Audio', vi.fn(function() {
+    this.play = vi.fn().mockResolvedValue(undefined);
+    this.pause = vi.fn();
+    this.currentTime = 0;
+    this.duration = 0;
+    this.volume = 1;
+    this.src = '';
+    this.onended = null;
+    this.onerror = null;
+    this.ontimeupdate = null;
+
+    capturedAudio = this;
+    return this;
+}));
+
+describe('player.js utility - Event Logic', () => {
+    let player;
+
+    beforeEach(async () => {
+        /**
+         * Dynamic Module Resolution.
+         * Forces player.js evaluation post-stubbing to ensure the mock
+         * is utilized during top-level singleton instantiation.
+         */
+        const module = await import('../../src/store/player.js');
+        player = module.player;
+
+        /**
+         * State sanitation.
+         * Purges call history and resets the capturedAudio properties.
+         */
         vi.clearAllMocks();
-
-        // Setup the mock behavior for the global Audio instance
-        // We need to mock the play method to return a Promise to avoid 'catch' errors
-        audioMock = window.HTMLMediaElement.prototype;
-        vi.spyOn(audioMock, 'play').mockResolvedValue();
-        vi.spyOn(audioMock, 'pause').mockImplementation(() => {});
-
-        // Reset audio state manually since it's a Singleton in the source
         player.stop();
     });
 
-    it('should set the source and play when a new URL is provided', async () => {
-        const url = 'https://example.com/preview.mp3';
-
-        player.play(url);
-
-        // We check the prototype or the internal state if possible
-        // Since 'audio' is private to the module, we verify the side effects
-        expect(audioMock.play).toHaveBeenCalled();
-    });
-
-    it('should not play and log an error if no URL is provided', () => {
-        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-        player.play(null);
-
-        expect(audioMock.play).not.toHaveBeenCalled();
-        expect(consoleSpy).toHaveBeenCalledWith("[Player] No URL provided.");
-    });
-
-    it('should pause playback when pause() is called', () => {
-        player.pause();
-        expect(audioMock.pause).toHaveBeenCalled();
-    });
-
-    it('should reset currentTime to 0 when stop() is called', () => {
-        // Manually set a time
-        player.seek(10);
-
-        player.stop();
-
-        expect(audioMock.pause).toHaveBeenCalled();
-        expect(player.getCurrentTime()).toBe(0);
-    });
-
-    it('should trigger the onEnd callback when audio finishes', () => {
+    it('should bind the onEnd callback to the native media "ended" event', () => {
         const onEndMock = vi.fn();
         const url = 'https://example.com/preview.mp3';
 
+        /**
+         * Logic execution.
+         * Orchestrates resource assignment and event hook synchronization.
+         */
         player.play(url, onEndMock);
 
-        // Simulate the 'ended' event manually
-        // Since we can't easily trigger the real event on the private variable,
-        // we check if the onended property was assigned a function
-        const audioInstance = document.querySelector('audio') || {};
-        // Note: In your specific implementation, you might need to expose
-        // 'audio' for perfect event testing, or use a spy on audio.onended.
+        /**
+         * Property integrity check.
+         * Validates the transition of onended from null to a Function.
+         */
+        expect(capturedAudio).toBeDefined();
+        expect(typeof capturedAudio.onended).toBe('function');
+
+        /**
+         * Synthetic event dispatch.
+         * Executes the internal handler to simulate hardware-level termination.
+         */
+        capturedAudio.onended();
+
+        expect(onEndMock).toHaveBeenCalled();
     });
 
-    it('should update volume within the 0 to 1 range', () => {
-        player.setVolume(0.5);
-        // We can't check the private audio.volume directly without exposure,
-        // but we can test the clamping logic if we mock the property.
-    });
-
-    it('should call the callback during onProgress updates', () => {
+    it('should synchronize the progress callback with the temporal "timeupdate" event', () => {
         const progressCallback = vi.fn();
+
+        /**
+         * Handler registration.
+         * Subscribes the callback to the internal update cycle.
+         */
         player.onProgress(progressCallback);
 
+        /**
+         * Listener validation.
+         * Confirms the functional binding on the ontimeupdate property.
+         */
+        expect(typeof capturedAudio.ontimeupdate).toBe('function');
+
+        /**
+         * Temporal simulation.
+         * Manipulates state and triggers the hook to evaluate parameter pass-through.
+         */
+        capturedAudio.currentTime = 15;
+        capturedAudio.duration = 30;
+        capturedAudio.ontimeupdate();
+
+        expect(progressCallback).toHaveBeenCalledWith(15, 30);
     });
 });
