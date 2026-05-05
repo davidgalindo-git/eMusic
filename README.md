@@ -19,8 +19,6 @@ Dev (développement): Mise à jour dynamique pendant le développement
 ```bash
 npm run dev
 ```
-Puis, cliquer sur le lien d'hébergement local (localhost) dans le terminal
-<img width="302" height="165" alt="image" src="https://github.com/user-attachments/assets/e3633cce-6f8a-4c5b-bb2a-8e881ed91fb7" />
 
 ou  
 
