@@ -14,7 +14,7 @@ cd emusic-app
 ```bash
 npm install
 ```
-5. Lancer le projet
+4. Lancer le projet
 
 Dev (développement)
 ```bash
