@@ -1,7 +1,7 @@
 # eMusic
 
 Développé par David Galindo (SI-CA2a) avec [Vue 3](https://vuejs.org/) et [Vite](https://vitejs.dev/).
-## Démarrage de l'app
+## Installation de l'app
 1. Avoir installé [Node.js](https://nodejs.org/fr)
 2. Cloner localement le repository git dans un repertoire appelé "emusic-app"
 ```bash
@@ -14,20 +14,21 @@ cd emusic-app
 ```bash
 npm install
 ```
-4. Créer un fichier ".env" au même niveau que "package.json" basé sur le fichier ".env.example" et remplacer les données secrètes.  
-Création du fichier
-```bash
-touch .env
-```
-5. Lancer le projet
-
-Dev (développement)
+## Lancement de l'app
+Dev (développement): Mise à jour dynamique pendant le développement
 ```bash
 npm run dev
 ```
-Build (production)
+
+ou  
+
+Build (production): Compile et minifie le code pour la production
 ```bash
 npm run build
+```
+Preview : Teste le build pour détecter d'éventuels bugs spécifiques à la production
+```bash
+npm run preview
 ```
 
 ## Tests
@@ -45,6 +46,20 @@ Rapport de Couverture (Coverage)
 npm run test:coverage
 ```
 
-### Architecture & Data Flow
+## Déploiment
+Build (production): Compile et minifie le code pour la production
+```bash
+npm run build
+```
+### Hébergement Statique
+Transférer le dossier /dist vers des services comme Vercel, Netlify ou GitHub Pages.
+
+### VPS Traditionnel
+Utiliser un serveur web comme Nginx ou Apache pour servir le contenu du répertoire /dist.
+
+### Stockage Cloud
+Héberger via un bucket AWS S3 ou Google Cloud Storage configuré pour l'hébergement de sites web statiques.
+
+## Architecture & Data Flow
 ![Component Diagram](./src/docs/architecture-diagram.png)
 ![Diagram Legend](./src/docs/diagram_legend.png)
