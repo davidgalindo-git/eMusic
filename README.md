@@ -1,7 +1,7 @@
 # eMusic
 
 Développé par David Galindo (SI-CA2a) avec [Vue 3](https://vuejs.org/) et [Vite](https://vitejs.dev/).
-## Démarrage de l'app
+## Installation de l'app
 1. Avoir installé [Node.js](https://nodejs.org/fr)
 2. Cloner localement le repository git dans un repertoire appelé "emusic-app"
 ```bash
@@ -14,7 +14,7 @@ cd emusic-app
 ```bash
 npm install
 ```
-4. Lancer le projet
+## Lancement de l'app
 Dev (développement): Mise à jour dynamique pendant le développement
 ```bash
 npm run dev
