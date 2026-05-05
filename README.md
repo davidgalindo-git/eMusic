@@ -5,7 +5,7 @@ Développé par David Galindo (SI-CA2a) avec [Vue 3](https://vuejs.org/) et [Vit
 1. Avoir installé [Node.js](https://nodejs.org/fr)
 2. Cloner localement le repository git dans un repertoire appelé "emusic-app"
 ```bash
-git clone [https://github.com/davidgalindo-git/TPI_David_Galindo_2026](https://github.com/davidgalindo-git/eSample.git)
+git clone https://github.com/davidgalindo-git/TPI_David_Galindo_2026
 ```
 3. Installer les dépendances
 ```bash
