@@ -15,14 +15,20 @@ cd emusic-app
 npm install
 ```
 4. Lancer le projet
-
-Dev (développement)
+Dev (développement): Mise à jour dynamique pendant le développement
 ```bash
 npm run dev
-```
-Build (production)
+```  
+
+ou  
+
+Build (production): Compile et minifie le code pour la production
 ```bash
 npm run build
+```
+Preview : Teste le build pour détecter d'éventuels bugs spécifiques à la production
+```bash
+npm run preview
 ```
 
 ## Tests
@@ -40,6 +46,20 @@ Rapport de Couverture (Coverage)
 npm run test:coverage
 ```
 
-### Architecture & Data Flow
+## Déploiment
+Build (production): Compile et minifie le code pour la production
+```bash
+npm run build
+```
+### Hébergement Statique
+Transférez le dossier /dist vers des services comme Vercel, Netlify ou GitHub Pages.
+
+### VPS Traditionnel
+Utilisez un serveur web comme Nginx ou Apache pour servir le contenu du répertoire /dist.
+
+### Stockage Cloud
+Hébergez via un bucket AWS S3 ou Google Cloud Storage configuré pour l'hébergement de sites web statiques.
+
+## Architecture & Data Flow
 ![Component Diagram](./src/docs/architecture-diagram.png)
 ![Diagram Legend](./src/docs/diagram_legend.png)
