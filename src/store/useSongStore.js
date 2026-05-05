@@ -94,7 +94,7 @@ export const useSongStore = defineStore("songStore", () => {
                 sessionStorage.setItem('current_collection_name', newName);
             }
         } catch (err) {
-            error.value = "Unable to load songs. Showing featured collection.";
+            error.value = "Unable to load songs. Showing featured songs.";
             resetToFeatured();
             console.error("Store Search Error:", err);
         } finally {
