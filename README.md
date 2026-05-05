@@ -18,7 +18,9 @@ npm install
 Dev (développement): Mise à jour dynamique pendant le développement
 ```bash
 npm run dev
-```  
+```
+Puis, cliquer sur le lien d'hébergement local (localhost)
+<img width="302" height="165" alt="image" src="https://github.com/user-attachments/assets/e3633cce-6f8a-4c5b-bb2a-8e881ed91fb7" />
 
 ou  
 
@@ -52,13 +54,13 @@ Build (production): Compile et minifie le code pour la production
 npm run build
 ```
 ### Hébergement Statique
-Transférez le dossier /dist vers des services comme Vercel, Netlify ou GitHub Pages.
+Transférer le dossier /dist vers des services comme Vercel, Netlify ou GitHub Pages.
 
 ### VPS Traditionnel
-Utilisez un serveur web comme Nginx ou Apache pour servir le contenu du répertoire /dist.
+Utiliser un serveur web comme Nginx ou Apache pour servir le contenu du répertoire /dist.
 
 ### Stockage Cloud
-Hébergez via un bucket AWS S3 ou Google Cloud Storage configuré pour l'hébergement de sites web statiques.
+Héberger via un bucket AWS S3 ou Google Cloud Storage configuré pour l'hébergement de sites web statiques.
 
 ## Architecture & Data Flow
 ![Component Diagram](./src/docs/architecture-diagram.png)
