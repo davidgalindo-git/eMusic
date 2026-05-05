@@ -14,11 +14,6 @@ cd emusic-app
 ```bash
 npm install
 ```
-4. Créer un fichier ".env" au même niveau que "package.json" basé sur le fichier ".env.example" et remplacer les données secrètes.  
-Création du fichier
-```bash
-touch .env
-```
 5. Lancer le projet
 
 Dev (développement)
