@@ -12,6 +12,7 @@ src
     song
       SongCard.vue -> Cartes avec les données des chansons
       SongContainer.vue -> Génère les cartes et appelle songStore
+    ErrorAlert.vue -> Affiche les messages d'erreur pertinents
     Logo.vue
   docs/
   store

@@ -4,7 +4,6 @@ src
     useITunes.js
   assets/
   components
-    Logo.vue
     player
       Player.vue
     playlist
@@ -21,6 +20,8 @@ src
     song
       SongCard.vue
       SongContainer.vue
+    Logo.vue
+    ErrorAlert.vue
   docs/
   store
     constants.js
