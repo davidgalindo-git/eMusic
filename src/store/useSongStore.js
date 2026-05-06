@@ -242,6 +242,6 @@ export const useSongStore = defineStore("songStore", () => {
         // Playback State
         isPlaying, currentSongId, currentTime, duration, currentIndex,
         // Actions
-        search, setSort, togglePlay, next, prev, seek, setQueue, playSongByIndex
+        search, setSort, play, togglePlay, next, prev, seek, setQueue, playSongByIndex
     };
 })
