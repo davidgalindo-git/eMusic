@@ -17,14 +17,34 @@ const handleSearch = (term) => {
 <template>
   <v-app>
     <v-main>
-      <SearchBar @search="handleSearch" />
-      <ErrorAlert />
-      <PlaylistSideMenu />
-      <SongContainer />
+      <div class="header-container">
+        <SearchBar @search="handleSearch" />
+        <ErrorAlert />
+      </div>
+      <div class="body-container">
+        <PlaylistSideMenu />
+        <SongContainer class="flex-grow-1"/>
+      </div>
     </v-main>
     <Player />
   </v-app>
 </template>
 
 <style>
+.body-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.header-container {
+  height: 60px;
+  padding: 10px;
+}
+
+.flex-grow-1 {
+  flex: 1;
+  min-width: 0;
+}
 </style>

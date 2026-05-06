@@ -15,14 +15,15 @@ import PlaylistContainer from "./PlaylistContainer.vue";
 .playlist-menu {
   /* Positioning and Size */
   width: 250px;
-  height: 100vh;
-  position: fixed;
+  position: sticky;
   left: 0;
   top: 0;
+  height: calc(100vh - 64px);
 
   /* Layout */
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
 
   /* Visuals */
   background-color: #121212;
