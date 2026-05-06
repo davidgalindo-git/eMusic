@@ -1,4 +1,5 @@
 <script setup>
+import {ref} from "vue";
 import {useSongStore} from "./store/useSongStore.js";
 
 import SearchBar from "./components/search/SearchBar.vue";
@@ -7,17 +8,13 @@ import Player from "./components/player/Player.vue";
 import ErrorAlert from "./components/ErrorAlert.vue";
 import PlaylistSideMenu from "./components/playlist/menu/PlaylistSideMenu.vue";
 import PlaylistPage from "./components/playlist/page/PlaylistPage.vue";
-import {usePlaylistStore} from "./store/usePlaylistStore.js";
-import {ref} from "vue";
 
 const songStore = useSongStore();
-const playlistStore = usePlaylistStore();
 
 const currentView = ref('search')
 
-const showPlaylist = (playlistId) => {
+const showPlaylist = () => {
   currentView.value = 'playlist';
-  playlistStore.selectPlaylist(playlistId)
 }
 
 const handleSearch = (term) => {
@@ -33,7 +30,7 @@ const handleSearch = (term) => {
         <ErrorAlert />
       </div>
       <div class="body-container">
-        <PlaylistSideMenu @select-playlist="showPlaylist"/>
+        <PlaylistSideMenu @show-playlist="showPlaylist"/>
         <SongContainer v-if="currentView === 'search'" class="flex-grow-1"/>
         <PlaylistPage v-if="currentView === 'playlist'" class="flex-grow-1"/>
       </div>
