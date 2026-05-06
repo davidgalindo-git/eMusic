@@ -1,4 +1,6 @@
 <script setup>
+import {CARD_VARIANTS} from "../../store/constants.js";
+
 const props = defineProps({
   playlist: {
     type: Object,
@@ -7,10 +9,14 @@ const props = defineProps({
 })
 
 const emit = defineEmits(["select"]);
+
+const variants = CARD_VARIANTS;
 </script>
 
 <template>
-<p>Playlist 1</p>
+<v-card>
+
+</v-card>
 </template>
 
 <style scoped>
