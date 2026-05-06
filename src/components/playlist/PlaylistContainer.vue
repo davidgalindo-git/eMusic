@@ -1,6 +1,8 @@
 <script setup>
 import PlaylistCard from "./PlaylistCard.vue";
 import {usePlaylistStore} from "../../store/usePlaylistStore.js";
+import NewPlaylistButton from "./NewPlaylistButton.vue";
+import EditModeButton from "../EditModeButton.vue";
 
 const playlistStore = usePlaylistStore();
 
@@ -10,6 +12,10 @@ const handlePlaylistClick = (playlistId) => {
 </script>
 
 <template>
+  <div class="playlist-actions">
+    <NewPlaylistButton />
+    <EditModeButton />
+  </div>
   <v-col v-if="playlistStore.playlists.length">
     <PlaylistCard
         v-for="playlist in playlistStore.playlists"
