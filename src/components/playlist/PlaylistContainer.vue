@@ -10,8 +10,7 @@ const handlePlaylistClick = (playlistId) => {
 </script>
 
 <template>
-  <v-col v-if="playlistStore.playlists.length"
-  >
+  <v-col v-if="playlistStore.playlists.length">
     <PlaylistCard
         v-for="playlist in playlistStore.playlists"
         :key="playlist.id"
