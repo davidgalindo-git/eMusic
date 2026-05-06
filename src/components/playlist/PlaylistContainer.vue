@@ -3,24 +3,38 @@ import PlaylistCard from "./PlaylistCard.vue";
 import {usePlaylistStore} from "../../store/usePlaylistStore.js";
 import NewPlaylistButton from "./NewPlaylistButton.vue";
 import EditModeButton from "../EditModeButton.vue";
+import {ref} from "vue";
 
 const playlistStore = usePlaylistStore();
 
 const isEditMode = ref(false)
+const isEditingPlaylist = ref(false)
 
 const toggleEditMode = () => {
   isEditMode.value = !isEditMode.value;
 }
 
+const toggleIsEditingPlaylist = () => {
+  isEditingPlaylist.value = !isEditingPlaylist.value;
+}
+
 const handlePlaylistClick = (playlistId) => {
+  if (isEditMode.value) {
+    toggleIsEditingPlaylist()
+  } else
   playlistStore.selectPlaylist(playlistId);
+}
+
+const handlePlaylistEditSubmit = (playlistId, newName) => {
+  playlistStore.renamePlaylist(playlistId, newName)
+  toggleIsEditingPlaylist()
 }
 </script>
 
 <template>
   <div class="playlist-actions">
     <NewPlaylistButton />
-    <EditModeButton />
+    <EditModeButton @toggle-edit-mode="toggleEditMode"/>
   </div>
   <v-col v-if="playlistStore.playlists.length">
     <PlaylistCard
