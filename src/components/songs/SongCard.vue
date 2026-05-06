@@ -36,7 +36,7 @@ const variants = CARD_VARIANTS;
         >
       </v-card-item>
     </div>
-    <AddToPlaylist />
+    <AddToPlaylist :song="song" />
   </v-card>
 </template>
 

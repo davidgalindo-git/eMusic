@@ -3,6 +3,13 @@ import {usePlaylistStore} from "../../store/usePlaylistStore.js";
 import {ref} from "vue";
 import NewPlaylistButton from "../playlist/NewPlaylistButton.vue";
 
+const props = defineProps({
+  song: {
+    type: Object,
+    required: true
+  }
+});
+
 const playlistStore = usePlaylistStore();
 const isPopUp = ref(false)
 
