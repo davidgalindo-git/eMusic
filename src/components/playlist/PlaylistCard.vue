@@ -6,6 +6,7 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits(["select"]);
 </script>
 
 <template>
