@@ -1,9 +1,20 @@
 <script setup>
 import PlaylistCard from "./PlaylistCard.vue";
+import {usePlaylistStore} from "../../store/usePlaylistStore.js";
+
+const playlistStore = usePlaylistStore();
+
+
 </script>
 
 <template>
-  <PlaylistCard class="playlist-item"/>
+  <v-col v-if="playlistStore.playlists.length"
+    v-for="playlist in playlistStore.playlists"
+    :key="playlist.id"
+  >
+    <PlaylistCard class="playlist-item" :playlist="playlist"/>
+  </v-col>
+
 </template>
 
 <style scoped>
