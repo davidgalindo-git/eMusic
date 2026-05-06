@@ -26,7 +26,7 @@ const handleRename = (playlistId, newName) => {
     playlistStore.renamePlaylist(playlistId, newName);
   }
   editingPlaylistId.value = null;
-  toggleEditMode();
+  isEditMode.value = false;
 }
 </script>
 
