@@ -38,7 +38,7 @@ const handlePlaylistClick = (song, playlistId) => {
           v-for="playlist in playlistStore.playlists"
           :key="playlist.id"
           :title="playlist.name"
-          @click="handlePlaylistClick(playlist.id)"
+          @click="handlePlaylistClick(song, playlist.id)"
       >
         <template v-slot:prepend>
           <v-icon icon="mdi-music-note-plus" size="small"></v-icon>
