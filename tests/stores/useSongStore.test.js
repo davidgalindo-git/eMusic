@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useSongStore } from '../../src/store/useSongStore.js'
+import { player } from '../../src/store/player.js'
 import * as storageHelper from '../../src/store/storageHelper.js'
 import * as itunesModule from '../../src/api/useITunes.js'
 
@@ -12,6 +13,25 @@ import * as itunesModule from '../../src/api/useITunes.js'
 vi.mock('../../src/store/storageHelper', () => ({
     loadCollection: vi.fn(() => []),
     saveCollection: vi.fn()
+}))
+
+/**
+ * Audio Engine Interception.
+ * Prevents the store from attempting to trigger real HTML5 Audio
+ * elements which are unavailable in the test environment.
+ */
+vi.mock('../../src/store/player.js', () => ({
+    player: {
+        play: vi.fn((url, callback) => {
+            // Logic: Simulate immediate success without real audio overhead
+            return Promise.resolve();
+        }),
+        pause: vi.fn(),
+        stop: vi.fn(),
+        onProgress: vi.fn(),
+        getCurrentTime: vi.fn(() => 0),
+        seek: vi.fn()
+    }
 }))
 
 /**
@@ -82,33 +102,33 @@ describe('useSongStore - Queue Orchestration & Positional Playback', () => {
             store.songs = mockQueue
 
             /**
-             * Controller interception.
-             * Monitors the internal 'play' action to verify parameter mapping.
-             */
-            const playSpy = vi.spyOn(store, 'play')
-
-            /**
              * Logic execution.
-             * Triggers playback for the targeted index.
+             * Triggers playback for the targeted index (Index 1 = trackId 200).
              */
             store.playSongByIndex(1)
 
-            expect(playSpy).toHaveBeenCalledWith(mockQueue[1])
+            /**
+             * Side-Effect Validation.
+             * Instead of spying on the store action, we verify the call reached
+             * the mocked player engine with the correct URL.
+             */
+            expect(player.play).toHaveBeenCalledWith(mockQueue[1].previewUrl, expect.any(Function))
             expect(store.currentSongId).toBe(200)
+            expect(store.isPlaying).toBe(true)
         })
 
         it('should enforce boundary protection for Out-of-Bounds index requests', () => {
-            store.songs = [{ trackId: 1, trackName: 'Only' }]
-            const playSpy = vi.spyOn(store, 'play')
+            store.songs = [{ trackId: 1, trackName: 'Only', previewUrl: 'url1' }]
 
             /**
              * Overflow and Underflow validation.
-             * Ensures guard clauses prevent execution on invalid array indices.
+             * Verifies that the player engine is never reached.
              */
             store.playSongByIndex(5)
             store.playSongByIndex(-1)
 
-            expect(playSpy).not.toHaveBeenCalled()
+            expect(player.play).not.toHaveBeenCalled()
+            expect(store.currentSongId).toBeNull()
         })
     })
 })
