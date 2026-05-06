@@ -11,7 +11,7 @@ const props = defineProps({
   isCurrentlyRenaming: Boolean
 })
 
-const emit = defineEmits(["select", "rename", "cancel-rename"]);
+const emit = defineEmits(["select", "rename", "cancel-rename", "delete"]);
 
 const editName = ref(props.playlist.name)
 

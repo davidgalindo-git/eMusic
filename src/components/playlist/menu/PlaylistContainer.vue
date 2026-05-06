@@ -30,6 +30,10 @@ const handleRename = (playlistId, newName) => {
   editingPlaylistId.value = null;
   isEditMode.value = false;
 }
+
+const deletePlaylist = (playlistId) => {
+  playlistStore.deletePlaylist(playlistId);
+}
 </script>
 
 <template>
@@ -52,6 +56,7 @@ const handleRename = (playlistId, newName) => {
         @select="handlePlaylistClick"
         @rename="handleRename"
         @cancel-rename="editingPlaylistId = null"
+        @delete="deletePlaylist(playlist.id)"
     />
   </v-col>
   <div v-else class="text-center">
