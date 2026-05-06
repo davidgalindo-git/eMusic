@@ -211,12 +211,37 @@ export const useSongStore = defineStore("songStore", () => {
         sessionStorage.removeItem('current_collection_name');
     }
 
+    /**
+     * Replaces the current reactive song collection with a new set of tracks.
+     *
+     * @param {Array}  newSongs - Array of normalized song objects to be injected.
+     * @param {string} name     - Contextual name for the UI (e.g., Playlist title).
+     */
+    function setQueue(newSongs, name = "Playlist") {
+        if (!newSongs || newSongs.length === 0) return;
+
+        songs.value = [...newSongs];
+        collectionName.value = name;
+    }
+
+    /**
+     * Triggers playback based on the song's positional index within the active queue.
+     *
+     * @param {number} index - Zero-based index of the target track in the current songs array.
+     */
+    function playSongByIndex(index) {
+        if (index >= 0 && index < songs.value.length) {
+            const songToPlay = songs.value[index];
+            play(songToPlay);
+        }
+    }
+
     return {
         // Data & UI State
         songs, loading, error, sortKey, sortOrder, collectionName,
         // Playback State
         isPlaying, currentSongId, currentTime, duration, currentIndex,
         // Actions
-        search, setSort, togglePlay, next, prev, seek
+        search, setSort, play, togglePlay, next, prev, seek, setQueue, playSongByIndex
     };
 })
