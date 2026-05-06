@@ -1,4 +1,10 @@
 <script setup>
+const props = defineProps({
+  playlist: {
+    type: Object,
+    required: true
+  }
+})
 
 </script>
 
