@@ -8,26 +8,25 @@ import EditModeButton from "../EditModeButton.vue";
 const playlistStore = usePlaylistStore();
 
 const isEditMode = ref(false)
-const isEditingPlaylist = ref(false)
+const editingPlaylistId = ref(null)
 
 const toggleEditMode = () => {
   isEditMode.value = !isEditMode.value;
-}
-
-const toggleIsEditingPlaylist = () => {
-  isEditingPlaylist.value = !isEditingPlaylist.value;
+  if (!isEditMode.value) editingPlaylistId.value = null;
 }
 
 const handlePlaylistClick = (playlistId) => {
   if (isEditMode.value) {
-    toggleIsEditingPlaylist()
-  } else
+    editingPlaylistId.value = playlistId;  } else
   playlistStore.selectPlaylist(playlistId);
 }
 
-const handlePlaylistEditSubmit = (playlistId, newName) => {
-  playlistStore.renamePlaylist(playlistId, newName)
-  toggleIsEditingPlaylist()
+const handleRename = (playlistId, newName) => {
+  if (newName.trim()) {
+    playlistStore.renamePlaylist(playlistId, newName);
+  }
+  editingPlaylistId.value = null;
+  toggleEditMode();
 }
 </script>
 
@@ -45,7 +44,11 @@ const handlePlaylistEditSubmit = (playlistId, newName) => {
         :key="playlist.id"
         class="playlist-item"
         :playlist="playlist"
+        :is-edit-mode="isEditMode"
+        :is-currently-renaming="editingPlaylistId === playlist.id"
         @select="handlePlaylistClick"
+        @rename="handleRename"
+        @cancel-rename="editingPlaylistId = null"
     />
   </v-col>
   <div v-else class="text-center">
