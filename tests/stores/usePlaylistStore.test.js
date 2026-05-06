@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { usePlaylistStore } from '../../src/store/usePlaylistStore'
-import * as storage from '../../src/store/storageHelper'
 
 /**
  * Storage Layer Interception.
