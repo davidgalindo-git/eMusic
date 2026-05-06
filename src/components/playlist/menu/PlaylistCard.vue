@@ -1,6 +1,6 @@
 <script setup>
 import {ref, watch} from "vue";
-import {CARD_VARIANTS} from "../../../store/constants.js";
+import DeletePlaylistButton from "./DeletePlaylistButton.vue";
 
 const props = defineProps({
   playlist: {
@@ -24,47 +24,80 @@ const submitRename = () => {
 </script>
 
 <template>
-  <div class="playlist-item-container">
-    <!-- Rename Input Mode -->
-    <v-text-field
-        v-if="isCurrentlyRenaming"
-        v-model="editName"
-        density="compact"
-        autofocus
-        hide-details
-        @keyup.enter="submitRename"
-        @keyup.esc="emit('cancel-rename')"
-        @blur="submitRename"
-        class="px-4"
-    >
-      <template v-slot:append-inner>
-        <v-icon size="small" color="success" @click="submitRename">mdi-check</v-icon>
-      </template>
-    </v-text-field>
+  <div class="playlist-card">
+    <div class="content-area">
+      <!-- Rename Input Mode -->
+      <v-text-field
+          v-if="isCurrentlyRenaming"
+          v-model="editName"
+          density="compact"
+          autofocus
+          hide-details
+          @keyup.enter="submitRename"
+          @keyup.esc="emit('cancel-rename')"
+          @blur="submitRename"
+          class="px-4"
+      >
+        <template v-slot:append-inner>
+          <v-icon size="small" color="success" @click="submitRename">mdi-check</v-icon>
+        </template>
+      </v-text-field>
 
-    <!-- Normal Display Mode -->
-    <div
-        v-else
-        class="playlist-item d-flex align-center justify-space-between"
-        @click="emit('select', playlist.id)"
-    >
-      <div class="d-flex align-center">
-        <span class="text-truncate">{{ playlist.name }}</span>
-      </div>
+      <!-- Normal Display Mode -->
+      <div
+          v-else
+          class="display-info"
+          @click="emit('select', playlist.id)"
+      >
+        <span class="playlist-name text-truncate">{{ playlist.name }}</span>
+        <span class="song-count text-caption grey--text">{{ playlist.songs.length }} songs</span>   </div>
+    </div>
 
-      <span class="text-caption grey--text">{{ playlist.songs.length }} songs</span>
+    <div v-if="isEditMode" class="action-area">
+      <DeletePlaylistButton @delete-playlist="$emit('delete', playlist.id)" />
     </div>
   </div>
 </template>
 
 <style scoped>
 .playlist-card {
-  padding: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 16px;
+  gap: 12px;
+  transition: background 0.2s;
 }
 
-.title {
-  color: white;
-  padding: 0;
-  font-size: 1rem;
+.playlist-card:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.content-area {
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.display-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.playlist-name {
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.song-count {
+  white-space: nowrap;
+}
+
+.action-area {
+  display: flex;
+  align-items: center;
 }
 </style>
