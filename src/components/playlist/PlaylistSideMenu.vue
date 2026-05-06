@@ -1,5 +1,5 @@
 <script setup>
-
+import PlaylistContainer from "./PlaylistContainer.vue";
 </script>
 
 <template>
