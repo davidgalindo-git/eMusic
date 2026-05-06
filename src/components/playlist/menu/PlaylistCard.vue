@@ -21,18 +21,16 @@ watch(() => props.playlist.name, (newVal) => editName.ref = newVal);
 const submitRename = () => {
   emit('rename', props.playlist.id, editName.value);
 };
-
-const variants = CARD_VARIANTS;
 </script>
 
 <template>
+<div>
   <div class="playlist-item-container">
     <!-- Rename Input Mode -->
     <v-text-field
         v-if="isCurrentlyRenaming"
         v-model="editName"
         density="compact"
-        :variant=variants[2]
         autofocus
         hide-details
         @keyup.enter="submitRename"
@@ -58,6 +56,7 @@ const variants = CARD_VARIANTS;
       <span class="text-caption grey--text">{{ playlist.songs.length }} songs</span>
     </div>
   </div>
+</div>
 </template>
 
 <style scoped>
