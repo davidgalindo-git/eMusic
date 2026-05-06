@@ -6,6 +6,7 @@ import SongContainer from "./components/songs/SongContainer.vue";
 import Player from "./components/player/Player.vue";
 import ErrorAlert from "./components/ErrorAlert.vue";
 import PlaylistSideMenu from "./components/playlist/menu/PlaylistSideMenu.vue";
+import PlaylistPage from "./components/playlist/page/PlaylistPage.vue";
 
 const songStore = useSongStore();
 
@@ -24,6 +25,7 @@ const handleSearch = (term) => {
       <div class="body-container">
         <PlaylistSideMenu />
         <SongContainer class="flex-grow-1"/>
+        <PlaylistPage class="flex-grow-1"/>
       </div>
     </v-main>
     <Player />
