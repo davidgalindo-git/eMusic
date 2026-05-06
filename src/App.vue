@@ -18,6 +18,7 @@ const handleSearch = (term) => {
     <v-main>
       <SearchBar @search="handleSearch" />
       <ErrorAlert />
+      <PlaylistSideMenu />
       <SongContainer />
     </v-main>
     <Player />
