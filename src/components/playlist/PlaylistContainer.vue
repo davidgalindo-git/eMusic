@@ -16,7 +16,10 @@ const handlePlaylistClick = (playlistId) => {
   >
     <PlaylistCard class="playlist-item" :playlist="playlist" @select="handlePlaylistClick"/>
   </v-col>
-
+  <div v-else class="text-center">
+    <p>No playlists yet</p>
+    <p class="text-body-small">Create or add a song to a new playlist.</p>
+  </div>
 </template>
 
 <style scoped>
