@@ -15,18 +15,26 @@ const variants = CARD_VARIANTS;
 
 <template>
   <v-card
-    :variant="variants"
+    :variant="variants[2]"
     class="playlist-card mx-auto"
     color="surface-variant"
-    max-width="100"
-    height="30"
+    width="100%"
+    height="40"
     @click="emit('select', playlist.id)"
   >
-    <v-card-title>{{ playlist.name }}</v-card-title>
+    <v-card-text class="title">{{ playlist.name }}</v-card-text>
     <v-card-text>{{ playlist.songs.length }} songs</v-card-text>
   </v-card>
 </template>
 
 <style scoped>
+.playlist-card {
+  padding: 0;
+}
 
+.title {
+  color: white;
+  padding: 0;
+  font-size: 1rem;
+}
 </style>
