@@ -24,7 +24,6 @@ const submitRename = () => {
 </script>
 
 <template>
-<div>
   <div class="playlist-item-container">
     <!-- Rename Input Mode -->
     <v-text-field
@@ -56,7 +55,6 @@ const submitRename = () => {
       <span class="text-caption grey--text">{{ playlist.songs.length }} songs</span>
     </div>
   </div>
-</div>
 </template>
 
 <style scoped>
