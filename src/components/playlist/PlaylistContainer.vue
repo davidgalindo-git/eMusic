@@ -6,6 +6,12 @@ import EditModeButton from "../EditModeButton.vue";
 
 const playlistStore = usePlaylistStore();
 
+const isEditMode = ref(false)
+
+const toggleEditMode = () => {
+  isEditMode.value = !isEditMode.value;
+}
+
 const handlePlaylistClick = (playlistId) => {
   playlistStore.selectPlaylist(playlistId);
 }
