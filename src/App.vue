@@ -17,7 +17,7 @@ const currentView = ref('search')
 
 const showPlaylist = (playlistId) => {
   currentView.value = 'playlist';
-  playlistStore.selectedPlaylist(playlistId)
+  playlistStore.selectPlaylist(playlistId)
 }
 
 const handleSearch = (term) => {
