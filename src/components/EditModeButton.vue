@@ -1,13 +1,13 @@
 <script setup>
-import {ref} from "vue";
+const props = defineProps({
+  isEditMode: Boolean,
+  required: true
+})
 
 const emit = defineEmits(["toggle-edit-mode"]);
 
-const isEditMode = ref(false)
-
-const toggleEditMode = () => {
-  isEditMode.value = !isEditMode.value
-  emit("toggle-edit-mode", isEditMode.value)
+const handleClick = () => {
+  emit("toggle-edit-mode")
 }
 </script>
 
@@ -17,8 +17,8 @@ const toggleEditMode = () => {
       variant="text"
       density="comfortable"
       color="primary"
-      :title="isEditMode ? 'Close' : 'Edit Mode'"
-      @click="toggleEditMode"
+      :title="isEditMode ? 'Close Edit Mode' : 'Edit Mode'"
+      @click="handleClick"
   >
   </v-btn>
 </template>
