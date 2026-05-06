@@ -1,5 +1,6 @@
 <script setup>
 import {CARD_VARIANTS} from "../../store/constants.js";
+import AddToPlaylist from "./AddToPlaylist.vue";
 
 const props = defineProps({
   song: {
@@ -35,6 +36,7 @@ const variants = CARD_VARIANTS;
         >
       </v-card-item>
     </div>
+    <AddToPlaylist />
   </v-card>
 </template>
 
