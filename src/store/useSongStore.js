@@ -211,12 +211,26 @@ export const useSongStore = defineStore("songStore", () => {
         sessionStorage.removeItem('current_collection_name');
     }
 
+    function setQueue(newSongs, name = "Playlist") {
+        if (!newSongs || newSongs.length === 0) return;
+
+        songs.value = [...newSongs];
+        collectionName.value = name;
+    }
+
+    function playSongByIndex(index) {
+        if (index >= 0 && index < songs.value.length) {
+            const songToPlay = songs.value[index];
+            play(songToPlay);
+        }
+    }
+
     return {
         // Data & UI State
         songs, loading, error, sortKey, sortOrder, collectionName,
         // Playback State
         isPlaying, currentSongId, currentTime, duration, currentIndex,
         // Actions
-        search, setSort, togglePlay, next, prev, seek
+        search, setSort, togglePlay, next, prev, seek, setQueue, playSongByIndex
     };
 })
