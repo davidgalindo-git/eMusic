@@ -1,4 +1,6 @@
 <script setup>
+import {CARD_VARIANTS} from "../../store/constants.js";
+
 const props = defineProps({
   song: {
     type: Object,
@@ -8,7 +10,7 @@ const props = defineProps({
 
 const emit = defineEmits(["toggle-play"]);
 
-const variants = ['elevated', 'flat', 'tonal', 'outlined'];
+const variants = CARD_VARIANTS;
 </script>
 
 <template>
