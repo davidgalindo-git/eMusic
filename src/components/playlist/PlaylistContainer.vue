@@ -4,7 +4,9 @@ import {usePlaylistStore} from "../../store/usePlaylistStore.js";
 
 const playlistStore = usePlaylistStore();
 
-
+const handlePlaylistClick = (playlistId) => {
+  playlistStore.selectPlaylist(playlistId);
+}
 </script>
 
 <template>
@@ -12,7 +14,7 @@ const playlistStore = usePlaylistStore();
     v-for="playlist in playlistStore.playlists"
     :key="playlist.id"
   >
-    <PlaylistCard class="playlist-item" :playlist="playlist"/>
+    <PlaylistCard class="playlist-item" :playlist="playlist" @select="handlePlaylistClick"/>
   </v-col>
 
 </template>
