@@ -11,10 +11,14 @@ const handlePlaylistClick = (playlistId) => {
 
 <template>
   <v-col v-if="playlistStore.playlists.length"
-    v-for="playlist in playlistStore.playlists"
-    :key="playlist.id"
   >
-    <PlaylistCard class="playlist-item" :playlist="playlist" @select="handlePlaylistClick"/>
+    <PlaylistCard
+        v-for="playlist in playlistStore.playlists"
+        :key="playlist.id"
+        class="playlist-item"
+        :playlist="playlist"
+        @select="handlePlaylistClick"
+    />
   </v-col>
   <div v-else class="text-center">
     <p>No playlists yet</p>
