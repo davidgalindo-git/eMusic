@@ -5,7 +5,7 @@ import SearchBar from "./components/search/SearchBar.vue";
 import SongContainer from "./components/songs/SongContainer.vue";
 import Player from "./components/player/Player.vue";
 import ErrorAlert from "./components/ErrorAlert.vue";
-import PlaylistSideMenu from "./components/playlist/PlaylistSideMenu.vue";
+import PlaylistSideMenu from "./components/playlist/menu/PlaylistSideMenu.vue";
 
 const songStore = useSongStore();
 

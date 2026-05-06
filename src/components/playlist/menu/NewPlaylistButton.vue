@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from "vue";
-import {usePlaylistStore} from "../../store/usePlaylistStore.js";
+import {usePlaylistStore} from "../../../store/usePlaylistStore.js";
 
 const playlistStore = usePlaylistStore()
 const isPopUp = ref(false)

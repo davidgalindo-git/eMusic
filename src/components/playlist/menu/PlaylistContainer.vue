@@ -1,6 +1,6 @@
 <script setup>
 import PlaylistCard from "./PlaylistCard.vue";
-import {usePlaylistStore} from "../../store/usePlaylistStore.js";
+import {usePlaylistStore} from "../../../store/usePlaylistStore.js";
 import NewPlaylistButton from "./NewPlaylistButton.vue";
 import EditModeButton from "../EditModeButton.vue";
 import {ref} from "vue";

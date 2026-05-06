@@ -1,5 +1,5 @@
 <script setup>
-import {CARD_VARIANTS} from "../../store/constants.js";
+import {CARD_VARIANTS} from "../../../store/constants.js";
 
 const props = defineProps({
   playlist: {
