@@ -17,8 +17,10 @@ const toggleEditMode = () => {
 
 const handlePlaylistClick = (playlistId) => {
   if (isEditMode.value) {
-    editingPlaylistId.value = playlistId;  } else
+    editingPlaylistId.value = playlistId;
+  } else {
   playlistStore.selectPlaylist(playlistId);
+  }
 }
 
 const handleRename = (playlistId, newName) => {
@@ -31,7 +33,8 @@ const handleRename = (playlistId, newName) => {
 </script>
 
 <template>
-  <div class="playlist-actions">
+  <div>
+    <div class="playlist-actions">
     <NewPlaylistButton />
     <EditModeButton
         :is-edit-mode="isEditMode"
@@ -55,6 +58,7 @@ const handleRename = (playlistId, newName) => {
     <p>No playlists yet</p>
     <p class="text-body-small">Create or add a song to a new playlist.</p>
   </div>
+</div>
 </template>
 
 <style scoped>
