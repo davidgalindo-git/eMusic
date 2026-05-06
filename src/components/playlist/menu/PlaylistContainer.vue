@@ -1,9 +1,9 @@
 <script setup>
-import PlaylistCard from "./PlaylistCard.vue";
+import {ref} from "vue";
 import {usePlaylistStore} from "../../../store/usePlaylistStore.js";
+import PlaylistCard from "./PlaylistCard.vue";
 import NewPlaylistButton from "./NewPlaylistButton.vue";
 import EditModeButton from "../EditModeButton.vue";
-import {ref} from "vue";
 
 const playlistStore = usePlaylistStore();
 
@@ -34,7 +34,10 @@ const handlePlaylistEditSubmit = (playlistId, newName) => {
 <template>
   <div class="playlist-actions">
     <NewPlaylistButton />
-    <EditModeButton @toggle-edit-mode="toggleEditMode"/>
+    <EditModeButton
+        :is-edit-mode="isEditMode"
+        @toggle-edit-mode="toggleEditMode"
+    />
   </div>
   <v-col v-if="playlistStore.playlists.length">
     <PlaylistCard
