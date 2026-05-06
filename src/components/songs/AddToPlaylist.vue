@@ -11,28 +11,27 @@ const props = defineProps({
 });
 
 const playlistStore = usePlaylistStore();
-const isPopUp = ref(false)
-
-const togglePopUp = () => {
-  isPopUp.value = !isPopUp.value;
-}
 
 const handlePlaylistClick = (song, playlistId) => {
   playlistStore.addToPlaylist(song, playlistId);
-  togglePopUp();
 }
 </script>
 
 <template>
-  <v-btn
-      v-if="!isPopUp"
-      :icon="'mdi-plus'"
-      variant="text"
-      density="comfortable"
-      color="primary"
-      @click="togglePopUp"
-      :title="'Add To Playlist'"
-  ></v-btn>
+  <v-menu location="bottom end" :close-on-content-click="false">
+    <template v-slot:activator="{ props }">
+      <v-btn
+          v-bind="props"
+          icon="mdi-plus"
+          variant="text"
+          density="comfortable"
+          color="primary"
+          title="Add To Playlist"
+          @click.stop
+      ></v-btn>
+    </template>
+  </v-menu>
+
   <v-col v-if="isPopUp">
     <v-card v-if="playlistStore.playlists.length"
       v-for="playlist in playlistStore.playlists"
