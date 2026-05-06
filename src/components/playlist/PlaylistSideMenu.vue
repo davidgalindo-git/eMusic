@@ -1,6 +1,7 @@
 <script setup>
 import PlaylistContainer from "./PlaylistContainer.vue";
 import NewPlaylistButton from "./NewPlaylistButton.vue";
+import EditModeButton from "../EditModeButton.vue";
 </script>
 
 <template>
@@ -8,6 +9,7 @@ import NewPlaylistButton from "./NewPlaylistButton.vue";
     <div class="menu-header">
       <h2>Playlists</h2>
       <NewPlaylistButton />
+      <EditModeButton />
     </div>
     <PlaylistContainer class="playlist-container"/>
   </aside>
