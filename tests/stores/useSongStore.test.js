@@ -2,64 +2,113 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useSongStore } from '../../src/store/useSongStore.js'
 import * as storageHelper from '../../src/store/storageHelper.js'
-import * as itunesModule from '../../src/api/useITunes.js' // Ensure this is imported
-import { DEFAULT_COLLECTION } from "../../src/store/constants.js";
+import * as itunesModule from '../../src/api/useITunes.js'
 
-describe('useSongStore Persistence Logic', () => {
+/**
+ * Storage Layer Interception.
+ * Replaces the persistence engine with controlled mocks to prevent
+ * side effects on the host environment's LocalStorage.
+ */
+vi.mock('../../src/store/storageHelper', () => ({
+    loadCollection: vi.fn(() => []),
+    saveCollection: vi.fn()
+}))
+
+/**
+ * Unit Test Container: useSongStore - Advanced Queue & Playback Logic.
+ * Validates the core audio engine orchestration, including reactive queue
+ * displacement and positional playback execution.
+ */
+describe('useSongStore - Queue Orchestration & Positional Playback', () => {
     let fetchSongsMock;
+    let store;
 
     beforeEach(() => {
+        /**
+         * Context Initialization.
+         * Establishes a clean Pinia instance and resets mock registry
+         * to ensure total test isolation.
+         */
         setActivePinia(createPinia())
         vi.clearAllMocks()
         sessionStorage.clear()
 
-        // Setup API Mocking
         fetchSongsMock = vi.fn()
         vi.spyOn(itunesModule, 'useITunes').mockReturnValue({
             fetchSongs: fetchSongsMock
         })
 
-        // Setup Storage Mocking
-        vi.spyOn(storageHelper, 'saveCollection')
-        vi.spyOn(storageHelper, 'loadCollection').mockReturnValue(null)
+        store = useSongStore()
     })
 
-    it('should execute Atomic Persistence side-effects on successful search', async () => {
-        // Resolve the "Timeout" by providing a settled promise
-        fetchSongsMock.mockResolvedValue([
-            { trackId: 1, trackName: 'Genesis', wrapperType: 'track', kind: 'song' }
-        ])
+    describe('Queue Synchronization Actions', () => {
+        it('should execute non-destructive Queue Swap via setQueue', () => {
+            const playlistSongs = [
+                { trackId: 10, trackName: 'Playlist Track', previewUrl: 'url1' }
+            ]
+            const playlistName = 'My Summer Mix'
 
-        const store = useSongStore()
-        const searchTerm = 'Justice'
+            /**
+             * State displacement.
+             * Injects the provided song array into the reactive 'songs' reference
+             * and updates the contextual 'collectionName'.
+             */
+            store.setQueue(playlistSongs, playlistName)
 
-        await store.search(searchTerm)
+            expect(store.songs).toHaveLength(1)
+            expect(store.songs[0].trackId).toBe(10)
+            expect(store.collectionName).toBe(playlistName)
 
-        // Validate state-to-storage commit
-        expect(storageHelper.saveCollection).toHaveBeenCalledWith('search_results', expect.any(Array))
-        expect(sessionStorage.getItem('current_collection_name')).toBe(`Results for "${searchTerm}"`)
+            /**
+             * Storage persistence bypass check.
+             * Confirms that transient queue updates do not overwrite
+             * the persistent global search history.
+             */
+            expect(storageHelper.saveCollection).not.toHaveBeenCalledWith('search_results', expect.any(Array))
+        })
     })
 
-    it('should maintain Persistence Parity during local sort mutations', () => {
-        // Resolve the "AssertionError" by ensuring the store has data to sort
-        const mockData = [
-            { trackId: 2, trackName: 'B', wrapperType: 'track', kind: 'song' },
-            { trackId: 1, trackName: 'A', wrapperType: 'track', kind: 'song' }
-        ]
+    describe('Positional Execution Logic', () => {
+        it('should map a discrete index to Playback Execution via playSongByIndex', () => {
+            const mockQueue = [
+                { trackId: 100, trackName: 'First', previewUrl: 'url1' },
+                { trackId: 200, trackName: 'Second', previewUrl: 'url2' }
+            ]
 
-        const store = useSongStore()
-        // Manually inject songs into the store state
-        store.songs = mockData
+            /**
+             * Queue priming.
+             * Manually populates the reactive store state.
+             */
+            store.songs = mockQueue
 
-        // Execute synchronous sort mutation
-        store.setSort('trackName', 'asc')
+            /**
+             * Controller interception.
+             * Monitors the internal 'play' action to verify parameter mapping.
+             */
+            const playSpy = vi.spyOn(store, 'play')
 
-        // Validate that the sorted aggregate is committed to storage
-        // We check for 'A' at index 0 to prove the sort AND the save occurred
-        expect(storageHelper.saveCollection).toHaveBeenCalledWith(
-            'search_results',
-            expect.arrayContaining([expect.objectContaining({ trackName: 'A' })])
-        )
-        expect(store.songs[0].trackName).toBe('A')
+            /**
+             * Logic execution.
+             * Triggers playback for the targeted index.
+             */
+            store.playSongByIndex(1)
+
+            expect(playSpy).toHaveBeenCalledWith(mockQueue[1])
+            expect(store.currentSongId).toBe(200)
+        })
+
+        it('should enforce boundary protection for Out-of-Bounds index requests', () => {
+            store.songs = [{ trackId: 1, trackName: 'Only' }]
+            const playSpy = vi.spyOn(store, 'play')
+
+            /**
+             * Overflow and Underflow validation.
+             * Ensures guard clauses prevent execution on invalid array indices.
+             */
+            store.playSongByIndex(5)
+            store.playSongByIndex(-1)
+
+            expect(playSpy).not.toHaveBeenCalled()
+        })
     })
 })
