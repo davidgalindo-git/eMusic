@@ -30,21 +30,30 @@ const handlePlaylistClick = (song, playlistId) => {
           @click.stop
       ></v-btn>
     </template>
-  </v-menu>
 
-  <v-col v-if="isPopUp">
-    <v-card v-if="playlistStore.playlists.length"
-      v-for="playlist in playlistStore.playlists"
-      :key="playlist.id"
-      class="playlist-item"
-      :playlist="playlist"
-      @select="handlePlaylistClick"
-    />
-    <div v-else class="text-center">
-      <p>No playlists yet</p>
-    </div>
-    <NewPlaylistButton />
-  </v-col>
+    <v-list min-width="200" elevation="10" class="pa-2">
+      <v-list-subheader>Add to playlist</v-list-subheader>
+
+      <v-list-item
+          v-for="playlist in playlistStore.playlists"
+          :key="playlist.id"
+          :title="playlist.name"
+          @click="handlePlaylistClick(playlist.id)"
+      >
+        <template v-slot:prepend>
+          <v-icon icon="mdi-music-note-plus" size="small"></v-icon>
+        </template>
+      </v-list-item>
+
+      <v-divider v-if="playlistStore.playlists.length" class="my-2"></v-divider>
+
+      <div v-if="!playlistStore.playlists.length" class="text-caption pa-4 text-center">
+        No playlists found
+      </div>
+
+      <NewPlaylistButton />
+    </v-list>
+  </v-menu>
 </template>
 
 <style scoped>
