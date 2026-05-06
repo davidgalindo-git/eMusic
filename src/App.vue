@@ -7,8 +7,18 @@ import Player from "./components/player/Player.vue";
 import ErrorAlert from "./components/ErrorAlert.vue";
 import PlaylistSideMenu from "./components/playlist/menu/PlaylistSideMenu.vue";
 import PlaylistPage from "./components/playlist/page/PlaylistPage.vue";
+import {usePlaylistStore} from "./store/usePlaylistStore.js";
+import {ref} from "vue";
 
 const songStore = useSongStore();
+const playlistStore = usePlaylistStore();
+
+const currentView = ref('search')
+
+const showPlaylist = (playlistId) => {
+  currentView.value = 'playlist';
+  playlistStore.selectedPlaylist(playlistId)
+}
 
 const handleSearch = (term) => {
   songStore.search(term)
@@ -23,9 +33,9 @@ const handleSearch = (term) => {
         <ErrorAlert />
       </div>
       <div class="body-container">
-        <PlaylistSideMenu />
-        <SongContainer class="flex-grow-1"/>
-        <PlaylistPage class="flex-grow-1"/>
+        <PlaylistSideMenu @select-playlist="showPlaylist"/>
+        <SongContainer v-if="currentView === 'search'" class="flex-grow-1"/>
+        <PlaylistPage v-if="currentView === 'playlist'" class="flex-grow-1"/>
       </div>
     </v-main>
     <Player />
