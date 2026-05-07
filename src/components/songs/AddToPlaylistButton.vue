@@ -49,8 +49,9 @@ const handlePlaylistClick = (playlistId, song) => {
       <div v-if="!playlistStore.playlists.length" class="text-caption pa-4 text-center">
         No playlists found
       </div>
-
-      <NewPlaylistButton />
+      <div class="d-flex justify-center pa-2">
+        <NewPlaylistButton />
+      </div>
     </v-list>
   </v-menu>
 </template>
