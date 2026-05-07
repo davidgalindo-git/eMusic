@@ -1,5 +1,8 @@
 <script setup>
+import {ref} from "vue";
+
 import PlaylistSongCard from "./PlaylistSongCard.vue";
+import EditModeButton from "../EditModeButton.vue";
 
 import {useSongStore} from "../../../store/useSongStore.js";
 import {usePlaylistStore} from "../../../store/usePlaylistStore.js";
@@ -7,6 +10,13 @@ import {usePlaylistStore} from "../../../store/usePlaylistStore.js";
 const playlistStore = usePlaylistStore();
 const songStore = useSongStore();
 
+const isEditMode = ref(false)
+const editingPlaylistId = ref(null)
+
+const toggleEditMode = () => {
+  isEditMode.value = !isEditMode.value;
+  if (!isEditMode.value) editingPlaylistId.value = null;
+}
 const handleSongClick = (song) => {
   songStore.togglePlay(song)
 }
@@ -21,6 +31,10 @@ const handleSongClick = (song) => {
       <v-chip class="ml-4" size="small" variant="outlined" color="primary">
         {{ playlistStore.activePlaylistSongs.length }} Tracks
       </v-chip>
+      <EditModeButton
+          :is-edit-mode="isEditMode"
+          @toggle-edit-mode="toggleEditMode"
+      />
     </div>
 
     <v-row v-if="playlistStore.activePlaylistSongs.length">
