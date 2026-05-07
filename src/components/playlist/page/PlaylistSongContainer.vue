@@ -20,6 +20,10 @@ const toggleEditMode = () => {
 const handleSongClick = (song) => {
   songStore.togglePlay(song)
 }
+const removeSong = (trackId) => {
+  playlistStore.removeFromPlaylist(playlistStore.selectedPlaylistId, trackId);
+
+}
 </script>
 
 <template>
@@ -37,16 +41,17 @@ const handleSongClick = (song) => {
       />
     </div>
 
-    <v-row v-if="playlistStore.activePlaylistSongs.length">
-      <v-col
+    <v-col v-if="playlistStore.activePlaylistSongs.length">
+      <PlaylistSongCard
           v-for="song in playlistStore.activePlaylistSongs"
           :key="song.trackId"
-          cols="12"
+          :song="song"
+          :is-edit-mode="isEditMode"
+          @toggle-play="handleSongClick"
+          @remove-song="removeSong"
           class="py-1"
-      >
-        <PlaylistSongCard :song="song" @toggle-play="handleSongClick" />
-      </v-col>
-    </v-row>
+      />
+    </v-col>
 
     <!-- Empty State -->
     <div v-else class="text-center py-16">

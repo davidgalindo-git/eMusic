@@ -1,15 +1,22 @@
 <script setup>
 import {CARD_VARIANTS} from "../../../store/constants.js";
 import AddToPlaylistButton from "./../../songs/AddToPlaylistButton.vue";
+import RemoveFromPlaylistButton from "./RemoveFromPlaylistButton.vue";
 
 const props = defineProps({
   song: {
     type: Object,
     required: true
-  }
+  },
+  isEditMode: Boolean,
+  isCurrentlyRenaming: Boolean
 });
 
-const emit = defineEmits(["toggle-play"]);
+const emit = defineEmits(["toggle-play", "remove-song"]);
+
+const removeSong = (trackId) => {
+  emit("remove-song", trackId);
+}
 
 const variants = CARD_VARIANTS;
 </script>
@@ -20,7 +27,7 @@ const variants = CARD_VARIANTS;
       class="song-card mx-auto"
       color="surface-variant"
       max-width="604"
-      height="170"
+      height="60"
       @click="emit('toggle-play', song)"
   >
     <v-img
@@ -36,7 +43,13 @@ const variants = CARD_VARIANTS;
       >
       </v-card-item>
     </div>
-    <AddToPlaylistButton :song="song" />
+    <div class="d-flex align-center" @click.stop>
+      <AddToPlaylistButton :song="song" />
+
+      <div v-if="isEditMode" class="action-area">
+        <RemoveFromPlaylistButton @remove-song="removeSong(song.trackId)" />
+      </div>
+    </div>
   </v-card>
 </template>
 
