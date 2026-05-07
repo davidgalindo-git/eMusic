@@ -26,6 +26,12 @@ const variants = CARD_VARIANTS;
       height="60"
       @click="emit('toggle-play', song)"
   >
+    <v-icon
+        v-if="isEditMode"
+        icon="mdi-drag-horizontal-variant"
+        class="drag-handle mr-2 ml-2"
+        style="cursor: grab"
+    />
     <v-img
         :src="song.artworkUrl"
         cover
