@@ -12,8 +12,8 @@ const props = defineProps({
 
 const playlistStore = usePlaylistStore();
 
-const handlePlaylistClick = (song, playlistId) => {
-  playlistStore.addToPlaylist(song, playlistId);
+const handlePlaylistClick = (playlistId, song) => {
+  playlistStore.addToPlaylist(playlistId, song);
 }
 </script>
 
@@ -38,7 +38,7 @@ const handlePlaylistClick = (song, playlistId) => {
           v-for="playlist in playlistStore.playlists"
           :key="playlist.id"
           :title="playlist.name"
-          @click="handlePlaylistClick(song, playlist.id)"
+          @click="handlePlaylistClick(playlist.id, song)"
       >
         <template v-slot:prepend>
           <v-icon icon="mdi-music-note-plus" size="small"></v-icon>
