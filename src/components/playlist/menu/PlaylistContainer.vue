@@ -21,7 +21,6 @@ const handlePlaylistClick = (playlistId) => {
   if (isEditMode.value) {
     editingPlaylistId.value = playlistId;
   } else {
-    playlistStore.selectPlaylist(playlistId);
     emit("show-playlist", playlistId);
   }
 }
