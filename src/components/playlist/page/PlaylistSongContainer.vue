@@ -12,7 +12,6 @@ const playlistStore = usePlaylistStore();
 const songStore = useSongStore();
 
 const isEditMode = ref(false)
-const editingPlaylistId = ref(null)
 
 const songs = computed({
   get: () => playlistStore.activePlaylistSongs,
@@ -36,7 +35,17 @@ const handleSongClick = (song) => {
 }
 const removeSong = (trackId) => {
   playlistStore.removeFromPlaylist(playlistStore.selectedPlaylistId, trackId);
+}
 
+const handleRename = (newName) => {
+  if (newName.trim()) {
+    playlistStore.renamePlaylist(playlistStore.selectedPlaylistId, newName);
+  }
+  isEditMode.value = false;
+}
+
+const deletePlaylist = () => {
+  playlistStore.deletePlaylist(playlistStore.selectedPlaylistId);
 }
 </script>
 
