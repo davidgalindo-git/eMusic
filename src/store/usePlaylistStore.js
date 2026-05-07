@@ -122,7 +122,7 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
             playlists.value = playlists.value.filter(p => p.id !== playlistId);
 
             // Clean up UI state if the deleted playlist was currently selected
-            if (selectedPlaylistId.value?.id === playlistId) {
+            if (selectedPlaylistId.value === playlistId) {
                 selectedPlaylistId.value = null;
             }
         } catch (err) {
