@@ -41,7 +41,7 @@ const deletePlaylist = (playlistId) => {
 </script>
 
 <template>
-  <div>
+  <div class="playlist-container">
     <div class="playlist-actions">
     <NewPlaylistButton />
     <EditModeButton
@@ -71,11 +71,14 @@ const deletePlaylist = (playlistId) => {
 </template>
 
 <style scoped>
-
+.playlist-container {
+  background: white;
+}
 .playlist-item {
   padding: 12px 24px;
   cursor: pointer;
   transition: background 0.2s;
+  color: black;
 }
 
 .playlist-item:hover {
