@@ -6,7 +6,7 @@ import SongContainer from "./components/songs/SongContainer.vue";
 import Player from "./components/player/Player.vue";
 import ErrorAlert from "./components/ErrorAlert.vue";
 import PlaylistSideMenu from "./components/playlist/menu/PlaylistSideMenu.vue";
-import PlaylistPage from "./components/playlist/page/PlaylistPage.vue";
+import PlaylistSongContainer from "./components/playlist/page/PlaylistSongContainer.vue";
 
 import {useSongStore} from "./store/useSongStore.js";
 import {usePlaylistStore} from "./store/usePlaylistStore.js";
@@ -37,7 +37,7 @@ const handleSearch = (term) => {
       <div class="body-container">
         <PlaylistSideMenu @show-playlist="showPlaylist"/>
         <SongContainer v-if="currentView === 'search'" class="flex-grow-1"/>
-        <PlaylistPage v-else-if="currentView === 'playlist'" class="flex-grow-1"/>
+        <PlaylistSongContainer v-else-if="currentView === 'playlist'" class="flex-grow-1"/>
       </div>
     </v-main>
     <Player />
