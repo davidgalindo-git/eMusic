@@ -14,10 +14,6 @@ const props = defineProps({
 
 const emit = defineEmits(["toggle-play", "remove-song"]);
 
-const removeSong = (trackId) => {
-  emit("remove-song", trackId);
-}
-
 const variants = CARD_VARIANTS;
 </script>
 
@@ -47,7 +43,7 @@ const variants = CARD_VARIANTS;
       <AddToPlaylistButton :song="song" />
 
       <div v-if="isEditMode">
-        <RemoveFromPlaylistButton @remove-song="removeSong(song.trackId)" />
+        <RemoveFromPlaylistButton @remove-song="emit('remove-song', song.trackId)" />
       </div>
     </div>
   </v-card>
