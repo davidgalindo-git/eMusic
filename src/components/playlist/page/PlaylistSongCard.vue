@@ -46,7 +46,7 @@ const variants = CARD_VARIANTS;
     <div class="d-flex align-center" @click.stop>
       <AddToPlaylistButton :song="song" />
 
-      <div v-if="isEditMode" class="action-area">
+      <div v-if="isEditMode">
         <RemoveFromPlaylistButton @remove-song="removeSong(song.trackId)" />
       </div>
     </div>
