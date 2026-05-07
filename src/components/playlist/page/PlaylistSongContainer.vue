@@ -30,6 +30,7 @@ const toggleEditMode = () => {
 }
 const handleSongClick = (song) => {
   if (!isEditMode.value) {
+    songStore.setQueue(songs.value, playlistStore.activePlaylistName);
     songStore.togglePlay(song)
   }
 }
