@@ -5,6 +5,8 @@ import PlaylistCard from "./PlaylistCard.vue";
 import NewPlaylistButton from "./NewPlaylistButton.vue";
 import EditModeButton from "../EditModeButton.vue";
 
+const emit = defineEmits(["show-playlist"]);
+
 const playlistStore = usePlaylistStore();
 
 const isEditMode = ref(false)
@@ -19,7 +21,8 @@ const handlePlaylistClick = (playlistId) => {
   if (isEditMode.value) {
     editingPlaylistId.value = playlistId;
   } else {
-  playlistStore.selectPlaylist(playlistId);
+    playlistStore.selectPlaylist(playlistId);
+    emit("show-playlist", playlistId);
   }
 }
 

@@ -1,5 +1,12 @@
 <script setup>
 import PlaylistContainer from "./PlaylistContainer.vue";
+
+const emit = defineEmits(["show-playlist"]);
+
+const showPlaylist = (playlistId) => {
+  emit("show-playlist", playlistId);
+}
+
 </script>
 
 <template>
@@ -7,7 +14,7 @@ import PlaylistContainer from "./PlaylistContainer.vue";
     <div class="menu-header">
       <h2>Playlists</h2>
     </div>
-    <PlaylistContainer class="playlist-container"/>
+    <PlaylistContainer @show-playlist="showPlaylist" class="playlist-container"/>
   </aside>
 </template>
 
