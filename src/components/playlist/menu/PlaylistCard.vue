@@ -50,7 +50,7 @@ const submitRename = () => {
           @click="emit('select', playlist.id)"
       >
         <span class="playlist-name text-truncate">{{ playlist.name }}</span>
-        <span class="song-count text-caption grey--text">{{ playlist.songs.length }} songs</span>   </div>
+        <span class="song-count text-caption grey--text">{{ playlist.songs.length }} tracks</span>   </div>
     </div>
 
     <div v-if="isEditMode" class="action-area">
