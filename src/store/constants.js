@@ -56,3 +56,5 @@ export const DEFAULT_COLLECTION = [
         artworkUrl: 'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/77/32/74/7732746d-25e5-baae-b921-bad4a07d87b1/19UMGIM55524.rgb.jpg/300x300bb.jpg'
     }
 ];
+
+export const CARD_VARIANTS = ['elevated', 'flat', 'tonal', 'outlined'];

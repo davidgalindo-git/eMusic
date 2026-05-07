@@ -1,4 +1,4 @@
-import { ref, watch } from "vue";
+import {computed, ref, watch} from "vue";
 import { defineStore } from "pinia";
 import { loadCollection, saveCollection } from "./storageHelper.js";
 import { useSongStore } from "./useSongStore.js";
@@ -19,14 +19,25 @@ import { useSongStore } from "./useSongStore.js";
  * - deletePlaylist: Function - Removes a playlist and cleans up associated state.
  * - renamePlaylist: Function - Updates the title of an existing playlist.
  * - addToPlaylist: Function - Appends a normalized song object to a specific playlist.
- * - deleteFromPlaylist: Function - Removes a song from a playlist by its track ID.
+ * - removeFromPlaylist: Function - Removes a song from a playlist by its track ID.
  */
 export const usePlaylistStore = defineStore("playlistStore", () => {
     // --- State ---
     const playlists = ref(loadCollection("playlists") || []);
-    const selectedPlaylist = ref(null);
+    const selectedPlaylistId = ref(null);
     const playingPlaylist = ref(null);
     const error = ref(null);
+
+    // --- Getters (Computed) ---
+    const activePlaylistSongs = computed(() => {
+        const active = playlists.value.find(p => p.id === selectedPlaylistId.value);
+        return active ? active.songs : [];
+    });
+
+    const activePlaylistName = computed(() => {
+        const active = playlists.value.find(p => p.id === selectedPlaylistId.value);
+        return active ? active.name : 'Playlist';
+    });
 
     /**
      * Data Persistence Layer.
@@ -51,7 +62,7 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
      * @param {number} playlistId - Unique identifier of the playlist to select.
      */
     function selectPlaylist(playlistId) {
-        selectedPlaylist.value = playlists.value.find(p => p.id === playlistId);
+        selectedPlaylistId.value = playlistId;
     }
 
     /**
@@ -111,8 +122,8 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
             playlists.value = playlists.value.filter(p => p.id !== playlistId);
 
             // Clean up UI state if the deleted playlist was currently selected
-            if (selectedPlaylist.value?.id === playlistId) {
-                selectedPlaylist.value = null;
+            if (selectedPlaylistId.value === playlistId) {
+                selectedPlaylistId.value = null;
             }
         } catch (err) {
             error.value = err.message;
@@ -166,7 +177,7 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
      * @param {number} playlistId - Target playlist ID.
      * @param {number} trackId - Unique iTunes track ID to remove.
      */
-    function deleteFromPlaylist(playlistId, trackId) {
+    function removeFromPlaylist(playlistId, trackId) {
         const playlist = playlists.value.find(p => p.id === playlistId);
         if (playlist) {
             playlist.songs = playlist.songs.filter(s => s.trackId !== trackId);
@@ -175,12 +186,15 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
 
     return {
         // Data & UI State
-        playlists, selectedPlaylist, playingPlaylist, error,
+        playlists, selectedPlaylistId, playingPlaylist, error,
+
+        // Getters
+        activePlaylistSongs, activePlaylistName,
 
         // Actions: Collection Lifecycle
         selectPlaylist, playPlaylist, createPlaylist, deletePlaylist, renamePlaylist,
 
         // Actions: Membership Management
-        addToPlaylist, deleteFromPlaylist
+        addToPlaylist, removeFromPlaylist
     };
 });

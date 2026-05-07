@@ -1,6 +1,6 @@
 <script setup>
-import {CARD_VARIANTS} from "../../store/constants.js";
-import AddToPlaylistButton from "./AddToPlaylistButton.vue";
+import {CARD_VARIANTS} from "../../../store/constants.js";
+import AddToPlaylistButton from "./../../songs/AddToPlaylistButton.vue";
 
 const props = defineProps({
   song: {
@@ -24,16 +24,16 @@ const variants = CARD_VARIANTS;
       @click="emit('toggle-play', song)"
   >
     <v-img
-      :src="song.artworkUrl"
-      cover
-      class="flex-shrink-0 flex-grow-0"
-      style="flex-basis: 170px;"
+        :src="song.artworkUrl"
+        cover
+        class="flex-shrink-0 flex-grow-0"
+        style="flex-basis: 170px;"
     ></v-img>
     <div class="d-flex flex-column justify-center flex-grow-1 overflow-hidden">
       <v-card-item
-        :title="song.trackName"
-        :subtitle="song.artistName"
-        >
+          :title="song.trackName"
+          :subtitle="song.artistName"
+      >
       </v-card-item>
     </div>
     <AddToPlaylistButton :song="song" />
