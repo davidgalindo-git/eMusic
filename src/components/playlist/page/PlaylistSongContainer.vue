@@ -1,5 +1,6 @@
 <script setup>
-import {ref} from "vue";
+import {computed, ref} from "vue";
+import draggable from "vuedraggable";
 
 import PlaylistSongCard from "./PlaylistSongCard.vue";
 import EditModeButton from "../EditModeButton.vue";
@@ -13,12 +14,24 @@ const songStore = useSongStore();
 const isEditMode = ref(false)
 const editingPlaylistId = ref(null)
 
+const songs = computed({
+  get: () => playlistStore.activePlaylistSongs,
+  set: (newList) => {
+    const playlist = playlistStore.playlists.find(p => p.id === playlistStore.selectedPlaylistId);
+    if (playlist) {
+      playlist.songs = newList;
+    }
+  }
+});
+
 const toggleEditMode = () => {
   isEditMode.value = !isEditMode.value;
   if (!isEditMode.value) editingPlaylistId.value = null;
 }
 const handleSongClick = (song) => {
-  songStore.togglePlay(song)
+  if (!isEditMode.value) {
+    songStore.togglePlay(song)
+  }
 }
 const removeSong = (trackId) => {
   playlistStore.removeFromPlaylist(playlistStore.selectedPlaylistId, trackId);
@@ -41,17 +54,27 @@ const removeSong = (trackId) => {
       />
     </div>
 
-    <v-col v-if="playlistStore.activePlaylistSongs.length">
-      <PlaylistSongCard
-          v-for="song in playlistStore.activePlaylistSongs"
-          :key="song.trackId"
-          :song="song"
-          :is-edit-mode="isEditMode"
-          @toggle-play="handleSongClick"
-          @remove-song="removeSong"
-          class="py-1"
-      />
-    </v-col>
+    <div v-if="songs.length">
+      <draggable
+          v-model="songs"
+          item-key="trackId"
+          handle=".drag-handle"
+          :disabled="!isEditMode"
+          ghost-class="on-drag"
+          animation="200"
+      >
+        <template #item="{ element }">
+          <div class="py-1">
+            <PlaylistSongCard
+                :song="element"
+                :is-edit-mode="isEditMode"
+                @toggle-play="handleSongClick"
+                @remove-song="removeSong"
+            />
+          </div>
+        </template>
+      </draggable>
+    </div>
 
     <!-- Empty State -->
     <div v-else class="text-center py-16">
