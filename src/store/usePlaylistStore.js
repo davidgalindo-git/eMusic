@@ -19,7 +19,7 @@ import { useSongStore } from "./useSongStore.js";
  * - deletePlaylist: Function - Removes a playlist and cleans up associated state.
  * - renamePlaylist: Function - Updates the title of an existing playlist.
  * - addToPlaylist: Function - Appends a normalized song object to a specific playlist.
- * - deleteFromPlaylist: Function - Removes a song from a playlist by its track ID.
+ * - removeFromPlaylist: Function - Removes a song from a playlist by its track ID.
  */
 export const usePlaylistStore = defineStore("playlistStore", () => {
     // --- State ---
@@ -177,7 +177,7 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
      * @param {number} playlistId - Target playlist ID.
      * @param {number} trackId - Unique iTunes track ID to remove.
      */
-    function deleteFromPlaylist(playlistId, trackId) {
+    function removeFromPlaylist(playlistId, trackId) {
         const playlist = playlists.value.find(p => p.id === playlistId);
         if (playlist) {
             playlist.songs = playlist.songs.filter(s => s.trackId !== trackId);
@@ -195,6 +195,6 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
         selectPlaylist, playPlaylist, createPlaylist, deletePlaylist, renamePlaylist,
 
         // Actions: Membership Management
-        addToPlaylist, deleteFromPlaylist
+        addToPlaylist, removeFromPlaylist
     };
 });
