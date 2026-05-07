@@ -1,7 +1,10 @@
 <script setup>
 import PlaylistSongCard from "./PlaylistSongCard.vue";
-import {useSongStore} from "../../../store/useSongStore.js";
 
+import {useSongStore} from "../../../store/useSongStore.js";
+import {usePlaylistStore} from "../../../store/usePlaylistStore.js";
+
+const playlistStore = usePlaylistStore();
 const songStore = useSongStore();
 
 const handleSongClick = (song) => {
@@ -13,15 +16,15 @@ const handleSongClick = (song) => {
   <!-- Dynamic Title Section -->
   <div class="d-flex align-center mb-4">
     <v-icon icon="mdi-playlist-music" class="mr-2" color="primary" />
-    <h2 class="text-h5 font-weight-bold">{{ songStore.collectionName }}</h2>
+    <h2 class="text-h5 font-weight-bold">{{ playlistStore.activePlaylistName }}</h2>
     <v-chip class="ml-4" size="small" variant="outlined" color="primary">
-      {{ songStore.songs.length }} Tracks
+      {{ playlistStore.activePlaylistSongs.length }} Tracks
     </v-chip>
   </div>
 
-  <v-row v-if="songStore.songs.length">
+  <v-row v-if="playlistStore.activePlaylistSongs.length">
     <v-col
-        v-for="song in songStore.songs"
+        v-for="song in playlistStore.activePlaylistSongs"
         :key="song.trackId"
         cols="12" sm="8" md="6" lg="6"
     >
@@ -34,8 +37,8 @@ const handleSongClick = (song) => {
     <v-progress-circular v-if="songStore.loading" indeterminate color="primary" />
     <div v-else class="text-medium-emphasis">
       <v-icon icon="mdi-alert-circle-outline" size="48" class="mb-2" />
-      <p>No songs found</p>
-      <p class="text-body-2">Try searching for something else.</p>
+      <p>This playlist is empty.</p>
+      <p class="text-body-2">Try adding new songs.</p>
     </div>
   </div>
 </template>
