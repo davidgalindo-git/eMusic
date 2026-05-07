@@ -37,7 +37,11 @@ const handleSearch = (term) => {
       <div class="body-container">
         <PlaylistSideMenu @show-playlist="showPlaylist"/>
         <SongContainer v-if="currentView === 'search'" class="flex-grow-1"/>
-        <PlaylistSongContainer v-else-if="currentView === 'playlist'" class="flex-grow-1"/>
+        <PlaylistSongContainer
+          v-else-if="currentView === 'playlist'"
+          class="flex-grow-1"
+          @deleted-playlist="currentView = 'search'"
+        />
       </div>
     </v-main>
     <Player />

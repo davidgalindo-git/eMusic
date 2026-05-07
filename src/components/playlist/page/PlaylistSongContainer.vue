@@ -7,9 +7,12 @@ import EditModeButton from "../EditModeButton.vue";
 
 import {useSongStore} from "../../../store/useSongStore.js";
 import {usePlaylistStore} from "../../../store/usePlaylistStore.js";
+import DeletePlaylistButton from "../menu/DeletePlaylistButton.vue";
 
 const playlistStore = usePlaylistStore();
 const songStore = useSongStore();
+
+const emit = defineEmits(["deleted-playlist"])
 
 const isEditMode = ref(false)
 
@@ -46,6 +49,8 @@ const handleRename = (newName) => {
 
 const deletePlaylist = () => {
   playlistStore.deletePlaylist(playlistStore.selectedPlaylistId);
+  isEditMode.value = false;
+  emit("deleted-playlist");
 }
 </script>
 
@@ -62,6 +67,7 @@ const deletePlaylist = () => {
           :is-edit-mode="isEditMode"
           @toggle-edit-mode="toggleEditMode"
       />
+      <DeletePlaylistButton v-if="isEditMode" @delete-playlist="deletePlaylist" />
     </div>
 
     <div v-if="songs.length">
