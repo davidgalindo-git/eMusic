@@ -26,7 +26,8 @@ const handleSongClick = (song) => {
     <v-col
         v-for="song in playlistStore.activePlaylistSongs"
         :key="song.trackId"
-        cols="12" sm="8" md="6" lg="6"
+        cols="12"
+        class="py-1"
     >
       <PlaylistSongCard :song="song" @toggle-play="handleSongClick" />
     </v-col>
