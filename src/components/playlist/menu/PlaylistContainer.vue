@@ -56,7 +56,7 @@ const deletePlaylist = (playlistId) => {
         @select="handlePlaylistClick"
         @rename="handleRename"
         @cancel-rename="editingPlaylistId = null"
-        @delete="deletePlaylist(playlist.id)"
+        @delete="deletePlaylist"
     />
   </v-col>
   <div v-else class="text-center">
