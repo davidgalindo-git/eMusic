@@ -41,6 +41,15 @@ const submitPlaylist = () => {
       @keyup.enter="submitPlaylist"
       class="mt-2"
   >
+    <template v-slot:append-inner>
+      <v-btn
+          icon="mdi-check"
+          variant="text"
+          density="compact"
+          color="success"
+          @click.stop="submitPlaylist"
+      ></v-btn>
+    </template>
   </v-text-field>
 </template>
 
