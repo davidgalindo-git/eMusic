@@ -1,4 +1,4 @@
-import { ref, watch } from "vue";
+import {computed, ref, watch} from "vue";
 import { defineStore } from "pinia";
 import { loadCollection, saveCollection } from "./storageHelper.js";
 import { useSongStore } from "./useSongStore.js";
@@ -28,6 +28,17 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
     const playingPlaylist = ref(null);
     const error = ref(null);
 
+    // --- Getters (Computed) ---
+    const activePlaylistSongs = computed(() => {
+        const active = playlists.value.find(p => p.id === selectedPlaylistId.value);
+        return active ? active.songs : [];
+    });
+
+    const activePlaylistName = computed(() => {
+        const active = playlists.value.find(p => p.id === selectedPlaylistId.value);
+        return active ? active.name : 'Playlist';
+    });
+
     /**
      * Data Persistence Layer.
      * Watches the deep structure of the playlists array to automatically
@@ -51,7 +62,7 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
      * @param {number} playlistId - Unique identifier of the playlist to select.
      */
     function selectPlaylist(playlistId) {
-        selectedPlaylistId.value = playlists.value.find(p => p.id === playlistId);
+        selectedPlaylistId.value = playlistId;
     }
 
     /**
@@ -176,6 +187,9 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
     return {
         // Data & UI State
         playlists, selectedPlaylistId, playingPlaylist, error,
+
+        // Getters
+        activePlaylistSongs, activePlaylistName,
 
         // Actions: Collection Lifecycle
         selectPlaylist, playPlaylist, createPlaylist, deletePlaylist, renamePlaylist,
