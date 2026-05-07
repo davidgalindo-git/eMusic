@@ -24,7 +24,7 @@ import { useSongStore } from "./useSongStore.js";
 export const usePlaylistStore = defineStore("playlistStore", () => {
     // --- State ---
     const playlists = ref(loadCollection("playlists") || []);
-    const selectedPlaylist = ref(null);
+    const selectedPlaylistId = ref(null);
     const playingPlaylist = ref(null);
     const error = ref(null);
 
@@ -51,7 +51,7 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
      * @param {number} playlistId - Unique identifier of the playlist to select.
      */
     function selectPlaylist(playlistId) {
-        selectedPlaylist.value = playlists.value.find(p => p.id === playlistId);
+        selectedPlaylistId.value = playlists.value.find(p => p.id === playlistId);
     }
 
     /**
@@ -111,8 +111,8 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
             playlists.value = playlists.value.filter(p => p.id !== playlistId);
 
             // Clean up UI state if the deleted playlist was currently selected
-            if (selectedPlaylist.value?.id === playlistId) {
-                selectedPlaylist.value = null;
+            if (selectedPlaylistId.value?.id === playlistId) {
+                selectedPlaylistId.value = null;
             }
         } catch (err) {
             error.value = err.message;
@@ -175,7 +175,7 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
 
     return {
         // Data & UI State
-        playlists, selectedPlaylist, playingPlaylist, error,
+        playlists, selectedPlaylistId, playingPlaylist, error,
 
         // Actions: Collection Lifecycle
         selectPlaylist, playPlaylist, createPlaylist, deletePlaylist, renamePlaylist,
