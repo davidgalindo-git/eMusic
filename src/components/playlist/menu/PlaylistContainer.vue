@@ -85,6 +85,6 @@ const deletePlaylist = (playlistId) => {
 }
 
 .playlist-item:hover {
-  background-color: #282828;
+  background-color: #afafaf;
 }
 </style>
