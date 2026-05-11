@@ -1,0 +1,20 @@
+---
+config:
+  layout: dagre
+---
+flowchart TB
+ subgraph components["components"]
+       EA["ErrorAlert.vue"]
+       L["Logo.vue"]
+       ATPB["AddToPlaylistButton.vue"]
+  end
+subgraph store["store"]
+       USS["useSongStore.js"]:::logic
+       UPS["usePlaylistStore.js"]:::logic
+  end
+
+classDef logic fill:#35495e,stroke:#35495e,color:#fff
+
+ATPB <-- reactive bind --> UPS
+EA <-- reactive bind --> USS
+classDef logic fill:#35495e,stroke:#35495e,color:#fff

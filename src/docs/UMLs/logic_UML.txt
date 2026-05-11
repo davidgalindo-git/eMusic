@@ -1,0 +1,23 @@
+flowchart TB
+       subgraph Logic["Logic"]
+              subgraph api["api"]
+                     UIT["useITunes.js"]:::logic
+              end
+              subgraph store["store"]
+                     C["constants.js"]:::logic
+                     P["player.js"]:::logic
+                     SH["storageHelper.js"]:::logic
+                     USS["useSongStore.js"]:::logic
+                     UPS["usePlaylistStore.js"]:::logic
+              end
+              subgraph utils["utils"]
+              SM["songMapper.js"]:::logic
+              TF["timeFormatter.js"]:::logic
+              end
+       end
+
+UPS --> USS
+USS --> C & SH & SM & UIT & P
+
+
+classDef logic fill:#35495e,stroke:#35495e,color:#fff

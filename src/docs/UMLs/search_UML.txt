@@ -1,0 +1,12 @@
+flowchart TB
+A["App.vue"]
+subgraph store["store"]
+       USS["useSongStore.js"]:::logic
+end
+subgraph search ["search"]
+       SB["SearchBar.vue"]
+end
+A --> SB
+A <-- reactive bind --> USS
+SB -. emit: search .-> A
+classDef logic fill:#35495e,stroke:#35495e,color:#fff

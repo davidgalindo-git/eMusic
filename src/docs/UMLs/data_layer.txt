@@ -1,0 +1,16 @@
+flowchart TB
+subgraph Data_Layer["Data_Layer"]
+       IA[("iTunes API")]
+       LS[("LocalStorage")]
+       SS[("SessionStorage")]
+end
+subgraph api["api"]
+       UIT["useITunes.js"]:::logic
+end
+subgraph store["store"]
+       SH["storageHelper.js"]:::logic
+end
+SH --> LS & SS
+UIT --> IA
+
+classDef logic fill:#35495e,stroke:#35495e,color:#fff
