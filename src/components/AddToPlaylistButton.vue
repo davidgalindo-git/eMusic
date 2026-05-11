@@ -1,6 +1,6 @@
 <script setup>
-import {usePlaylistStore} from "../../store/usePlaylistStore.js";
-import NewPlaylistButton from "../playlist/menu/NewPlaylistButton.vue";
+import {usePlaylistStore} from "../store/usePlaylistStore.js";
+import NewPlaylistButton from "./playlist/menu/NewPlaylistButton.vue";
 
 const props = defineProps({
   song: {

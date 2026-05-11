@@ -1,6 +1,6 @@
 <script setup>
 import {CARD_VARIANTS} from "../../../store/constants.js";
-import AddToPlaylistButton from "./../../songs/AddToPlaylistButton.vue";
+import AddToPlaylistButton from "../../AddToPlaylistButton.vue";
 import RemoveFromPlaylistButton from "./RemoveFromPlaylistButton.vue";
 
 const props = defineProps({
