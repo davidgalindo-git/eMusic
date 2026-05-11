@@ -184,24 +184,6 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
         }
     }
 
-    /**
-     * Manually moves a song within a specific playlist.
-     * @param {number} playlistId - The ID of the playlist
-     * @param {number} oldIndex - The starting position
-     * @param {number} newIndex - The target position
-     */
-    function moveSong(playlistId, oldIndex, newIndex) {
-        const playlist = playlists.value.find(p => p.id === playlistId);
-        if (!playlist) return;
-
-        // Boundary check
-        if (newIndex < 0 || newIndex >= playlist.songs.length) return;
-
-        // Logic: Remove from old, insert at new
-        const [movedSong] = playlist.songs.splice(oldIndex, 1);
-        playlist.songs.splice(newIndex, 0, movedSong);
-    }
-
     return {
         // Data & UI State
         playlists, selectedPlaylistId, playingPlaylist, error,
