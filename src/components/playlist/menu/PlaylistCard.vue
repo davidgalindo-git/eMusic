@@ -1,6 +1,6 @@
 <script setup>
 import {ref, watch} from "vue";
-import DeletePlaylistButton from "./DeletePlaylistButton.vue";
+import DeletePlaylistButton from "../DeletePlaylistButton.vue";
 
 const props = defineProps({
   playlist: {

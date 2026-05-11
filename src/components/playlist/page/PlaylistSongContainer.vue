@@ -7,7 +7,7 @@ import EditModeButton from "../EditModeButton.vue";
 
 import {useSongStore} from "../../../store/useSongStore.js";
 import {usePlaylistStore} from "../../../store/usePlaylistStore.js";
-import DeletePlaylistButton from "../menu/DeletePlaylistButton.vue";
+import DeletePlaylistButton from "../DeletePlaylistButton.vue";
 
 const playlistStore = usePlaylistStore();
 const songStore = useSongStore();
