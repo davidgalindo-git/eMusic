@@ -71,6 +71,9 @@ const deletePlaylist = (playlistId) => {
 </template>
 
 <style scoped>
+.playlist-actions {
+  color: black;
+}
 .playlist-container {
   background: white;
 }
