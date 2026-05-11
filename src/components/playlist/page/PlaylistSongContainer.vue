@@ -1,5 +1,5 @@
 <script setup>
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import draggable from "vuedraggable";
 
 import PlaylistSongCard from "./PlaylistSongCard.vue";
@@ -15,6 +15,12 @@ const songStore = useSongStore();
 const emit = defineEmits(["deleted-playlist"])
 
 const isEditMode = ref(false)
+const isCurrentlyRenaming = ref(false)
+const editName = ref("")
+
+watch(() => playlistStore.activePlaylistName, (newVal) => {
+  editName.value = newVal;
+}, { immediate: true });
 
 const songs = computed({
   get: () => playlistStore.activePlaylistSongs,
@@ -28,7 +34,9 @@ const songs = computed({
 
 const toggleEditMode = () => {
   isEditMode.value = !isEditMode.value;
-  if (!isEditMode.value) editingPlaylistId.value = null;
+  if (!isEditMode.value) {
+    isCurrentlyRenaming.value = false;
+  }
 }
 const handleSongClick = (song) => {
   if (!isEditMode.value) {
@@ -40,11 +48,23 @@ const removeSong = (trackId) => {
   playlistStore.removeFromPlaylist(playlistStore.selectedPlaylistId, trackId);
 }
 
-const handleRename = (newName) => {
-  if (newName.trim()) {
-    playlistStore.renamePlaylist(playlistStore.selectedPlaylistId, newName);
+const startRenaming = () => {
+  editName.value = playlistStore.activePlaylistName;
+  isCurrentlyRenaming.value = true;
+};
+
+const handleRename = () => {
+  const trimmed = editName.value.trim();
+  if (trimmed && trimmed !== playlistStore.activePlaylistName) {
+    playlistStore.renamePlaylist(playlistStore.selectedPlaylistId, trimmed);
   }
+  isCurrentlyRenaming.value = false;
   isEditMode.value = false;
+}
+
+const cancelRename = () => {
+  editName.value = playlistStore.activePlaylistName;
+  isCurrentlyRenaming.value = false;
 }
 
 const deletePlaylist = () => {
@@ -59,10 +79,44 @@ const deletePlaylist = () => {
     <!-- Dynamic Title Section -->
     <div class="d-flex align-center mb-4">
       <v-icon icon="mdi-playlist-music" class="mr-2" color="primary" />
-      <h2 class="text-h5 font-weight-bold">{{ playlistStore.activePlaylistName }}</h2>
+
+      <div class="content-area">
+        <!-- Rename Input Mode -->
+        <v-text-field
+            v-if="isCurrentlyRenaming"
+            v-model="editName"
+            density="compact"
+            autofocus
+            hide-details
+            variant="underlined"
+            @keyup.enter="handleRename"
+            @keyup.esc="cancelRename"
+            @blur="handleRename"
+        >
+          <template v-slot:append-inner>
+            <v-icon size="small" color="success" @click="handleRename">mdi-check</v-icon>
+          </template>
+        </v-text-field>
+
+        <!-- Normal Display Mode -->
+        <div
+            v-else
+            class="display-info"
+            :class="{ 'cursor-pointer': isEditMode }"
+            @click="isEditMode ? startRenaming() : null"
+        >
+          <div class="d-flex align-center">
+            <h2 class="text-h5 font-weight-bold">
+              {{ playlistStore.activePlaylistName }}
+            </h2>
+          </div>
+        </div>
+      </div>
+
       <v-chip class="ml-4" size="small" variant="outlined" color="primary">
         {{ playlistStore.activePlaylistSongs.length }} Tracks
       </v-chip>
+
       <EditModeButton
           :is-edit-mode="isEditMode"
           @toggle-edit-mode="toggleEditMode"
