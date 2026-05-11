@@ -75,7 +75,7 @@ const deletePlaylist = () => {
 </script>
 
 <template>
-  <v-container>
+  <v-container @keyup.esc="isEditMode = false">
     <!-- Dynamic Title Section -->
     <div class="d-flex align-center mb-4">
       <v-icon icon="mdi-playlist-music" class="mr-2" color="primary" />

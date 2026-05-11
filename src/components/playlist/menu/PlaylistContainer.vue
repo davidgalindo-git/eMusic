@@ -41,33 +41,33 @@ const deletePlaylist = (playlistId) => {
 </script>
 
 <template>
-  <div class="playlist-container">
+  <div class="playlist-container" @keyup.esc="isEditMode = false">
     <div class="playlist-actions">
-    <NewPlaylistButton />
-    <EditModeButton
-        :is-edit-mode="isEditMode"
-        @toggle-edit-mode="toggleEditMode"
-    />
+      <NewPlaylistButton />
+      <EditModeButton
+          :is-edit-mode="isEditMode"
+          @toggle-edit-mode="toggleEditMode"
+      />
+    </div>
+    <v-col v-if="playlistStore.playlists.length">
+      <PlaylistCard
+          v-for="playlist in playlistStore.playlists"
+          :key="playlist.id"
+          class="playlist-item"
+          :playlist="playlist"
+          :is-edit-mode="isEditMode"
+          :is-currently-renaming="editingPlaylistId === playlist.id"
+          @select="handlePlaylistClick"
+          @rename="handleRename"
+          @cancel-rename="editingPlaylistId = null"
+          @delete="deletePlaylist"
+      />
+    </v-col>
+    <div v-else class="text-center">
+      <p>No playlists yet</p>
+      <p class="text-body-small">Create or add a song to a new playlist.</p>
+    </div>
   </div>
-  <v-col v-if="playlistStore.playlists.length">
-    <PlaylistCard
-        v-for="playlist in playlistStore.playlists"
-        :key="playlist.id"
-        class="playlist-item"
-        :playlist="playlist"
-        :is-edit-mode="isEditMode"
-        :is-currently-renaming="editingPlaylistId === playlist.id"
-        @select="handlePlaylistClick"
-        @rename="handleRename"
-        @cancel-rename="editingPlaylistId = null"
-        @delete="deletePlaylist"
-    />
-  </v-col>
-  <div v-else class="text-center">
-    <p>No playlists yet</p>
-    <p class="text-body-small">Create or add a song to a new playlist.</p>
-  </div>
-</div>
 </template>
 
 <style scoped>

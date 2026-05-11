@@ -17,7 +17,7 @@ const handleClick = () => {
       variant="text"
       density="comfortable"
       color="primary"
-      :title="isEditMode ? 'Close Edit Mode' : 'Edit Mode'"
+      :title="isEditMode ? 'Close Edit Mode [Esc]' : 'Edit Mode'"
       @click="handleClick"
   >
   </v-btn>
