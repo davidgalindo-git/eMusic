@@ -35,7 +35,7 @@ const submitRename = () => {
           hide-details
           @keyup.enter="submitRename"
           @keyup.esc="emit('cancel-rename')"
-          @blur="submitRename"
+          @blur="emit('cancel-rename')"
           class="px-4"
       >
         <template v-slot:append-inner>

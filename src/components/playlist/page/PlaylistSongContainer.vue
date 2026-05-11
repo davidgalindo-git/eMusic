@@ -91,7 +91,7 @@ const deletePlaylist = () => {
             variant="underlined"
             @keyup.enter="handleRename"
             @keyup.esc="cancelRename"
-            @blur="handleRename"
+            @blur="cancelRename"
         >
           <template v-slot:append-inner>
             <v-icon size="small" color="success" @click="handleRename">mdi-check</v-icon>
