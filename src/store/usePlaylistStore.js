@@ -125,9 +125,14 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
         try {
             playlists.value = playlists.value.filter(p => p.id !== playlistId);
 
-            // Clean up UI state if the deleted playlist was currently selected
+            // 1. Clean up UI Selection
             if (selectedPlaylistId.value === playlistId) {
                 selectedPlaylistId.value = null;
+            }
+
+            // 2. Clean up Active Player reference
+            if (playingPlaylist.value && playingPlaylist.value.id === playlistId) {
+                playingPlaylist.value = null;
             }
         } catch (err) {
             error.value = err.message;
