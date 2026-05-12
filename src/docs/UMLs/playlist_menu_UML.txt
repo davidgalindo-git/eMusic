@@ -1,0 +1,23 @@
+flowchart TB
+A["App.vue"]
+subgraph store["store"]
+       UPS["usePlaylistStore.js"]:::logic
+end
+subgraph menu["menu"]
+        NPB["NewPlaylistButton.vue"]
+        PC["PlaylistCard.vue"]
+        PCN["PlaylistContainer.vue"]
+        PSM["PlaylistSideMenu.vue"]
+end
+
+
+NPB -- reactive bind --> UPS
+PCN --> NPB & PC
+PSM --> PCN
+
+PC -. emit: select, rename, cancel-rename, delete .-> PCN
+PCN -. props: playlist, isEditMode, isCurrentlyRenaming .-> PC
+PCN -. emit: show-playlist .-> PSM
+PSM -. emit: show-playlist .-> A
+
+classDef logic fill:#35495e,stroke:#35495e,color:#fff

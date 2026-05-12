@@ -1,0 +1,19 @@
+---
+config:
+  layout: dagre
+---
+flowchart TB
+subgraph player["player"]
+       P["Player.vue"]
+end
+subgraph utils["utils"]
+       TF["timeFormatter.js"]:::logic
+end
+subgraph store["store"]
+       USS["useSongStore.js"]:::logic
+end
+
+P --> TF
+P <-- reactive bind --> USS
+
+classDef logic fill:#35495e,stroke:#35495e,color:#fff

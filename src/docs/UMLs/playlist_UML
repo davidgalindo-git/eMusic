@@ -1,0 +1,49 @@
+flowchart TB
+A["App.vue"]
+subgraph store["store"]
+       USS["useSongStore.js"]:::logic
+       UPS["usePlaylistStore.js"]:::logic
+end
+subgraph playlist["playlist"]
+       subgraph menu["menu"]
+              NPB["NewPlaylistButton.vue"]
+              PC["PlaylistCard.vue"]
+              PCN["PlaylistContainer.vue"]
+              PSM["PlaylistSideMenu.vue"]
+       end
+       subgraph page["page"]
+              PSC["PlaylistSongCard.vue"]
+              PSCN["PlaylistSongContainer.vue"]
+              RFPB["RemoveFromPlaylistButton.vue"]
+       end
+       DPB["DeletePlaylistButton.vue"]
+       EMB["EditModeButton.vue"]
+end
+subgraph songs ["songs"]
+       ATPB["AddToPlaylistButton.vue"]
+end
+
+
+PSCN <-- reactive bind --> USS
+NPB & ATPB & PSCN <-- reactive bind --> UPS
+PC --> DPB
+PCN --> NPB & EMB & PC
+PSM --> PCN
+PSC --> ATPB & RFPB
+PSCN --> PC & EMB & DPB
+
+
+PC -. emit: select, rename, cancel-rename, delete .-> PCN
+PCN -. props: playlist, isEditMode, isCurrentlyRenaming .-> PC
+PCN -. emit: show-playlist .-> PSM
+PSM -. emit: show-playlist .-> A
+PSC -. emit: toggle-play, remove-song .-> PSCN
+PSC -. props: song .-> ATPB
+PSCN -. props: song, isEditMode, isCurrentlyRenaming .-> PSC
+PSCN -. emit: deleted-playlist .-> A
+RFPB -. emit: remove-song .-> PSC
+DPB -. emit: delete-playlist .-> PSCN & PCN
+EMB -. emit: toggle-edit-mode .-> PSCN & PCN
+
+
+classDef logic fill:#35495e,stroke:#35495e,color:#fff

@@ -1,0 +1,17 @@
+---
+config:
+  layout: dagre
+---
+flowchart TB
+ subgraph playlist["playlist"]
+        menu
+        page
+  end
+ subgraph components["components"]
+        player
+        playlist
+        search
+        songs
+  end
+
+classDef logic fill:#35495e,stroke:#35495e,color:#fff

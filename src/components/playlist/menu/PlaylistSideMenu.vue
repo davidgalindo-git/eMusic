@@ -39,6 +39,8 @@ const showPlaylist = (playlistId) => {
 }
 
 .menu-header {
+  background-color: white;
+  color: black;
   padding: 24px;
   border-bottom: 1px solid #282828;
 }
@@ -47,7 +49,6 @@ const showPlaylist = (playlistId) => {
   margin: 0;
   font-size: 1.5rem;
   font-weight: bold;
-  color: white;
 }
 
 .playlist-container {

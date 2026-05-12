@@ -1,0 +1,78 @@
+flowchart TB
+subgraph src["src"]
+       A["App.vue"]
+       M["main.js"]:::logic
+       subgraph Logic["Logic"]
+              subgraph store["store"]
+                     C["constants.js"]:::logic
+                     USS["useSongStore.js"]:::logic
+                     UPS["usePlaylistStore.js"]:::logic
+              end
+              subgraph utils["utils"]
+              TF["timeFormatter.js"]:::logic
+              end
+       end
+       subgraph components["components"]
+              ATPB["AddToPlaylistButton.vue"]
+              EA["ErrorAlert.vue"]
+              L["Logo.vue"]
+              subgraph player["player"]
+                     P["Player.vue"]
+              end
+              subgraph playlist["playlist"]
+                     subgraph menu["menu"]
+                            NPB["NewPlaylistButton.vue"]
+                            PC["PlaylistCard.vue"]
+                            PCN["PlaylistContainer.vue"]
+                            PSM["PlaylistSideMenu.vue"]
+                     end
+                     subgraph page["page"]
+                            PSC["PlaylistSongCard.vue"]
+                            PSCN["PlaylistSongContainer.vue"]
+                            RFPB["RemoveFromPlaylistButton.vue"]
+                     end
+                     DPB["DeletePlaylistButton.vue"]
+                     EMB["EditModeButton.vue"]
+              end
+              subgraph search ["search"]
+                     SB["SearchBar.vue"]
+              end
+              subgraph songs ["songs"]
+                     SC["SongCard.vue"]
+                     SCN["SongContainer.vue"]
+              end
+       end
+end
+M --> A
+A & P & EA & PSCN & SCN <-- reactive bind --> USS
+NPB & ATPB & PSCN <-- reactive bind --> UPS
+A --> SB & EA & PSM & SCN & PSCN
+P --> TF
+PC --> DPB
+PCN --> NPB & EMB & PC
+PSM --> PCN
+PSC --> ATPB & RFPB
+PSCN --> PC & EMB & DPB
+SCN --> SC
+SC --> C
+
+SB -. emit: search .-> A
+PC -. emit: select, rename, cancel-rename, delete .-> PCN
+PCN -. props: playlist, isEditMode, isCurrentlyRenaming .-> PC
+PCN -. emit: show-playlist .-> PSM
+PSM -. emit: show-playlist .-> A
+PSC -. emit: toggle-play, remove-song .-> PSCN
+PSC -. props: song .-> ATPB
+PSCN -. props: song, isEditMode, isCurrentlyRenaming .-> PSC
+PSCN -. emit: deleted-playlist .-> A
+RFPB -. emit: remove-song .-> PSC
+DPB -. emit: delete-playlist .-> PSCN & PCN
+EMB -. emit: toggle-edit-mode .-> PSCN & PCN
+SCN -. props: song .-> SC
+SC -. emit: toggle-play .-> SCN
+
+UPS --> USS
+
+
+
+classDef logic fill:#35495e,stroke:#35495e,color:#fff

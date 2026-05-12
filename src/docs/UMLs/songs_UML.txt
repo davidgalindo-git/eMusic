@@ -1,0 +1,25 @@
+---
+config:
+  layout: dagre
+---
+flowchart TB
+       ATPB["AddToPlaylistButton.vue"]
+subgraph songs["songs"]
+       SC["SongCard.vue"]
+       SCN["SongContainer.vue"]
+end
+subgraph store["store"]
+       C["constants.js"]:::logic
+       USS["useSongStore.js"]:::logic
+       UPS["usePlaylistStore.js"]:::logic
+end
+
+SCN --> SC
+SC --> C
+
+SCN <-- reactive bind --> USS
+ATPB <-- reactive bind --> UPS
+SC --> ATPB
+SCN -. props: song .-> SC
+SC -. props: song .-> ATPB
+classDef logic fill:#35495e,stroke:#35495e,color:#fff

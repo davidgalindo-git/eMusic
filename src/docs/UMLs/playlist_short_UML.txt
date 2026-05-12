@@ -1,0 +1,18 @@
+---
+config:
+layout: dagre
+---
+flowchart TB
+subgraph playlist["playlist"]
+       menu
+       page
+       DPB["DeletePlaylistButton.vue"]
+       EMB["EditModeButton.vue"]
+end
+page -. props: song .-> ATPB["AddToPlaylistButton.vue"]
+playlist --> store:::logic
+A["App.vue"] --> playlist
+DPB -. emit: delete-playlist .-> page & menu
+EMB -. emit: toggle-edit-mode .-> page & menu
+
+classDef logic fill:#35495e,stroke:#35495e,color:#fff

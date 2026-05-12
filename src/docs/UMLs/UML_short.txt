@@ -1,0 +1,25 @@
+---
+config:
+  layout: dagre
+---
+flowchart TB
+ data_layer[("data_layer")]
+ subgraph store["store"]
+  end
+ subgraph utils["utils"]
+  end
+
+ subgraph src["src"]
+        A["App.vue"]
+        M["main.js"]:::logic
+        data_layer
+        store:::logic
+        utils:::logic
+        components
+  end
+M --> A
+A --> components
+components --> store & utils
+store --> data_layer & utils
+
+classDef logic fill:#35495e,stroke:#35495e,color:#fff

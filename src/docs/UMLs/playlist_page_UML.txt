@@ -1,0 +1,24 @@
+---
+config:
+layout: dagre
+---
+flowchart TB
+A["App.vue"]
+subgraph page["page"]
+       PSC["PlaylistSongCard.vue"]
+       PSCN["PlaylistSongContainer.vue"]
+       RFPB["RemoveFromPlaylistButton.vue"]
+end
+subgraph store["store"]
+       USS["useSongStore.js"]:::logic
+       UPS["usePlaylistStore.js"]:::logic
+end
+PSCN  <-- reactive bind --> USS & UPS
+PSC -->  RFPB
+PSC -. emit: toggle-play, remove-song .-> PSCN
+PSCN -. props: song, isEditMode, isCurrentlyRenaming .-> PSC
+PSCN -. emit: deleted-playlist .-> A
+RFPB -. emit: remove-song .-> PSC
+
+
+classDef logic fill:#35495e,stroke:#35495e,color:#fff

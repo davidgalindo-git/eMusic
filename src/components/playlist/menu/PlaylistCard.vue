@@ -1,6 +1,6 @@
 <script setup>
 import {ref, watch} from "vue";
-import DeletePlaylistButton from "./DeletePlaylistButton.vue";
+import DeletePlaylistButton from "../DeletePlaylistButton.vue";
 
 const props = defineProps({
   playlist: {
@@ -35,7 +35,7 @@ const submitRename = () => {
           hide-details
           @keyup.enter="submitRename"
           @keyup.esc="emit('cancel-rename')"
-          @blur="submitRename"
+          @blur="emit('cancel-rename')"
           class="px-4"
       >
         <template v-slot:append-inner>
@@ -50,7 +50,7 @@ const submitRename = () => {
           @click="emit('select', playlist.id)"
       >
         <span class="playlist-name text-truncate">{{ playlist.name }}</span>
-        <span class="song-count text-caption grey--text">{{ playlist.songs.length }} songs</span>   </div>
+        <span class="song-count text-caption grey--text">{{ playlist.songs.length }} tracks</span>   </div>
     </div>
 
     <div v-if="isEditMode" class="action-area">
