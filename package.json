@@ -12,6 +12,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@pinia/testing": "^1.0.3",
     "@vue/test-utils": "^2.4.9",
     "pinia": "^3.0.4",
     "vite-plugin-vuetify": "^2.1.3",

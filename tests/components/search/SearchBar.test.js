@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, beforeEach } from 'vitest'
-import SearchBar from '../../src/components/search/SearchBar.vue'
+import SearchBar from '../../../src/components/search/SearchBar.vue'
 
 describe('SearchBar.vue', () => {
     let wrapper

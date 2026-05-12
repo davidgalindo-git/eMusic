@@ -30,10 +30,9 @@ const variants = CARD_VARIANTS;
       style="flex-basis: 170px;"
     ></v-img>
     <div class="d-flex flex-column justify-center flex-grow-1 overflow-hidden">
-      <v-card-item
-        :title="song.trackName"
-        :subtitle="song.artistName"
-        >
+      <v-card-item>
+        <v-card-title>{{ song.trackName }}</v-card-title>
+        <v-card-subtitle>{{ song.artistName }}</v-card-subtitle>
       </v-card-item>
     </div>
     <AddToPlaylistButton :song="song" />

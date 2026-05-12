@@ -35,11 +35,15 @@ const getRawStore = (engine) => {
  * @param {any} data - Serializable content.
  */
 export const saveCollection = (collectionName, data) => {
-    const engine = getStorageEngine(collectionName);
-    const store = getRawStore(engine);
+    try {
+        const engine = getStorageEngine(collectionName);
+        const store = getRawStore(engine);
 
-    store[collectionName] = data;
-    engine.setItem(STORAGE_KEY, JSON.stringify(store));
+        store[collectionName] = data;
+        engine.setItem(STORAGE_KEY, JSON.stringify(store));
+    } catch (e) {
+        console.error("Failed to save to storage (Quota likely exceeded)");
+    }
 };
 
 /**

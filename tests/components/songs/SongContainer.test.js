@@ -4,8 +4,8 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import SongContainer from '../../src/components/songs/SongContainer.vue'
-import { useSongStore } from '../../src/store/useSongStore'
+import SongContainer from '../../../src/components/songs/SongContainer.vue'
+import { useSongStore } from '../../../src/store/useSongStore.js'
 
 /**
  * Integration test suite for SongContainer.vue.

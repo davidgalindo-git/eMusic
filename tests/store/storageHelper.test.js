@@ -83,4 +83,48 @@ describe('storageHelper.js - Storage Management', () => {
         // Validation of recovery behavior to prevent app-wide crashes
         expect(result).toEqual([]);
     });
+
+    it('should preserve existing collections in the same engine when saving a new one', () => {
+        const playlistA = [{ id: 1, name: 'Rock' }];
+        const playlistB = [{ id: 2, name: 'Jazz' }];
+
+        // Both 'playlists' and 'favorites' route to localStorage
+        saveCollection('playlists', playlistA);
+        saveCollection('favorites', playlistB);
+
+        const loadedA = loadCollection('playlists');
+        const loadedB = loadCollection('favorites');
+
+        expect(loadedA).toEqual(playlistA);
+        expect(loadedB).toEqual(playlistB);
+
+        // Final check on the raw string to ensure both keys exist in the same JSON object
+        const raw = JSON.parse(localStorage.getItem('emusic_data'));
+        expect(raw).toHaveProperty('playlists');
+        expect(raw).toHaveProperty('favorites');
+    });
+
+    it('should handle saving null or undefined gracefully', () => {
+        saveCollection('playlists', null);
+        const result = loadCollection('playlists');
+
+        expect(result).toEqual([]);
+    });
+
+    it('should NOT persist session data to local storage', () => {
+        const results = [{ trackId: 1 }];
+        saveCollection('search_results', results);
+
+        expect(sessionStorage.getItem('emusic_data')).not.toBeNull();
+        expect(localStorage.getItem('emusic_data')).toBeNull();
+    });
+
+    it('should not throw an error if the storage engine is full', () => {
+        vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+            throw new Error('QuotaExceededError');
+        });
+
+        // This should not throw because of our new try/catch
+        expect(() => saveCollection('test', [1, 2, 3])).not.toThrow();
+    });
 })

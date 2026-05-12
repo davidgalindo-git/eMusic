@@ -1,6 +1,8 @@
+import { nextTick } from 'vue';
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { usePlaylistStore } from '../../src/store/usePlaylistStore'
+import { saveCollection } from '../../src/store/storageHelper';
 
 /**
  * Storage Layer Interception.
@@ -78,6 +80,23 @@ describe('playlistStore - Collection Logic & State Synchronization', () => {
 
             expect(store.playlists[0].name).toBe('Refined Name')
         })
+
+        it('should update the error state when storage quota is exceeded', async () => {
+            const saveMock = vi.mocked(saveCollection);
+
+            saveMock.mockImplementationOnce(() => {
+                throw new Error('QuotaExceededError');
+            });
+
+            // 1. Trigger the change
+            store.createPlaylist('Crash Test');
+
+            // 2. Wait for the watcher to fire
+            await nextTick();
+
+            // 3. Now the error should be populated
+            expect(store.error).toBe('Failed to save playlists. Storage might be full.');
+        });
     })
 
     describe('Data Integrity & Normalization', () => {
@@ -116,6 +135,23 @@ describe('playlistStore - Collection Logic & State Synchronization', () => {
 
             expect(playlist.songs).toHaveLength(1)
         })
+
+        it('should ignore renaming attempts with empty or whitespace-only strings', () => {
+            const playlist = store.createPlaylist('Valid Name');
+
+            store.renamePlaylist(playlist.id, '   ');
+            expect(store.playlists[0].name).toBe('Valid Name');
+
+            store.renamePlaylist(playlist.id, null);
+            expect(store.playlists[0].name).toBe('Valid Name');
+        });
+
+        it('should not attempt to play an empty playlist', () => {
+            const playlist = store.createPlaylist('Empty');
+            store.playPlaylist(playlist.id);
+
+            expect(store.playingPlaylist).toBeNull();
+        });
     })
 
     describe('Engine Orchestration', () => {
@@ -132,5 +168,37 @@ describe('playlistStore - Collection Logic & State Synchronization', () => {
             expect(store.playingPlaylist.id).toBe(playlist.id)
             // Implicitly validates that no crash occurs during songStore interaction.
         })
+
+        it('should trigger persistence when a song is removed from a playlist', async () => {
+            // 1. Get the mocked version of the function
+            const saveMock = vi.mocked(saveCollection);
+
+            const playlist = store.createPlaylist('Persistence Test');
+            store.addToPlaylist(playlist.id, { trackId: 1, trackName: 'Test' });
+
+            // 2. Clear the "history" of the mock
+            saveMock.mockClear();
+
+            store.removeFromPlaylist(playlist.id, 1);
+
+            // 3. Wait for the watcher to finish
+            await nextTick();
+
+            // 4. Verify the call
+            expect(saveMock).toHaveBeenCalled();
+        });
+
+        it('should clear playingPlaylist if the currently playing playlist is deleted', () => {
+            const playlist = store.createPlaylist('Live List');
+            store.addToPlaylist(playlist.id, { trackId: 1, trackName: 'Song' });
+
+            store.playPlaylist(playlist.id);
+            expect(store.playingPlaylist.id).toBe(playlist.id);
+
+            store.deletePlaylist(playlist.id);
+
+            // This currently fails with your code—playingPlaylist remains set
+            expect(store.playingPlaylist).toBeNull();
+        });
     })
 })

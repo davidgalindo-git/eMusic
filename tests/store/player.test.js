@@ -97,4 +97,44 @@ describe('player.js utility - Event Logic', () => {
 
         expect(progressCallback).toHaveBeenCalledWith(15, 30);
     });
+
+    it('should stop previous playback when starting a new URL', () => {
+        const stopSpy = vi.spyOn(player, 'stop');
+        player.play('url-1.mp3');
+        player.play('url-2.mp3');
+
+        // Should have called stop to clear the first URL
+        expect(stopSpy).toHaveBeenCalled();
+        expect(capturedAudio.src).toBe('url-2.mp3');
+    });
+
+    it('should resume without resetting currentTime if the URL is the same', () => {
+        capturedAudio.src = 'same-url.mp3';
+        capturedAudio.paused = true;
+        capturedAudio.currentTime = 10;
+
+        player.play('same-url.mp3');
+
+        expect(capturedAudio.play).toHaveBeenCalled();
+        expect(capturedAudio.currentTime).toBe(10); // Should NOT be 0
+    });
+
+    it('should handle native audio errors gracefully', () => {
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        player.play('broken-link.mp3');
+
+        // Simulate browser error
+        capturedAudio.error = { code: 4, message: 'MEDIA_ERR_SRC_NOT_SUPPORTED' };
+        capturedAudio.onerror();
+
+        expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('[Player] Audio Element Error:'), expect.any(Object));
+    });
+
+    it('should clamp volume values between 0 and 1', () => {
+        player.setVolume(1.5);
+        expect(capturedAudio.volume).toBe(1);
+
+        player.setVolume(-0.5);
+        expect(capturedAudio.volume).toBe(0);
+    });
 });
