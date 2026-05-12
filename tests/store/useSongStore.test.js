@@ -130,5 +130,75 @@ describe('useSongStore - Queue Orchestration & Positional Playback', () => {
             expect(player.play).not.toHaveBeenCalled()
             expect(store.currentSongId).toBeNull()
         })
+
+        it('should automatically advance to the next song when the current one finishes', () => {
+            store.songs = [
+                { trackId: 1, previewUrl: 'url1' },
+                { trackId: 2, previewUrl: 'url2' }
+            ];
+
+            // Play the first song
+            store.playSongByIndex(0);
+
+            // Capture the "onEnded" callback passed to the player
+            const onEndedCallback = vi.mocked(player.play).mock.calls[0][1];
+
+            // Execute the callback (simulating song finish)
+            onEndedCallback();
+
+            expect(store.currentSongId).toBe(2);
+            expect(player.play).toHaveBeenCalledTimes(2);
+        });
+
+        it('should stop playback when the last song in the queue finishes', () => {
+            store.songs = [{ trackId: 1, previewUrl: 'url1' }];
+            store.playSongByIndex(0);
+
+            const onEndedCallback = vi.mocked(player.play).mock.calls[0][1];
+            onEndedCallback();
+
+            expect(store.isPlaying).toBe(false);
+            expect(store.currentSongId).toBeNull();
+        });
+
+        it('should update currentTime and duration when the player reports progress', () => {
+            store.playSongByIndex(0);
+
+            // Get the progress listener
+            const progressCallback = vi.mocked(player.onProgress).mock.calls[0][0];
+
+            // Simulate player progress (10 seconds in, 30 seconds total)
+            progressCallback(10, 30);
+
+            expect(store.currentTime).toBe(10);
+            expect(store.duration).toBe(30);
+        });
+
+        it('should restart the song on "prev" if currentTime > 3s', () => {
+            store.songs = [
+                { trackId: 1, previewUrl: 'url1' },
+                { trackId: 2, previewUrl: 'url2' }
+            ];
+            store.playSongByIndex(1); // Play second song
+
+            // Mock player to report 5 seconds elapsed
+            vi.mocked(player.getCurrentTime).mockReturnValue(5);
+
+            store.prev();
+
+            // Should call stop and then play the SAME song again
+            expect(player.stop).toHaveBeenCalled();
+            expect(store.currentSongId).toBe(2);
+        });
+
+        it('should reset to featured songs when a search returns no results', async () => {
+            fetchSongsMock.mockResolvedValue([]); // Empty API response
+
+            await store.search('NonExistentArtist');
+
+            expect(store.songs).toEqual(expect.arrayContaining([])); // Should match DEFAULT_COLLECTION
+            expect(store.collectionName).toBe("Featured Songs");
+            expect(store.error).toContain("No results found");
+        });
     })
 })
