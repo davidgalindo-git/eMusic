@@ -4,8 +4,8 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import Player from '../../src/components/player/Player.vue'
-import { useSongStore } from '../../src/store/useSongStore'
+import Player from '../../../src/components/player/Player.vue'
+import { useSongStore } from '../../../src/store/useSongStore.js'
 
 /**
  * Unit test suite for the Player.vue component.
