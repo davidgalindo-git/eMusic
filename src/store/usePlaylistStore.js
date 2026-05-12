@@ -29,6 +29,10 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
     const error = ref(null);
 
     // --- Getters (Computed) ---
+    const selectedPlaylist = computed(() => {
+        return playlists.value.find(p => p.id === selectedPlaylistId.value) || null;
+    });
+
     const activePlaylistSongs = computed(() => {
         const active = playlists.value.find(p => p.id === selectedPlaylistId.value);
         return active ? active.songs : [];
@@ -186,7 +190,7 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
 
     return {
         // Data & UI State
-        playlists, selectedPlaylistId, playingPlaylist, error,
+        playlists, selectedPlaylistId, selectedPlaylist, playingPlaylist, error,
 
         // Getters
         activePlaylistSongs, activePlaylistName,
