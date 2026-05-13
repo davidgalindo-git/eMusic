@@ -15,22 +15,11 @@ export function mapSong(raw) {
         trackName:      raw.trackName       ?? "Unknown Track",
         artistName:     raw.artistName      ?? "Unknown Artist",
         albumName:      raw.collectionName  ?? "Unknown Album",
-        genre:          raw.primaryGenreName ?? "Unknown Genre",
-        releaseYear:    raw.releaseDate
-            ? new Date(raw.releaseDate).getUTCFullYear()
-            : null,
-        releaseDate:    raw.releaseDate     ?? null,
         durationMs:     raw.trackTimeMillis ?? 0,
         previewUrl:     raw.previewUrl      ?? null,
         artworkUrl:     raw.artworkUrl100
             ? raw.artworkUrl100.replace("100x100", "300x300")
             : null,
-        trackPrice:     raw.trackPrice      ?? null,
-        currency:       raw.currency        ?? null,
-        country:        raw.country         ?? null,
-        explicit:       raw.trackExplicitness === "explicit",
-        trackNumber:    raw.trackNumber     ?? null,
-        trackCount:     raw.trackCount      ?? null,
     };
 }
 
