@@ -46,4 +46,7 @@ const variants = CARD_VARIANTS;
   align-items: center;
   overflow: hidden;
 }
+.v-card-item{
+  padding: 10px 0 10px 10px;
+}
 </style>

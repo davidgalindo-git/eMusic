@@ -49,8 +49,8 @@ const submitRename = () => {
           class="display-info"
           @click="emit('select', playlist.id)"
       >
-        <span class="playlist-name text-truncate">{{ playlist.name }}</span>
-        <span class="song-count text-caption grey--text">{{ playlist.songs.length }} tracks</span>   </div>
+        <span class="playlist-name text-truncate flex-grow-1">{{ playlist.name }}</span>
+        <span class="song-count text-caption grey--text flex-grow-1">{{ playlist.songs.length }} tracks</span>   </div>
     </div>
 
     <div v-if="isEditMode" class="action-area">
@@ -99,5 +99,12 @@ const submitRename = () => {
 .action-area {
   display: flex;
   align-items: center;
+}
+
+/* RESPONSIVE LAYOUT ENGINE */
+@media (max-width: 800px) {
+  .song-count{
+    display: none;
+  }
 }
 </style>

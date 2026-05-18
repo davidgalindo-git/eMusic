@@ -25,7 +25,7 @@ const handleSongClick = (song) => {
       <v-col
         v-for="song in songStore.songs"
         :key="song.trackId"
-        cols="12" sm="8" md="6" lg="6"
+        cols="12" sm="12" md="6" lg="6"
       >
         <SongCard :song="song" @toggle-play="handleSongClick" />
       </v-col>

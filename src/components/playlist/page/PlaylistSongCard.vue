@@ -21,9 +21,8 @@ const variants = CARD_VARIANTS;
 <template>
   <v-card
       :variant="variants[0]"
-      class="song-card mx-auto"
+      class="song-card mx-auto w-100"
       color="surface-variant"
-      max-width="604"
       height="60"
       @click="emit('toggle-play', song)"
   >
@@ -36,19 +35,23 @@ const variants = CARD_VARIANTS;
     <v-img
         :src="song.artworkUrl"
         cover
-        class="flex-shrink-0 flex-grow-0"
-        style="flex-basis: 170px;"
+        height="60"
+        :width="$vuetify.display.xs ? 60 : 120"
+        max-width="250px"
+        class="flex-shrink-0 flex-grow-1"
     ></v-img>
     <div class="d-flex flex-column justify-center pl-3 pr-2 flex-grow-1 overflow-hidden">
       <div class="text-body-1 font-weight-bold text-truncate line-height-tight">
         {{ song.trackName }}
       </div>
       <div class="text-caption text-medium-emphasis text-truncate text-white">
-        {{ song.artistName }} <span class="mx-1">•</span><span class="font-italic"> {{ song.albumName }} </span>
+        {{ song.artistName }} <span class="font-italic d-none d-sm-inline">• {{ song.albumName }} </span>
       </div>
     </div>
     <div class="d-flex align-center" @click.stop>
-      <span>{{ timeFormatter(song.durationMs/1000) }}</span>
+      <span class="d-none d-sm-inline text-caption text-medium-emphasis mr-1 text-white">
+        {{ timeFormatter(song.durationMs/1000) }}
+      </span>
       <AddToPlaylistButton :song="song" />
 
       <div v-if="isEditMode">
