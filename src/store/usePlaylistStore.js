@@ -164,8 +164,10 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
                     trackId: song.trackId,
                     trackName: song.trackName,
                     artistName: song.artistName,
+                    albumName: song.albumName,
+                    durationMs: song.durationMs,
+                    previewUrl: song.previewUrl,
                     artworkUrl: song.artworkUrl,
-                    previewUrl: song.previewUrl
                 });
             }
         }

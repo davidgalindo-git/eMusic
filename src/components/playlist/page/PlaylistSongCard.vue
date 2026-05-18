@@ -2,6 +2,7 @@
 import {CARD_VARIANTS} from "../../../store/constants.js";
 import AddToPlaylistButton from "../../AddToPlaylistButton.vue";
 import RemoveFromPlaylistButton from "./RemoveFromPlaylistButton.vue";
+import {timeFormatter} from "../../../utils/timeFormatter.js";
 
 const props = defineProps({
   song: {
@@ -38,14 +39,16 @@ const variants = CARD_VARIANTS;
         class="flex-shrink-0 flex-grow-0"
         style="flex-basis: 170px;"
     ></v-img>
-    <div class="d-flex flex-column justify-center flex-grow-1 overflow-hidden">
-      <v-card-item
-          :title="song.trackName"
-          :subtitle="song.artistName"
-      >
-      </v-card-item>
+    <div class="d-flex flex-column justify-center pl-3 pr-2 flex-grow-1 overflow-hidden">
+      <div class="text-body-1 font-weight-bold text-truncate line-height-tight">
+        {{ song.trackName }}
+      </div>
+      <div class="text-caption text-medium-emphasis text-truncate text-white">
+        {{ song.artistName }} <span class="mx-1">•</span><span class="font-italic"> {{ song.albumName }} </span>
+      </div>
     </div>
     <div class="d-flex align-center" @click.stop>
+      <span>{{ timeFormatter(song.durationMs/1000) }}</span>
       <AddToPlaylistButton :song="song" />
 
       <div v-if="isEditMode">
