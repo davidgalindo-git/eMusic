@@ -57,4 +57,19 @@ const showPlaylist = (playlistId) => {
   padding: 16px 0;
 }
 
+/* RESPONSIVE LAYOUT ENGINE */
+@media (max-width: 800px) {
+  .playlist-menu {
+    width: 125px;
+  }
+
+  .menu-header {
+    padding: 12px;
+  }
+
+  .menu-header h2 {
+    font-size: 1rem;
+  }
+}
+
 </style>
