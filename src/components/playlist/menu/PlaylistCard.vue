@@ -102,7 +102,7 @@ const submitRename = () => {
 }
 
 /* RESPONSIVE LAYOUT ENGINE */
-@media (max-width: 800px) {
+@media (max-width: 850px) {
   .song-count{
     display: none;
   }

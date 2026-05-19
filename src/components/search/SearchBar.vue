@@ -27,5 +27,25 @@ const onSearch = () => {
 </template>
 
 <style scoped>
+.search-container {
+  width: 100%;
+  max-width: 500px;
+}
 
+.search-input {
+  width: 80%;
+  height: 40px;
+  padding: 0 16px;
+
+  /* Grey Border Definition */
+  border: 1px solid #cccccc;
+  border-radius: 20px;
+
+  /* Typography & Basics */
+  font-size: 0.95rem;
+  background-color: transparent;
+  color: inherit;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
 </style>

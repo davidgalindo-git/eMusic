@@ -33,7 +33,7 @@ const handleSearch = (term) => {
     <v-navigation-drawer
         permanent
         :width="$vuetify.display.mdAndDown ? ($vuetify.display.smAndDown ? 125 : 200) : 250"
-        color="#121212"
+        color="#fff"
         class="border-right"
     >
       <PlaylistSideMenu @show-playlist="showPlaylist" />

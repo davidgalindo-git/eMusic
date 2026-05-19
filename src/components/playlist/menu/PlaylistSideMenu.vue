@@ -11,8 +11,8 @@ const showPlaylist = (playlistId) => {
 
 <template>
   <aside class="playlist-menu">
-    <div class="menu-header">
-      <h2>Playlists</h2>
+    <div class="menu-header align-content-center">
+      <h2 class="font-weight-bold text-subtitle-1">Playlists</h2>
     </div>
     <PlaylistContainer @show-playlist="showPlaylist" class="playlist-container"/>
   </aside>
@@ -21,34 +21,23 @@ const showPlaylist = (playlistId) => {
 <style scoped>
 .playlist-menu {
   /* Positioning and Size */
-  width: 250px;
-  position: sticky;
-  left: 0;
-  top: 0;
-  height: calc(100vh - 64px);
+  width: 100%;
+  height: 100%;
 
   /* Layout */
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
 
   /* Visuals */
   background-color: #121212;
   color: white;
-  border-right: 1px solid #282828;
 }
 
 .menu-header {
   background-color: white;
   color: black;
   padding: 24px;
-  border-bottom: 1px solid #282828;
-}
-
-.menu-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: bold;
+  height: 70px;
 }
 
 .playlist-container {
@@ -57,25 +46,9 @@ const showPlaylist = (playlistId) => {
   padding: 16px 0;
 }
 
-/* RESPONSIVE LAYOUT ENGINE */
-@media (max-width: 1200px) {
-  .playlist-menu {
-    width: 200px;
-  }
-}
-
 @media (max-width: 800px) {
-  .playlist-menu {
-    width: 125px;
-  }
-
   .menu-header {
     padding: 12px;
   }
-
-  .menu-header h2 {
-    font-size: 1rem;
-  }
 }
-
 </style>
