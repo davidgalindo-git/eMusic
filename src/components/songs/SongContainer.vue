@@ -12,10 +12,13 @@ const handleSongClick = (song) => {
 <template>
   <v-container>
     <!-- Dynamic Title Section -->
-    <div class="d-flex align-center mb-4">
-      <v-icon icon="mdi-playlist-music" class="mr-2" color="primary" />
-      <h2 class="text-h5 font-weight-bold">{{ songStore.collectionName }}</h2>
-      <v-chip class="ml-4" size="small" variant="outlined" color="primary">
+    <div class="d-flex align-center mb-4 w-100">
+      <div class="d-flex align-center min-width-0" style="flex: 1; min-width: 0;">
+        <v-icon icon="mdi-playlist-music" class="mr-2 flex-shrink-0" color="primary" />
+        <h2 class="text-h5 font-weight-bold text-truncate">{{ songStore.collectionName }}</h2>
+      </div>
+
+      <v-chip class="ml-4 flex-shrink-0" size="small" variant="outlined" color="primary">
         {{ songStore.songs.length }} Tracks
       </v-chip>
     </div>
