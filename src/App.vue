@@ -10,6 +10,7 @@ import PlaylistSongContainer from "./components/playlist/page/PlaylistSongContai
 
 import {useSongStore} from "./store/useSongStore.js";
 import {usePlaylistStore} from "./store/usePlaylistStore.js";
+import Logo from "./components/Logo.vue";
 
 const songStore = useSongStore();
 const playlistStore = usePlaylistStore();
@@ -29,21 +30,29 @@ const handleSearch = (term) => {
 
 <template>
   <v-app>
-    <v-main>
-      <div class="header-container">
-        <SearchBar @search="handleSearch" />
-        <ErrorAlert />
+    <v-app-bar :elevation="1" color="surface" height="70" class="px-4">
+      <div class="d-flex align-center w-100 built-header">
+        <SearchBar @search="handleSearch" class="flex-grow-1 header-search" />
+        <Logo />
       </div>
+    </v-app-bar>
+
+    <v-main>
+      <v-container fluid class="pa-0">
+        <ErrorAlert />
+      </v-container>
+
       <div class="body-container">
         <PlaylistSideMenu @show-playlist="showPlaylist"/>
-        <SongContainer v-if="currentView === 'search'" class="flex-grow-1"/>
+        <SongContainer v-if="currentView === 'search'" class="flex-grow-1" />
         <PlaylistSongContainer
-          v-else-if="currentView === 'playlist'"
-          class="flex-grow-1"
-          @deleted-playlist="currentView = 'search'"
+            v-else-if="currentView === 'playlist'"
+            class="flex-grow-1"
+            @deleted-playlist="currentView = 'search'"
         />
       </div>
     </v-main>
+
     <Player />
   </v-app>
 </template>
@@ -56,9 +65,13 @@ const handleSearch = (term) => {
   align-items: flex-start;
 }
 
-.header-container {
-  height: 60px;
-  padding: 10px;
+.built-header {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-search {
+  min-width: 0;
 }
 
 .flex-grow-1 {
