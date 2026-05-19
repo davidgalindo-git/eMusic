@@ -18,7 +18,6 @@ const variants = CARD_VARIANTS;
   <v-card
       :variant="variants[0]"
       class="song-card mx-auto"
-      color="surface-variant"
       max-width="604"
       height="170"
       @click="emit('toggle-play', song)"
