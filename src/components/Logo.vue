@@ -5,8 +5,9 @@
 <template>
   <v-img
       src="/eMusic_Logo.png" alt="eMusic Logo"
-      max-height="160"
-      max-width="160"
+      height="100"
+      max-width="130"
+      contain
       class="mr-4 flex-shrink-0"
   />
 </template>
