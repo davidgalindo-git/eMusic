@@ -22,7 +22,6 @@ const variants = CARD_VARIANTS;
   <v-card
       :variant="variants[0]"
       class="song-card mx-auto w-100"
-      color="surface-variant"
       height="60"
       @click="emit('toggle-play', song)"
   >
@@ -42,12 +41,12 @@ const variants = CARD_VARIANTS;
       <div class="text-body-1 font-weight-bold text-truncate line-height-tight">
         {{ song.trackName }}
       </div>
-      <div class="text-caption text-medium-emphasis text-truncate text-white">
+      <div class="text-caption text-medium-emphasis text-truncate">
         {{ song.artistName }} <span class="font-italic d-none d-sm-inline">• {{ song.albumName }} </span>
       </div>
     </div>
     <div class="d-flex align-center" @click.stop>
-      <span class="d-none d-sm-inline text-caption text-medium-emphasis mr-1 text-white">
+      <span class="d-none d-sm-inline text-caption text-medium-emphasis mr-1">
         {{ timeFormatter(song.durationMs/1000) }}
       </span>
       <AddToPlaylistButton :song="song" />
