@@ -31,14 +31,12 @@ const showPlaylist = (playlistId) => {
   /* Visuals */
   background-color: #121212;
   color: white;
-  border-right: 1px solid #282828;
 }
 
 .menu-header {
   background-color: white;
   color: black;
   padding: 24px;
-  border-bottom: 1px solid #282828;
   height: 70px;
 }
 
