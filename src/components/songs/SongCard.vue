@@ -19,16 +19,15 @@ const variants = CARD_VARIANTS;
       :variant="variants[0]"
       class="song-card mx-auto"
       max-width="604"
-      height="170"
+      height="130"
       @click="emit('toggle-play', song)"
   >
     <v-img
       :src="song.artworkUrl"
       cover
-      class="flex-shrink-0 flex-grow-0"
-      style="flex-basis: 170px;"
+      class="card-image"
     ></v-img>
-    <div class="d-flex flex-column justify-center flex-grow-1 overflow-hidden">
+    <div class="d-flex flex-column justify-center text-block overflow-hidden">
       <v-card-item>
         <v-card-title>{{ song.trackName }}</v-card-title>
         <v-card-subtitle>{{ song.artistName }}</v-card-subtitle>
@@ -44,6 +43,15 @@ const variants = CARD_VARIANTS;
   flex-direction: row;
   align-items: center;
   overflow: hidden;
+}
+.card-image {
+  flex: 0 0 40% !important;
+  width: 40% !important;
+  height: 100%;
+}
+.text-block {
+  flex: 0 0 60%;
+  max-width: 60%;
 }
 .v-card-item{
   padding: 10px 0 10px 10px;
