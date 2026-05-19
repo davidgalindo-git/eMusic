@@ -30,6 +30,15 @@ const handleSearch = (term) => {
 
 <template>
   <v-app>
+    <v-navigation-drawer
+        permanent
+        :width="$vuetify.display.mdAndDown ? ($vuetify.display.smAndDown ? 125 : 200) : 250"
+        color="#121212"
+        class="border-right"
+    >
+      <PlaylistSideMenu @show-playlist="showPlaylist" />
+    </v-navigation-drawer>
+
     <v-app-bar :elevation="1" color="surface" height="70" class="px-4">
       <div class="d-flex align-center w-100 built-header">
         <SearchBar @search="handleSearch" class="flex-grow-1 header-search" />
@@ -42,12 +51,11 @@ const handleSearch = (term) => {
         <ErrorAlert />
       </v-container>
 
-      <div class="body-container">
-        <PlaylistSideMenu @show-playlist="showPlaylist"/>
+      <div class="view-container">
         <SongContainer v-if="currentView === 'search'" class="flex-grow-1" />
         <PlaylistSongContainer
             v-else-if="currentView === 'playlist'"
-            class="flex-grow-1"
+            class="w-100"
             @deleted-playlist="currentView = 'search'"
         />
       </div>
@@ -58,11 +66,8 @@ const handleSearch = (term) => {
 </template>
 
 <style>
-.body-container {
-  display: flex;
-  flex-direction: row;
+.view-container {
   width: 100%;
-  align-items: flex-start;
 }
 
 .built-header {
@@ -74,8 +79,7 @@ const handleSearch = (term) => {
   min-width: 0;
 }
 
-.flex-grow-1 {
-  flex: 1;
-  min-width: 0;
+.w-100 {
+  width: 100%;
 }
 </style>
