@@ -30,6 +30,8 @@ const handleSearch = (term) => {
 
 <template>
   <v-app>
+    <Player />
+
     <v-navigation-drawer
         permanent
         :width="$vuetify.display.mdAndDown ? ($vuetify.display.smAndDown ? 125 : 200) : 250"
@@ -60,8 +62,6 @@ const handleSearch = (term) => {
         />
       </div>
     </v-main>
-
-    <Player />
   </v-app>
 </template>
 
