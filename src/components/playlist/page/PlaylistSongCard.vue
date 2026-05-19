@@ -22,7 +22,6 @@ const variants = CARD_VARIANTS;
   <v-card
       :variant="variants[0]"
       class="song-card mx-auto w-100"
-      color="surface-variant"
       height="60"
       @click="emit('toggle-play', song)"
   >
@@ -36,20 +35,18 @@ const variants = CARD_VARIANTS;
         :src="song.artworkUrl"
         cover
         height="60"
-        :width="$vuetify.display.xs ? 60 : 120"
-        max-width="250px"
-        class="flex-shrink-0 flex-grow-1"
+        class="song-cover-art"
     ></v-img>
     <div class="d-flex flex-column justify-center pl-3 pr-2 flex-grow-1 overflow-hidden">
       <div class="text-body-1 font-weight-bold text-truncate line-height-tight">
         {{ song.trackName }}
       </div>
-      <div class="text-caption text-medium-emphasis text-truncate text-white">
+      <div class="text-caption text-medium-emphasis text-truncate">
         {{ song.artistName }} <span class="font-italic d-none d-sm-inline">• {{ song.albumName }} </span>
       </div>
     </div>
     <div class="d-flex align-center" @click.stop>
-      <span class="d-none d-sm-inline text-caption text-medium-emphasis mr-1 text-white">
+      <span class="d-none d-sm-inline text-caption text-medium-emphasis mr-1">
         {{ timeFormatter(song.durationMs/1000) }}
       </span>
       <AddToPlaylistButton :song="song" />
@@ -67,5 +64,31 @@ const variants = CARD_VARIANTS;
   flex-direction: row;
   align-items: center;
   overflow: hidden;
+}
+
+/* Large Screen */
+.song-cover-art {
+  width: 220px !important;
+  min-width: 220px !important;
+  max-width: 220px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Medium Screen */
+@media (max-width: 1099px){
+.song-cover-art {
+  width: 180px !important;
+  min-width: 180px !important;
+  max-width: 180px !important;
+}
+}
+
+/* Small Screen */
+@media (max-width: 699px) {
+  .song-cover-art {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
 }
 </style>

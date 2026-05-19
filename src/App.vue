@@ -68,6 +68,8 @@ const handleSearch = (term) => {
 <style>
 .view-container {
   width: 100%;
+  height: auto;
+  overflow: visible;
 }
 
 .built-header {
