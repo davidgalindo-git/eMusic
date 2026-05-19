@@ -8,7 +8,13 @@ const song = computed(() => store.songs.find(s => s.trackId === store.currentSon
 </script>
 
 <template>
-  <v-app-bar v-if="song" location="bottom" height="120" flat border class="px-8">
+  <v-footer
+      v-if="song"
+      app
+      height="120"
+      class="px-8 border-t bg-surface"
+      style="z-index: 1004;"
+  >
     <div class="d-flex align-center" style="flex: 1; min-width: 0;">
       <!-- Cover & Info -->
       <v-avatar rounded size="90" class="mr-6">
@@ -63,5 +69,5 @@ const song = computed(() => store.songs.find(s => s.trackId === store.currentSon
         </span>
       </div>
     </div>
-  </v-app-bar>
+  </v-footer>
 </template>
