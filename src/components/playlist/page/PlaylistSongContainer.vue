@@ -77,7 +77,7 @@ const deletePlaylist = () => {
 <template>
   <v-container @keyup.esc="isEditMode = false">
     <!-- Dynamic Title Section -->
-    <div class="d-flex align-center mb-4">
+    <div class="d-flex align-center mb-4 sticky-header bg-surface w-100">
       <v-icon icon="mdi-playlist-music" class="mr-2" color="primary" />
 
       <div class="content-area">
@@ -159,5 +159,18 @@ const deletePlaylist = () => {
 </template>
 
 <style scoped>
+.sticky-header {
+  position: sticky;
+  top: 70px;
+  z-index: 10;
+  width: calc(100% + 48px);
 
+  padding: 16px 40px;
+  margin-left: -24px;
+  margin-right: -24px;
+}
+
+.v-container {
+  padding: 0 24px;
+}
 </style>
