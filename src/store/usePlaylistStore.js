@@ -78,8 +78,8 @@ export const usePlaylistStore = defineStore("playlistStore", () => {
         if (playlist && playlist.songs.length > 0) {
             playingPlaylist.value = playlist;
 
-            // Logic: Queue Synchronization & State Displacement.
-            songStore.setQueue(playlist.songs, `Playlist: ${playlist.name}`);
+            const playlistTitle = `Playlist: ${playlist.name}`;
+            songStore.setQueue(playlist.songs, playlistTitle);
 
             // Logic: Positional Playback Initialization.
             songStore.playSongByIndex(0);
