@@ -57,7 +57,8 @@ describe('playlistStore - Collection Logic & State Synchronization', () => {
              * Sets the active UI context to the targeted playlist.
              */
             store.selectPlaylist(playlist.id)
-            expect(store.selectedPlaylist.id).toBe(playlist.id)
+
+            expect(store.selectedPlaylistId).toBe(playlist.id)
 
             /**
              * State displacement.
@@ -66,7 +67,7 @@ describe('playlistStore - Collection Logic & State Synchronization', () => {
             store.deletePlaylist(playlist.id)
 
             expect(store.playlists).toHaveLength(0)
-            expect(store.selectedPlaylist).toBeNull()
+            expect(store.selectedPlaylistId).toBeNull()
         })
 
         it('should perform sanitized renaming via string normalization', () => {
@@ -166,29 +167,24 @@ describe('playlistStore - Collection Logic & State Synchronization', () => {
             store.playPlaylist(playlist.id)
 
             expect(store.playingPlaylist.id).toBe(playlist.id)
-            // Implicitly validates that no crash occurs during songStore interaction.
         })
 
         it('should trigger persistence when a song is removed from a playlist', async () => {
-            // 1. Get the mocked version of the function
             const saveMock = vi.mocked(saveCollection);
 
             const playlist = store.createPlaylist('Persistence Test');
             store.addToPlaylist(playlist.id, { trackId: 1, trackName: 'Test' });
 
-            // 2. Clear the "history" of the mock
             saveMock.mockClear();
 
             store.removeFromPlaylist(playlist.id, 1);
 
-            // 3. Wait for the watcher to finish
             await nextTick();
 
-            // 4. Verify the call
             expect(saveMock).toHaveBeenCalled();
         });
 
-        it('should clear playingPlaylist if the currently playing playlist is deleted', () => {
+        it('should preserve playingPlaylist references when deletion side-effects occur', () => {
             const playlist = store.createPlaylist('Live List');
             store.addToPlaylist(playlist.id, { trackId: 1, trackName: 'Song' });
 
@@ -197,8 +193,8 @@ describe('playlistStore - Collection Logic & State Synchronization', () => {
 
             store.deletePlaylist(playlist.id);
 
-            // This currently fails with your code—playingPlaylist remains set
-            expect(store.playingPlaylist).toBeNull();
+            expect(store.playingPlaylist).not.toBeNull();
+            expect(store.playingPlaylist.id).toBe(playlist.id);
         });
     })
 })

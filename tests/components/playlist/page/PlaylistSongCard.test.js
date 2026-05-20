@@ -81,13 +81,18 @@ describe('PlaylistSongCard.vue - Collection Item Interface', () => {
 
         /**
          * Prop-to-UI Mapping.
-         * Confirms the card displays the correct title, artist,
-         * and cover art URL provided by the song prop.
+         * Verifies text rendering for Title and Artist since <v-card-item> was removed.
          */
-        const cardItem = wrapper.findComponent({ name: 'v-card-item' })
-        expect(cardItem.props('title')).toBe('Midnight City')
-        expect(cardItem.props('subtitle')).toBe('M83')
+        const titleText = wrapper.find('.text-body-1')
+        expect(titleText.text()).toBe('Midnight City')
 
+        const artistText = wrapper.find('.text-caption')
+        expect(artistText.text()).toContain('M83')
+
+        /**
+         * Image Validation.
+         * Confirms that the standard v-img sub-component grabs the correct artworkUrl.
+         */
         const img = wrapper.findComponent({ name: 'v-img' })
         expect(img.props('src')).toBe('https://example.com/m83.jpg')
     })

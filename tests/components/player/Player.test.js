@@ -7,36 +7,27 @@ import * as directives from 'vuetify/directives'
 import Player from '../../../src/components/player/Player.vue'
 import { useSongStore } from '../../../src/store/useSongStore.js'
 
-/**
- * Unit test suite for the Player.vue component.
- * Validates reactive song state rendering and UI-to-Store action dispatching.
- */
 const vuetify = createVuetify({ components, directives })
 
 describe('Player.vue', () => {
     let pinia
     let store
 
-    /**
-     * Factory function for component instantiation.
-     * Implements VAppBar stubbing to bypass Vuetify layout injection requirements.
-     */
     const createWrapper = () => {
         return mount(Player, {
             global: {
                 plugins: [pinia, vuetify],
                 stubs: {
-                    VAppBar: { template: '<div class="v-app-bar-stub"><slot /></div>' }
+                    VFooter: { template: '<div class="v-footer-stub"><slot /></div>' }
+                },
+                mocks: {
+                    $vuetify: { display: { xs: false } }
                 }
             }
         })
     }
 
     beforeEach(() => {
-        /**
-         * Context initialization.
-         * Resets Pinia state and populates the store with mock track metadata.
-         */
         pinia = createPinia()
         setActivePinia(pinia)
         store = useSongStore()
@@ -50,16 +41,15 @@ describe('Player.vue', () => {
         store.currentSongId = null
         const wrapper = createWrapper()
 
-        // Assert absence of the player interface based on conditional v-if logic.
-        expect(wrapper.find('.v-app-bar-stub').exists()).toBe(false)
+        expect(wrapper.find('.v-footer-stub').exists()).toBe(false)
     })
 
     it('populates song metadata when a track is active', () => {
         store.currentSongId = 1
         const wrapper = createWrapper()
 
-        // Validate text content synchronization with store state.
         expect(wrapper.text()).toContain('Test Song')
+        expect(wrapper.text()).toContain('Test Artist')
     })
 
     it('invokes store.togglePlay upon play/pause interaction', async () => {
@@ -67,11 +57,9 @@ describe('Player.vue', () => {
         const spy = vi.spyOn(store, 'togglePlay')
         const wrapper = createWrapper()
 
-        // Locate action button via variant-specific selector and trigger DOM event.
         const playBtn = wrapper.find('.v-btn--variant-tonal')
         await playBtn.trigger('click')
 
-        // Assert store method invocation with the active song object as payload.
         expect(spy).toHaveBeenCalledWith(store.songs[0])
     })
 
@@ -81,13 +69,17 @@ describe('Player.vue', () => {
         const prevSpy = vi.spyOn(store, 'prev')
         const wrapper = createWrapper()
 
-        const buttons = wrapper.findAll('.v-btn--variant-text')
+        const prevBtnEl = wrapper.find('.mdi-skip-previous').element.closest('button')
+        const nextBtnEl = wrapper.find('.mdi-skip-next').element.closest('button')
 
-        // Sequential validation of 'Previous' and 'Next' button triggers.
-        await buttons[0].trigger('click')
+        expect(prevBtnEl).not.toBeNull()
+        expect(nextBtnEl).not.toBeNull()
+
+        // Trigger clicks on the native DOM nodes directly
+        await prevBtnEl.click()
         expect(prevSpy).toHaveBeenCalled()
 
-        await buttons[1].trigger('click')
+        await nextBtnEl.click()
         expect(nextSpy).toHaveBeenCalled()
     })
 
@@ -96,10 +88,6 @@ describe('Player.vue', () => {
         const seekSpy = vi.spyOn(store, 'seek')
         const wrapper = createWrapper()
 
-        /**
-         * Emulated component event.
-         * Directly emits the Vuetify update event to bypass JSDOM slider limitations.
-         */
         const slider = wrapper.findComponent({ name: 'VSlider' })
         await slider.vm.$emit('update:model-value', 15)
 
