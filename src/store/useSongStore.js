@@ -34,7 +34,10 @@ export const useSongStore = defineStore("songStore", () => {
     // State
     const savedResults = loadCollection('search_results');
     const savedName = sessionStorage.getItem('current_collection_name');
-    const collectionName = ref(savedResults?.length > 0 ? (savedName || "Search Results") : "Featured Songs");
+
+    const searchResults = ref(savedResults && savedResults.length > 0 ? savedResults : []);
+
+    const collectionName = ref(savedName || "Featured Songs");
 
     const songs = ref(savedResults && savedResults.length > 0
         ? savedResults
@@ -86,7 +89,8 @@ export const useSongStore = defineStore("songStore", () => {
                 error.value = "No results found. Showing featured songs.";
                 resetToFeatured();
             } else {
-                songs.value = mapped;
+                searchResults.value = mapped;
+
                 const newName = `Results for "${term}"`;
                 collectionName.value = newName;
 
@@ -112,8 +116,14 @@ export const useSongStore = defineStore("songStore", () => {
     function setSort(key, order = "asc") {
         sortKey.value = key;
         sortOrder.value = order;
-        const sorted = mapAndSortSongs(songs.value, key, order);
-        songs.value = sorted;
+        const targetList = searchResults.value.length > 0 ? searchResults.value : songs.value;
+        const sorted = mapAndSortSongs(targetList, key, order);
+
+        if (searchResults.value.length > 0) {
+            searchResults.value = sorted;
+        } else {
+            songs.value = sorted;
+        }
 
         if (error.value === null) {
             saveCollection('search_results', sorted);
@@ -238,7 +248,7 @@ export const useSongStore = defineStore("songStore", () => {
 
     return {
         // Data & UI State
-        songs, loading, error, sortKey, sortOrder, collectionName,
+        songs, searchResults, loading, error, sortKey, sortOrder, collectionName,
         // Playback State
         isPlaying, currentSongId, currentTime, duration, currentIndex,
         // Actions
