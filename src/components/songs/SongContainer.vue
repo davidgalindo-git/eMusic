@@ -5,6 +5,14 @@ import SongCard from "./SongCard.vue";
 const songStore = useSongStore()
 
 const handleSongClick = (song) => {
+  const isViewingSearch = songStore.searchResults.length > 0;
+
+  const isAlreadyInQueue = songStore.songs.some(s => s.trackId === song.trackId);
+
+  if (isViewingSearch && !isAlreadyInQueue) {
+    songStore.setQueue(songStore.searchResults, songStore.collectionName);
+  }
+
   songStore.togglePlay(song)
 }
 </script>
@@ -19,15 +27,15 @@ const handleSongClick = (song) => {
         </div>
 
         <v-chip class="ml-4 flex-shrink-0" size="small" variant="outlined" color="primary">
-          {{ songStore.songs.length }} Tracks
+          {{ songStore.searchResults.length > 0 ? songStore.searchResults.length : songStore.songs.length }} Tracks
         </v-chip>
       </div>
     </div>
 
     <v-container class="pt-4">
-      <v-row v-if="songStore.songs.length">
+      <v-row v-if="songStore.searchResults.length || songStore.songs.length">
         <v-col
-            v-for="song in songStore.songs"
+            v-for="song in (songStore.searchResults.length > 0 ? songStore.searchResults : songStore.songs)"
             :key="song.trackId"
             cols="12" sm="12" md="6" lg="6"
         >
