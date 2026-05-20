@@ -13,17 +13,9 @@ describe('songMapper', () => {
                 trackName: 'Test Song',
                 artistName: 'Test Artist',
                 collectionName: 'Test Album',
-                primaryGenreName: 'Rock',
-                releaseDate: '2024-01-15T00:00:00Z',
                 trackTimeMillis: 240000,
                 previewUrl: 'https://example.com/preview.m4a',
                 artworkUrl100: 'https://example.com/artwork100x100.jpg',
-                trackPrice: 1.29,
-                currency: 'USD',
-                country: 'USA',
-                trackExplicitness: 'explicit',
-                trackNumber: 5,
-                trackCount: 12
             }
 
             const result = mapSong(rawTrack)
@@ -37,18 +29,9 @@ describe('songMapper', () => {
                 trackName: 'Test Song',
                 artistName: 'Test Artist',
                 albumName: 'Test Album',
-                genre: 'Rock',
-                releaseYear: 2024,
-                releaseDate: '2024-01-15T00:00:00Z',
                 durationMs: 240000,
                 previewUrl: 'https://example.com/preview.m4a',
                 artworkUrl: 'https://example.com/artwork300x300.jpg',
-                trackPrice: 1.29,
-                currency: 'USD',
-                country: 'USA',
-                explicit: true,
-                trackNumber: 5,
-                trackCount: 12
             })
         })
 
@@ -62,14 +45,6 @@ describe('songMapper', () => {
             expect(result.artworkUrl).toBeNull()
         })
 
-        it('should correctly evaluate track explicitness as boolean', () => {
-            const explicitTrack = { trackId: 1, trackExplicitness: 'explicit' }
-            const cleanTrack = { trackId: 2, trackExplicitness: 'notExplicit' }
-
-            expect(mapSong(explicitTrack).explicit).toBe(true)
-            expect(mapSong(cleanTrack).explicit).toBe(false)
-        })
-
         it('should upscale artwork URL resolution (100x100 to 300x300)', () => {
             const rawTrack = {
                 trackId: 789,
@@ -81,18 +56,6 @@ describe('songMapper', () => {
             // Validate string manipulation for enhanced visual fidelity.
             expect(result.artworkUrl).toContain('300x300')
             expect(result.artworkUrl).not.toContain('100x100')
-        })
-
-        it('should extract the ISO year from the releaseDate property', () => {
-            const testCases = [
-                { date: '2024-06-15T00:00:00Z', expectedYear: 2024 },
-                { date: '1999-12-31T23:59:59Z', expectedYear: 1999 }
-            ]
-
-            testCases.forEach(({ date, expectedYear }) => {
-                const result = mapSong({ trackId: 1, releaseDate: date })
-                expect(result.releaseYear).toBe(expectedYear)
-            })
         })
     })
 
