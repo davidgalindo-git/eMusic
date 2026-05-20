@@ -50,9 +50,16 @@ const variants = CARD_VARIANTS;
   height: 100%;
 }
 .text-block {
-  flex: 0 0 60%;
-  max-width: 60%;
+  flex: 1 1 auto;
+  min-width: 0;
 }
+
+:deep(.v-btn) {
+  flex-shrink: 0 !important;
+  margin-left: auto !important;
+  margin-right: 16px;
+}
+
 .v-card-item{
   padding: 10px 0 10px 10px;
 }
