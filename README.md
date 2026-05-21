@@ -3,13 +3,13 @@
 Développé par David Galindo (SI-CA2a) avec [Vue 3](https://vuejs.org/) et [Vite](https://vitejs.dev/).
 ## Installation de l'app
 1. Avoir installé [Node.js](https://nodejs.org/fr)
-2. Cloner localement le repository git dans un repertoire appelé "emusic-app"
+2. Cloner localement le repository git dans un repertoire appelé "eMusic-1.0.0"
 ```bash
 git clone https://github.com/davidgalindo-git/TPI_David_Galindo_2026
 ```
 3. Installer les dépendances
 ```bash
-cd emusic-app
+cd eMusic-1.0.0
 ```
 ```bash
 npm install
